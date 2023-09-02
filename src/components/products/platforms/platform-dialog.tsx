@@ -6,7 +6,6 @@ import {
   DialogTitle,
   FormHelperText,
   Grid,
-  TextField,
   Typography,
 } from "@mui/material";
 import { useFormik } from "formik";
@@ -16,6 +15,7 @@ import { useCreatePlatform, useUpdatePlatform } from "@/api/platforms";
 import { useQueryClient } from "react-query";
 import { Button } from "@/components/button";
 import { buildFormData } from "@/utils/build-form-data";
+import { TextInput } from "@/components/text-input";
 
 interface PlatformDialogProps {
   open: boolean;
@@ -74,7 +74,7 @@ export const PlatformDialog: FC<PlatformDialogProps> = (props) => {
       <DialogContent sx={{ py: "24px !important" }}>
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            <TextField
+            <TextInput
               size="small"
               error={!!formik.touched.name && !!formik.errors.name}
               helperText={formik.touched.name && (formik.errors.name as string)}

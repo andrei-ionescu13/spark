@@ -40,11 +40,10 @@ interface SidebarProps {
 export const Sidebar: FC<SidebarProps> = (props) => {
   const { admin, open, onClose } = props;
   const router = useRouter();
-  const theme = useTheme();
 
   const items: Item[] = [
     {
-      title: "articles",
+      title: "Blog",
       icon: PencilIcon,
       subitems: [
         {
@@ -52,8 +51,16 @@ export const Sidebar: FC<SidebarProps> = (props) => {
           href: "/articles",
         },
         {
-          title: "Create",
+          title: "Create article",
           href: "/articles/create",
+        },
+        {
+          title: "Categories",
+          href: "/articles/categories",
+        },
+        {
+          title: "Tags",
+          href: "/articles/tags",
         },
       ],
     },
@@ -102,6 +109,18 @@ export const Sidebar: FC<SidebarProps> = (props) => {
         {
           title: "Genres",
           href: "/products/genres",
+        },
+        {
+          title: "Developers",
+          href: "/products/developers",
+        },
+        {
+          title: "Features",
+          href: "/products/features",
+        },
+        {
+          title: "Operating Systems",
+          href: "/products/operating-systems",
         },
       ],
     },

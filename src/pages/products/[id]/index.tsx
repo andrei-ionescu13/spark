@@ -13,6 +13,7 @@ import {
   Product as ProductI,
   ProductStatus as ProductStatusI,
 } from "@/types/products";
+import { ProductDiscount } from "@/components/products/product/product-discount";
 
 const getProduct =
   (id: string, config: Record<string, any> = {}) =>
@@ -65,6 +66,11 @@ export const Product = () => {
             <Grid item xs={12}>
               <ProductMeta isEditDisabled={isEditDisabled} product={product} />
             </Grid>
+            {product.discount && (
+              <Grid item xs={12}>
+                <ProductDiscount discount={product.discount} />
+              </Grid>
+            )}
           </Grid>
         </Grid>
       </ProductLayout>

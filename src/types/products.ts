@@ -1,30 +1,36 @@
 import type { Image } from "./common";
+import { Developer } from "./developer";
+import type { Discount } from "./discounts";
+import { Feature } from "./feature";
 import type { Genre } from "./genres";
+import { OperatingSystem } from "./operating-sistem";
 import type { Platform } from "./platforms";
 import type { Publisher } from "./publishers";
+import { Language } from "./translations";
 import type { User } from "./user";
 
-export type ProductStatus = 'draft' | 'published' | 'archived';
+export type ProductStatus = "draft" | "published" | "archived";
 
 export interface ProductReview {
   _id: string;
   userName: string;
   user: User;
   product: string;
-  rating: number,
+  rating: number;
   content: string;
   createdAt: string;
 }
 
 export interface Product {
+  discount?: Discount;
   rating: {
     distribution: {
-      '1': number,
-      '2': number,
-      '3': number,
-      '4': number,
-      '5': number,
-    },
+      "1": number;
+      "2": number;
+      "3": number;
+      "4": number;
+      "5": number;
+    };
     average: number;
   };
   reviews: ProductReview[];
@@ -42,9 +48,9 @@ export interface Product {
   createdAt: Date;
   updatedAt: Date;
   publisher: Publisher;
-  developers: string[];
-  languages: string[];
-  features: string[];
+  developers: Developer[];
+  languages: Language[];
+  features: Feature[];
   link: string;
   platform: Platform;
   markdown: string;
@@ -54,14 +60,12 @@ export interface Product {
   status: ProductStatus;
   minimumRequirements: string;
   recommendedRequirements: string;
-  os: string[];
+  os: OperatingSystem[];
 }
-
 
 export interface Bundle {
   title: string;
   id: string;
   createdAt: Date;
-  status: 'draft' | 'published';
+  status: "draft" | "published";
 }
-

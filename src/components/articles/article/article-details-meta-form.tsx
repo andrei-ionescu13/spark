@@ -1,8 +1,8 @@
-import { useState } from 'react';
-import type { FC, SyntheticEvent } from 'react';
-import { useFormik } from 'formik';
-import { useQueryClient } from 'react-query';
-import * as Yup from 'yup';
+import { useState } from "react";
+import type { FC, SyntheticEvent } from "react";
+import { useFormik } from "formik";
+import { useQueryClient } from "react-query";
+import * as Yup from "yup";
 import {
   Autocomplete,
   Dialog,
@@ -11,11 +11,11 @@ import {
   DialogTitle,
   FormHelperText,
   Grid,
-  TextField
-} from '@mui/material';
-import { Button } from '@/components/button';
-import { useUpdateArticleMeta } from '@/api/articles';
-import { Article } from '@/types/articles';
+} from "@mui/material";
+import { Button } from "@/components/button";
+import { useUpdateArticleMeta } from "@/api/articles";
+import { Article } from "@/types/articles";
+import { TextInput } from "../../text-input";
 
 interface Values {
   description: string;
@@ -30,12 +30,14 @@ interface ArticleDetailsMetaFormProps {
   article: Article;
 }
 
-const metaKeywordOptions = ['Games', 'News', "Reviews"]
+const metaKeywordOptions = ["Games", "News", "Reviews"];
 
-export const ArticleDetailsMetaForm: FC<ArticleDetailsMetaFormProps> = (props) => {
-  const { open, values, onClose, article } = props
+export const ArticleDetailsMetaForm: FC<ArticleDetailsMetaFormProps> = (
+  props
+) => {
+  const { open, values, onClose, article } = props;
   const updateArticleMeta = useUpdateArticleMeta(article._id);
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   const [submitError, setSubmitError] = useState<string | null>(null);
   const formik = useFormik({
     initialValues: {
@@ -44,45 +46,34 @@ export const ArticleDetailsMetaForm: FC<ArticleDetailsMetaFormProps> = (props) =
       title: values.title,
     },
     validationSchema: Yup.object({
-      description: Yup.string().required('Required'),
-      keywords: Yup.array().required('Required'),
-      title: Yup.string().required('Required'),
+      description: Yup.string().required("Required"),
+      keywords: Yup.array().required("Required"),
+      title: Yup.string().required("Required"),
     }),
     onSubmit: (values) => {
-      setSubmitError(null)
+      setSubmitError(null);
       updateArticleMeta.mutate(values, {
         onSuccess: (data) => {
-          queryClient.setQueryData(['articles', article._id], {
+          queryClient.setQueryData(["articles", article._id], {
             ...article,
-            ...data
-          })
-          onClose()
+            ...data,
+          });
+          onClose();
         },
         onError: (error) => {
-          setSubmitError(error.message)
-        }
+          setSubmitError(error.message);
+        },
       });
     },
   });
 
   return (
-    <Dialog
-      open={open}
-      onClose={onClose}
-    >
-      <DialogTitle>
-        Update Meta
-      </DialogTitle>
+    <Dialog open={open} onClose={onClose}>
+      <DialogTitle>Update Meta</DialogTitle>
       <DialogContent>
-        <Grid
-          container
-          spacing={2}
-        >
-          <Grid
-            item
-            xs={12}
-          >
-            <TextField
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <TextInput
               error={!!formik.touched.title && !!formik.errors.title}
               fullWidth
               helperText={formik.touched.title && formik.errors.title}
@@ -95,14 +86,15 @@ export const ArticleDetailsMetaForm: FC<ArticleDetailsMetaFormProps> = (props) =
               value={formik.values.title}
             />
           </Grid>
-          <Grid
-            item
-            xs={12}
-          >
-            <TextField
-              error={!!formik.touched.description && !!formik.errors.description}
+          <Grid item xs={12}>
+            <TextInput
+              error={
+                !!formik.touched.description && !!formik.errors.description
+              }
               fullWidth
-              helperText={formik.touched.description && formik.errors.description}
+              helperText={
+                formik.touched.description && formik.errors.description
+              }
               id="description"
               label="Description"
               minRows={4}
@@ -114,10 +106,7 @@ export const ArticleDetailsMetaForm: FC<ArticleDetailsMetaFormProps> = (props) =
               value={formik.values.description}
             />
           </Grid>
-          <Grid
-            item
-            xs={12}
-          >
+          <Grid item xs={12}>
             <Autocomplete
               filterSelectedOptions
               freeSolo
@@ -125,11 +114,11 @@ export const ArticleDetailsMetaForm: FC<ArticleDetailsMetaFormProps> = (props) =
               id="keywords"
               multiple
               onChange={(event: SyntheticEvent, newValue: string[]) => {
-                formik.setFieldValue('keywords', newValue)
+                formik.setFieldValue("keywords", newValue);
               }}
               options={metaKeywordOptions}
               renderInput={(params) => (
-                <TextField
+                <TextInput
                   {...params}
                   size="small"
                   label="Keywords"
@@ -144,26 +133,21 @@ export const ArticleDetailsMetaForm: FC<ArticleDetailsMetaFormProps> = (props) =
           </Grid>
         </Grid>
         {!!submitError && (
-          <FormHelperText
-            error
-            sx={{ mt: 1 }}
-          >
+          <FormHelperText error sx={{ mt: 1 }}>
             {submitError}
           </FormHelperText>
         )}
       </DialogContent>
       <DialogActions>
-        <Button
-          color="secondary"
-          onClick={onClose}
-          variant="text"
-        >
+        <Button color="secondary" onClick={onClose} variant="text">
           Cancel
         </Button>
         <Button
           color="primary"
           isLoading={updateArticleMeta.isLoading}
-          onClick={() => { formik.handleSubmit() }}
+          onClick={() => {
+            formik.handleSubmit();
+          }}
           variant="contained"
         >
           Update

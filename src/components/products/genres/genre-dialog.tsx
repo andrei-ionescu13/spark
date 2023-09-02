@@ -12,12 +12,14 @@ import * as Yup from "yup";
 import { useQueryClient } from "react-query";
 import { useCreateGenre, useUpdateGenre } from "@/api/genres";
 import { Button } from "@/components/button";
+import { TextInput } from "@/components/text-input";
+import { Genre } from "@/types/genres";
 
 interface GenreDialogProps {
   open: boolean;
   onClose: any;
   mode?: "create" | "edit";
-  genre?: any;
+  genre?: Genre;
 }
 
 export const GenreDialog: FC<GenreDialogProps> = (props) => {
@@ -33,9 +35,11 @@ export const GenreDialog: FC<GenreDialogProps> = (props) => {
   const formik = useFormik({
     initialValues: {
       name: genre?.name || "",
+      slug: genre?.slug || "",
     },
     validationSchema: Yup.object({
       name: Yup.string().max(255).required(),
+      slug: Yup.string().max(255),
     }),
     onSubmit: (values) => {
       if (mode === "create") {
@@ -69,7 +73,7 @@ export const GenreDialog: FC<GenreDialogProps> = (props) => {
       <DialogContent sx={{ py: "24px !important" }}>
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            <TextField
+            <TextInput
               size="small"
               error={!!formik.touched.name && !!formik.errors.name}
               helperText={formik.touched.name && (formik.errors.name as string)}
@@ -82,6 +86,21 @@ export const GenreDialog: FC<GenreDialogProps> = (props) => {
               value={formik.values.name}
             />
           </Grid>
+          <Grid item xs={12}>
+            <TextInput
+              info="If a slug is not provided, one will be generated"
+              size="small"
+              error={!!formik.touched.slug && !!formik.errors.slug}
+              helperText={formik.touched.slug && (formik.errors.slug as string)}
+              fullWidth
+              id="slug"
+              label="Slug"
+              name="slug"
+              onBlur={formik.handleBlur}
+              onChange={formik.handleChange}
+              value={formik.values.slug}
+            />
+          </Grid>
         </Grid>
       </DialogContent>
       <DialogActions>
@@ -90,7 +109,7 @@ export const GenreDialog: FC<GenreDialogProps> = (props) => {
         </Button>
         <Button
           color="primary"
-          disabled={createGenre.isLoading || updateGenre.isLoading}
+          isLoading={createGenre.isLoading || updateGenre.isLoading}
           onClick={() => {
             formik.handleSubmit();
           }}

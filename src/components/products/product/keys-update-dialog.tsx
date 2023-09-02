@@ -6,7 +6,6 @@ import {
   DialogTitle,
   Grid,
   MenuItem,
-  TextField,
   useTheme,
 } from "@mui/material";
 import { useFormik } from "formik";
@@ -14,6 +13,7 @@ import * as Yup from "yup";
 import { Key } from "@/types/keys";
 import { yellow } from "@mui/material/colors";
 import { Button } from "@/components/button";
+import { TextInput } from "@/components/text-input";
 
 interface KeysUpdateDialogProps {
   open: boolean;
@@ -65,7 +65,7 @@ export const KeysUpdateDialog: FC<KeysUpdateDialogProps> = (props) => {
       <DialogContent sx={{ py: "24px !important" }}>
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            <TextField
+            <TextInput
               size="small"
               error={!!formik.touched.key && !!formik.errors.key}
               helperText={formik.touched.key && formik.errors.key}
@@ -79,7 +79,7 @@ export const KeysUpdateDialog: FC<KeysUpdateDialogProps> = (props) => {
             />
           </Grid>
           <Grid item xs={12}>
-            <TextField
+            <TextInput
               select
               id="status"
               label="Status"
@@ -95,7 +95,7 @@ export const KeysUpdateDialog: FC<KeysUpdateDialogProps> = (props) => {
                   <MenuItem color={status.color}>{status.label}</MenuItem>
                 </MenuItem>
               ))}
-            </TextField>
+            </TextInput>
           </Grid>
         </Grid>
       </DialogContent>

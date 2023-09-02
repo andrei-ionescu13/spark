@@ -29,6 +29,8 @@ import { dehydrate, QueryClient, useQuery } from "react-query";
 import { getCookie } from "cookies-next";
 import { Article as ArticleI, ArticleStatus } from "@/types/articles";
 import { Label } from "@/components/label";
+import { listArticleCategories } from "@/api/article-categories";
+import { ArticleDetailsTags } from "@/components/articles/article/article-details-tags";
 
 const ToastSuccess = (id: string) => (
   <Box>
@@ -63,6 +65,10 @@ const Article: FC = () => {
     ["articles", id],
     getArticle(id)
   );
+  const { data: articleCategories } = useQuery(
+    "article-categories",
+    listArticleCategories()
+  );
   const [openDeleteDialog, handleOpenDeleteDialog, handleCloseDeleteDialog] =
     useDialog();
   const [
@@ -73,11 +79,11 @@ const Article: FC = () => {
   const [openPreviewDialog, handleOpenPreviewDialog, handleClosePreviewDialog] =
     useDialog();
   const deleteArticle = useDeleteArticle();
-  const duplicateArticle = useDuplicateArticle();
+  const duplicateArticle = useDuplicateArticle(article?._id || "");
   const isEditDisabled = article?.status === "archived";
 
-  if (!article) return null;
-
+  if (!article || !articleCategories) return null;
+  console.log(article);
   const handleDeleteArticle = () => {
     deleteArticle.mutate(article._id, {
       onSuccess: () => {
@@ -179,6 +185,13 @@ const Article: FC = () => {
                 <ArticleStatusCategory
                   isEditDisabled={isEditDisabled}
                   article={article}
+                  categories={articleCategories}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <ArticleDetailsTags
+                  article={article}
+                  isEditDisabled={isEditDisabled}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -201,14 +214,17 @@ export const getServerSideProps: GetServerSideProps = async ({
   req,
   res,
 }) => {
-  const { id } = query;
+  const { id } = query as { id: string };
   const queryClient = new QueryClient();
 
   try {
-    await queryClient.fetchQuery(
-      ["articles", id],
-      getArticle(id, { req, res })
-    );
+    await Promise.all([
+      queryClient.fetchQuery(["articles", id], getArticle(id, { req, res })),
+      queryClient.fetchQuery(
+        "article-categories",
+        listArticleCategories({ req, res })
+      ),
+    ]);
   } catch (error) {
     console.error(error);
   }

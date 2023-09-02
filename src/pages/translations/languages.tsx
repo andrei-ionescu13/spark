@@ -73,13 +73,16 @@ const getLanguages =
   (config: Record<string, any> = {}) =>
   () =>
     appFetch<Language[]>({
-      url: "/languages",
+      url: "/translations/languages",
       withAuth: true,
       ...config,
     });
 
 const TranslationList: FC = () => {
-  const { data: languages } = useQuery("languages", getLanguages());
+  const { data: languages } = useQuery(
+    "translations-languages",
+    getLanguages()
+  );
   const [openDialog, handleOpenDialog, handleCloseDialog] = useDialog();
 
   if (!languages) return null;

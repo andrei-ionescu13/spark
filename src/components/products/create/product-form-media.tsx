@@ -6,7 +6,6 @@ import {
   CardContent,
   FormHelperText,
   Grid,
-  TextField,
   Typography,
 } from "@mui/material";
 import { FieldArray, FormikProvider, useFormik } from "formik";
@@ -16,6 +15,7 @@ import type { FileWithPath } from "react-dropzone";
 import { ProductImage } from "../product-image";
 import { Image } from "@/types/common";
 import { Button } from "@/components/button";
+import { TextInput } from "@/components/text-input";
 
 const isImage = (file: any): file is Image => !!file?.public_id;
 
@@ -139,7 +139,7 @@ export const ProductFormMedia: FC<ProductFormMediaProps> = (props) => {
                                 gap: 2,
                               }}
                             >
-                              <TextField
+                              <TextInput
                                 error={
                                   Array.isArray(formik.touched.videos) &&
                                   !!formik.touched.videos[index] &&
@@ -181,7 +181,7 @@ export const ProductFormMedia: FC<ProductFormMediaProps> = (props) => {
                               gap: 2,
                             }}
                           >
-                            <TextField
+                            <TextInput
                               fullWidth
                               id="newVideo"
                               name="newVideo"

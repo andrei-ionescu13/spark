@@ -78,7 +78,7 @@ const getLanguages =
   (config: Record<string, any> = {}) =>
   () =>
     appFetch<Language[]>({
-      url: "/languages",
+      url: "/translations/languages",
       withAuth: true,
       ...config,
     });
@@ -86,7 +86,7 @@ const getNamespaces =
   (query: ParsedUrlQuery, config: Record<string, any> = {}) =>
   () =>
     appFetch<GetNamespacesData>({
-      url: "/namespaces/search",
+      url: "/translations/namespaces/search",
       query,
       ...config,
     });

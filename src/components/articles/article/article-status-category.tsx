@@ -2,7 +2,7 @@ import type { FC } from "react";
 import { toast } from "react-toastify";
 import { useFormik } from "formik";
 import { useQueryClient } from "react-query";
-import * as Yup from 'yup';
+import * as Yup from "yup";
 import {
   Card,
   CardContent,
@@ -14,17 +14,22 @@ import {
   Grid,
   MenuItem,
   Select,
-  useTheme
+  useTheme,
 } from "@mui/material";
 import { Button } from "@/components/button";
 import { StatusSelect } from "@/components/status";
 import type { StatusOption } from "@/components/status";
-import { useUpdateArticleStatus, useUpdateArticleCategory } from '@/api/articles';
+import {
+  useUpdateArticleStatus,
+  useUpdateArticleCategory,
+} from "@/api/articles";
 import { Article } from "@/types/articles";
+import { ArticleCategory } from "@/types/article-category";
 
 interface ArticleStatusTagProps {
   article: Article;
   isEditDisabled?: boolean;
+  categories: ArticleCategory[];
 }
 
 interface Category {
@@ -32,90 +37,83 @@ interface Category {
   value: string;
 }
 
-const categories: Category[] = [
-  {
-    label: 'News',
-    value: 'news'
-  },
-  {
-    label: 'Games',
-    value: 'games'
-  },
-  {
-    label: 'Reviews',
-    value: 'reviews'
-  }
-];
-
-
 export const ArticleStatusCategory: FC<ArticleStatusTagProps> = (props) => {
-  const { article, isEditDisabled } = props;
-  const theme = useTheme()
+  const { article, categories, isEditDisabled } = props;
+  const theme = useTheme();
   const queryClient = useQueryClient();
   const updateArticleStatus = useUpdateArticleStatus(article._id);
-  const updateArticleTag = useUpdateArticleCategory(article._id);
+  const updateArticleCategory = useUpdateArticleCategory(article._id);
+
+  const categoryOptions: Category[] = categories?.map((category) => ({
+    label: category.name,
+    value: category._id,
+  }));
 
   const statusOptions: StatusOption[] = [
     {
-      label: 'Published',
-      value: 'published',
-      color: theme.palette.success.main
+      label: "Published",
+      value: "published",
+      color: theme.palette.success.main,
     },
     {
-      label: 'Draft',
-      value: 'draft',
-      color: colors.grey[500]
+      label: "Draft",
+      value: "draft",
+      color: colors.grey[500],
     },
     {
-      label: 'Archived',
-      value: 'archived',
-      color: theme.palette.error.main
-    }
+      label: "Archived",
+      value: "archived",
+      color: theme.palette.error.main,
+    },
   ];
 
   const formikStatus = useFormik({
     initialValues: {
-      status: article.status
+      status: article.status,
     },
     validationSchema: Yup.object({
-      status: Yup.string().oneOf(statusOptions.map((status) => status.value)).required('Required'),
+      status: Yup.string()
+        .oneOf(statusOptions.map((status) => status.value))
+        .required("Required"),
     }),
     onSubmit: (values) => {
       updateArticleStatus.mutate(values, {
         onSuccess: ({ status }) => {
-          queryClient.setQueryData(['articles', article._id], {
+          queryClient.setQueryData(["articles", article._id], {
             ...article,
-            status
-          })
-          toast.success('Article updated')
+            status,
+          });
+          toast.success("Article updated");
         },
         onError: (error) => {
-          toast.error(error.message)
-        }
-      })
+          toast.error(error.message);
+        },
+      });
     },
   });
 
   const formikTag = useFormik({
     initialValues: {
-      category: article.category,
+      category: article.category._id,
     },
     validationSchema: Yup.object({
-      category: Yup.string().oneOf(categories.map((category) => category.value)).required('Required'),
+      category: Yup.string()
+        .oneOf(categoryOptions.map((category) => category.value))
+        .required("Required"),
     }),
     onSubmit: (values) => {
-      updateArticleTag.mutate(values, {
+      updateArticleCategory.mutate(values, {
         onSuccess: ({ category }) => {
-          queryClient.setQueryData(['articles', article._id], {
+          queryClient.setQueryData(["articles", article._id], {
             ...article,
-            category
-          })
-          toast.success('Article updated')
+            category,
+          });
+          toast.success("Article updated");
         },
         onError: (error) => {
-          toast.error(error.message)
-        }
-      })
+          toast.error(error.message);
+        },
+      });
     },
   });
 
@@ -124,23 +122,22 @@ export const ArticleStatusCategory: FC<ArticleStatusTagProps> = (props) => {
       <CardHeader title="Status/Tag" />
       <Divider />
       <CardContent>
-        <Grid
-          container
-          spacing={2}
-        >
+        <Grid container spacing={2}>
           <Grid
             item
             xs={12}
             sx={{
-              display: 'grid',
-              gridTemplateColumns: '9fr 3fr',
-              gap: 1
+              display: "grid",
+              gridTemplateColumns: "9fr 3fr",
+              gap: 1,
             }}
           >
             <FormControl
-              error={!!formikStatus.touched.status && !!formikStatus.errors.status}
+              error={
+                !!formikStatus.touched.status && !!formikStatus.errors.status
+              }
               fullWidth
-              size='small'
+              size="small"
             >
               <StatusSelect
                 id="status"
@@ -150,14 +147,19 @@ export const ArticleStatusCategory: FC<ArticleStatusTagProps> = (props) => {
                 value={formikStatus.values.status}
                 options={statusOptions}
               />
-              {!!formikStatus.touched.status && !!formikStatus.errors.status && <FormHelperText>{formikStatus.errors.status}</FormHelperText>}
+              {!!formikStatus.touched.status &&
+                !!formikStatus.errors.status && (
+                  <FormHelperText>{formikStatus.errors.status}</FormHelperText>
+                )}
             </FormControl>
             <Button
               color="primary"
               variant="contained"
               isLoading={updateArticleStatus.isLoading}
               disabled={formikStatus.values.status === article.status}
-              onClick={() => { formikStatus.handleSubmit() }}
+              onClick={() => {
+                formikStatus.handleSubmit();
+              }}
             >
               Update
             </Button>
@@ -166,15 +168,17 @@ export const ArticleStatusCategory: FC<ArticleStatusTagProps> = (props) => {
             item
             xs={12}
             sx={{
-              display: 'grid',
-              gridTemplateColumns: '9fr 3fr',
-              gap: 1
+              display: "grid",
+              gridTemplateColumns: "9fr 3fr",
+              gap: 1,
             }}
           >
             <FormControl
-              error={!!formikTag.touched.category && !!formikTag.errors.category}
+              error={
+                !!formikTag.touched.category && !!formikTag.errors.category
+              }
               fullWidth
-              size='small'
+              size="small"
             >
               <Select
                 id="category"
@@ -183,22 +187,26 @@ export const ArticleStatusCategory: FC<ArticleStatusTagProps> = (props) => {
                 onChange={formikTag.handleChange}
                 value={formikTag.values.category}
               >
-                {categories.map((category) => (
-                  <MenuItem
-                    value={category.value}
-                    key={category.value}
-                  >
+                {categoryOptions.map((category) => (
+                  <MenuItem value={category.value} key={category.value}>
                     {category.label}
                   </MenuItem>
                 ))}
               </Select>
-              {!!formikTag.touched.category && !!formikTag.errors.category && <FormHelperText>{formikTag.errors.category}</FormHelperText>}
+              {!!formikTag.touched.category && !!formikTag.errors.category && (
+                <FormHelperText>{formikTag.errors.category}</FormHelperText>
+              )}
             </FormControl>
             <Button
               color="primary"
-              disabled={isEditDisabled || formikTag.values.category === article.category}
-              isLoading={updateArticleTag.isLoading}
-              onClick={() => { formikTag.handleSubmit() }}
+              disabled={
+                isEditDisabled ||
+                formikTag.values.category === article.category._id
+              }
+              isLoading={updateArticleCategory.isLoading}
+              onClick={() => {
+                formikTag.handleSubmit();
+              }}
               variant="contained"
             >
               Update

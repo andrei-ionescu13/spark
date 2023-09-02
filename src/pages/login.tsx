@@ -17,6 +17,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Eye } from "@/icons/eye";
 import { Button } from "@/components/button";
+import { TextInput } from "@/components/text-input";
 
 const Login: FC = () => {
   const { push } = useRouter();
@@ -24,8 +25,8 @@ const Login: FC = () => {
 
   const formik = useFormik({
     initialValues: {
-      username: "andrei",
-      password: "andrei",
+      username: "admin123",
+      password: "admin123",
     },
     validationSchema: Yup.object({
       username: Yup.string().max(255).required(),
@@ -79,7 +80,7 @@ const Login: FC = () => {
             </Typography>
             <Grid container spacing={3}>
               <Grid item xs={12}>
-                <TextField
+                <TextInput
                   error={!!formik.touched.username && !!formik.errors.username}
                   fullWidth
                   helperText={formik.touched.username && formik.errors.username}
@@ -92,7 +93,7 @@ const Login: FC = () => {
                 />
               </Grid>
               <Grid item xs={12}>
-                <TextField
+                <TextInput
                   error={!!formik.touched.password && !!formik.errors.password}
                   fullWidth
                   helperText={formik.touched.password && formik.errors.password}

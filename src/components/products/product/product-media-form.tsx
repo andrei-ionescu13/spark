@@ -5,7 +5,6 @@ import {
   Box,
   FormHelperText,
   Grid,
-  TextField,
   Typography,
   Dialog,
   DialogTitle,
@@ -23,6 +22,7 @@ import { useQueryClient } from "react-query";
 import { buildFormData } from "@/utils/build-form-data";
 import type { Image } from "@/types/common";
 import { Button } from "@/components/button";
+import { TextInput } from "@/components/text-input";
 
 interface ProductFormProps {
   product: Product;
@@ -188,7 +188,7 @@ export const ProductMediaForm: FC<ProductFormProps> = (props) => {
                               gap: 2,
                             }}
                           >
-                            <TextField
+                            <TextInput
                               fullWidth
                               id={`${arrayHelpers.name}[${index}]`}
                               name={`${arrayHelpers.name}[${index}]`}
@@ -218,7 +218,7 @@ export const ProductMediaForm: FC<ProductFormProps> = (props) => {
                             gap: 2,
                           }}
                         >
-                          <TextField
+                          <TextInput
                             fullWidth
                             id="newVideo"
                             name="newVideo"
