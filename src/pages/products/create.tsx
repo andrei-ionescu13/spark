@@ -18,37 +18,22 @@ import { useCreateProduct } from "@/api/products";
 import { appFetch } from "@/utils/app-fetch";
 import { dehydrate, QueryClient, useQuery } from "react-query";
 import { buildFormData } from "@/utils/build-form-data";
-import { Link } from "@/components/link";
 import { toast } from "react-toastify";
 import type { Genre } from "@/types/genres";
 import type { Publisher } from "@/types/publishers";
 import type { Platform } from "@/types/platforms";
 import { ToastItemCreated } from "@/components/toast-item-created";
+import { ParsedUrlQuery } from "querystring";
+import { Developer } from "@/types/developer";
+import { Feature } from "@/types/feature";
 
 const steps = ["General", "Media", "Meta", "Keys"];
-
-const listGenres =
-  (config: Record<string, any> = {}) =>
-  () =>
-    appFetch<Genre[]>({ url: "/genres", withAuth: true, ...config });
-const listPublishers =
-  (config: Record<string, any> = {}) =>
-  () =>
-    appFetch<Publisher[]>({ url: "/publishers", withAuth: true, ...config });
-const listPlatforms =
-  (config: Record<string, any> = {}) =>
-  () =>
-    appFetch<Platform[]>({ url: "/platforms", withAuth: true, ...config });
 
 const ProductCreate: FC = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [values, setValues] = useState<Record<string, any>>({});
-  const { data: genres } = useQuery("genres", listGenres());
-  const { data: publishers } = useQuery("publishers", listPublishers());
-  const { data: platforms } = useQuery("platforms", listPlatforms());
-  const createProduct = useCreateProduct();
 
-  if (!genres || !publishers || !platforms) return null;
+  const createProduct = useCreateProduct();
 
   const handleBack = (): void => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
@@ -67,7 +52,13 @@ const ProductCreate: FC = () => {
       ...values,
       ...newValues,
     };
-    const formData = buildFormData(allValues);
+    const formData = buildFormData({
+      ...allValues,
+      developers: allValues.developers.map(
+        (developer: Developer) => developer._id
+      ),
+      features: allValues.features.map((feature: Feature) => feature._id),
+    });
 
     createProduct.mutate(formData, {
       onSuccess: ({ id }) => {
@@ -92,13 +83,7 @@ const ProductCreate: FC = () => {
             ))}
           </Stepper>
           {activeStep === 0 && (
-            <ProductFormGeneral
-              product={values}
-              publishersOptions={publishers}
-              genreOptions={genres}
-              platformOptions={platforms}
-              onNext={handleNext}
-            />
+            <ProductFormGeneral product={values} onNext={handleNext} />
           )}
           {activeStep === 1 && (
             <ProductFormMedia
@@ -133,22 +118,8 @@ export const getServerSideProps: GetServerSideProps = async ({
   req,
   res,
 }) => {
-  const queryClient = new QueryClient();
-
-  try {
-    await Promise.all([
-      queryClient.fetchQuery("genres", listGenres({ req, res })),
-      queryClient.fetchQuery("publishers", listPublishers({ req, res })),
-      queryClient.fetchQuery("platforms", listPlatforms({ req, res })),
-    ]);
-  } catch (error) {
-    console.error(error);
-  }
-
   return {
-    props: {
-      dehydratedState: dehydrate(queryClient),
-    },
+    props: {},
   };
 };
 

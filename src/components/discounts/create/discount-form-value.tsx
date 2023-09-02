@@ -6,7 +6,6 @@ import {
   InputAdornment,
   List,
   ListItem,
-  TextField,
   Typography,
   IconButton,
   FormHelperText,
@@ -19,6 +18,7 @@ import { Link } from "@/components/link";
 import { useFormikContext } from "formik";
 import type { DiscountFormValues } from "./discount-form";
 import { Button } from "@/components/button";
+import { TextInput } from "@/components/text-input";
 
 const typeOptions = [
   {
@@ -76,7 +76,7 @@ export const DiscountFormValue: FC = () => {
             </ButtonGroup>
           </Grid>
           <Grid item xs={12}>
-            <TextField
+            <TextInput
               error={!!formik.touched.value && !!formik.errors.value}
               helperText={formik.touched.value && formik.errors.value}
               fullWidth

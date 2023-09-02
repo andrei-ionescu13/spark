@@ -10,7 +10,6 @@ import {
   MenuItem,
   Select,
   Switch,
-  TextField,
 } from "@mui/material";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -23,41 +22,36 @@ import { Button } from "@/components/button";
 import { buildFormData } from "@/utils/build-form-data";
 import { useDialog } from "@/hooks/useDialog";
 import { ToastItemCreated } from "@/components/toast-item-created";
+import { TextInput } from "../../text-input";
+import { ArticleCategory } from "@/types/article-category";
+import { ArticleTag } from "@/types/article-tag";
 
-interface Category {
+interface Option {
   label: string;
   value: string;
 }
-
-const categorys: Category[] = [
-  {
-    label: "News",
-    value: "news",
-  },
-  {
-    label: "Games",
-    value: "games",
-  },
-  {
-    label: "Reviews",
-    value: "reviews",
-  },
-];
 
 const metaKeywordOptions = ["Games", "News", "mopneydas"];
 
 interface ArticleFormProps {
   article?: Article;
+  categories: ArticleCategory[];
+  tags: ArticleTag[];
 }
 
 export const ArticleForm: FC<ArticleFormProps> = (props) => {
-  const { article } = props;
+  const { article, tags, categories } = props;
   const createArticle = useCreateArticle();
   const updateArticle = useUpdateArticle(article?._id || "");
   const [openPreview, handleOpenPreview, handleClosePreview] = useDialog(false);
   const [resolutionError, setResolutionError] = useState<string | undefined>(
     undefined
   );
+
+  const categoryOptions: Option[] = categories?.map((category) => ({
+    label: category.name,
+    value: category._id,
+  }));
 
   const formik = useFormik({
     initialValues: {
@@ -73,8 +67,10 @@ export const ArticleForm: FC<ArticleFormProps> = (props) => {
       title: "",
       markdown: "",
       cover: undefined,
+      tags: [],
     },
     validationSchema: Yup.object({
+      tags: Yup.array().of(Yup.mixed()).min(1),
       markdown: Yup.string().required("Required"),
       description: Yup.string().required("Required"),
       meta: Yup.object().shape({
@@ -84,7 +80,7 @@ export const ArticleForm: FC<ArticleFormProps> = (props) => {
       }),
       shouldPublish: Yup.boolean(),
       category: Yup.string()
-        .oneOf(categorys.map((category) => category.value))
+        .oneOf(categoryOptions.map((category) => category.value))
         .required("Required"),
       title: Yup.string().required("Required"),
       slug: Yup.string().required("Required"),
@@ -93,7 +89,11 @@ export const ArticleForm: FC<ArticleFormProps> = (props) => {
         .required("Required"),
     }),
     onSubmit: (values, { resetForm }) => {
-      const formData = buildFormData(values);
+      const finalValues = {
+        ...values,
+        tags: values.tags.map((tag: any) => tag._id),
+      };
+      const formData = buildFormData(finalValues);
       createArticle.mutate(formData, {
         onSuccess: ({ id }) => {
           resetForm();
@@ -102,7 +102,6 @@ export const ArticleForm: FC<ArticleFormProps> = (props) => {
       });
     },
   });
-
   return (
     <>
       <Grid container spacing={2}>
@@ -110,7 +109,7 @@ export const ArticleForm: FC<ArticleFormProps> = (props) => {
           <Card sx={{ p: 2 }}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
-                <TextField
+                <TextInput
                   error={!!formik.touched.title && !!formik.errors.title}
                   fullWidth
                   helperText={formik.touched.title && formik.errors.title}
@@ -123,7 +122,8 @@ export const ArticleForm: FC<ArticleFormProps> = (props) => {
                 />
               </Grid>
               <Grid item xs={12}>
-                <TextField
+                <TextInput
+                  info="If a slug is not provided, one will be generated"
                   error={!!formik.touched.slug && !!formik.errors.slug}
                   fullWidth
                   helperText={formik.touched.slug && formik.errors.slug}
@@ -136,7 +136,7 @@ export const ArticleForm: FC<ArticleFormProps> = (props) => {
                 />
               </Grid>
               <Grid item xs={12}>
-                <TextField
+                <TextInput
                   error={
                     !!formik.touched.description && !!formik.errors.description
                   }
@@ -155,7 +155,7 @@ export const ArticleForm: FC<ArticleFormProps> = (props) => {
                 />
               </Grid>
               <Grid item xs={12}>
-                <TextField
+                <TextInput
                   error={!!formik.touched.markdown && !!formik.errors.markdown}
                   fullWidth
                   helperText={formik.touched.markdown && formik.errors.markdown}
@@ -202,59 +202,64 @@ export const ArticleForm: FC<ArticleFormProps> = (props) => {
             <Card sx={{ p: 2 }}>
               <Grid container spacing={2}>
                 <Grid item xs={12}>
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        checked={formik.values.shouldPublish}
-                        name="shouldPublish"
-                        onChange={(
-                          event: React.ChangeEvent<HTMLInputElement>
-                        ) => {
-                          formik.setFieldValue(
-                            "shouldPublish",
-                            event.target.checked
-                          );
-                        }}
-                      />
-                    }
-                    label="Publish"
-                    labelPlacement="start"
-                    sx={{
-                      ml: 0,
-                      display: "flex",
-                      justifyContent: "space-between",
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <FormControl
+                  <TextInput
                     error={
                       !!formik.touched.category && !!formik.errors.category
                     }
                     fullWidth
+                    select
+                    id="category"
+                    label="Category"
+                    name="category"
+                    onBlur={formik.handleBlur}
+                    onChange={formik.handleChange}
+                    value={formik.values.category}
+                    helperText={
+                      formik.touched.category && formik.errors.category
+                    }
                   >
-                    <InputLabel id="category">Category</InputLabel>
-                    <Select
-                      id="category"
-                      label="Category"
-                      name="category"
-                      onBlur={formik.handleBlur}
-                      onChange={formik.handleChange}
-                      value={formik.values.category}
-                    >
-                      {categorys.map((category) => (
-                        <MenuItem value={category.value} key={category.value}>
-                          {category.label}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                    {!!formik.touched.category && !!formik.errors.category && (
-                      <FormHelperText>{formik.errors.category}</FormHelperText>
-                    )}
-                  </FormControl>
+                    {categoryOptions.map((category) => (
+                      <MenuItem value={category.value} key={category.value}>
+                        {category.label}
+                      </MenuItem>
+                    ))}
+                  </TextInput>
                 </Grid>
                 <Grid item xs={12}>
-                  <TextField
+                  <Autocomplete
+                    autoHighlight
+                    value={formik.values.tags}
+                    filterSelectedOptions
+                    getOptionLabel={(option) => option.name}
+                    id="tags"
+                    multiple
+                    onChange={(event: SyntheticEvent, newValue) => {
+                      formik.setFieldValue("tags", newValue);
+                    }}
+                    options={tags}
+                    renderInput={(params) => (
+                      <TextInput
+                        {...params}
+                        label="Tags"
+                        name="tags"
+                        onBlur={formik.handleBlur}
+                        error={!!formik.touched.tags && !!formik.errors.tags}
+                        helperText={
+                          formik.touched.tags && (formik.errors.tags as string)
+                        }
+                      />
+                    )}
+                  />
+                </Grid>
+              </Grid>
+            </Card>
+          </Grid>
+
+          <Grid item xs={12}>
+            <Card sx={{ p: 2 }}>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <TextInput
                     error={
                       !!formik.touched.meta?.title &&
                       !!formik.errors.meta?.title
@@ -272,7 +277,7 @@ export const ArticleForm: FC<ArticleFormProps> = (props) => {
                   />
                 </Grid>
                 <Grid item xs={12}>
-                  <TextField
+                  <TextInput
                     error={
                       !!formik.touched.meta?.description &&
                       !!formik.errors.meta?.description
@@ -284,7 +289,7 @@ export const ArticleForm: FC<ArticleFormProps> = (props) => {
                     }
                     id="meta.description"
                     label="Meta description"
-                    minRows={4}
+                    minRows={6}
                     multiline
                     name="meta.description"
                     onBlur={formik.handleBlur}
@@ -305,7 +310,7 @@ export const ArticleForm: FC<ArticleFormProps> = (props) => {
                     }}
                     options={metaKeywordOptions}
                     renderInput={(params) => (
-                      <TextField
+                      <TextInput
                         {...params}
                         label="Meta Keywords"
                         name="meta.keywords"
@@ -324,6 +329,21 @@ export const ArticleForm: FC<ArticleFormProps> = (props) => {
                 </Grid>
               </Grid>
             </Card>
+          </Grid>
+          <Grid item xs={12}>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={formik.values.shouldPublish}
+                  name="shouldPublish"
+                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                    formik.setFieldValue("shouldPublish", event.target.checked);
+                  }}
+                />
+              }
+              label="Publish"
+              labelPlacement="start"
+            />
           </Grid>
           <Grid container item spacing={2}>
             <Grid item xs={6}>

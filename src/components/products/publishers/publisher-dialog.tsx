@@ -6,7 +6,6 @@ import {
   DialogTitle,
   FormHelperText,
   Grid,
-  TextField,
   Typography,
 } from "@mui/material";
 import { useFormik } from "formik";
@@ -16,6 +15,7 @@ import { useCreatePublisher, useUpdatePublisher } from "@/api/publishers";
 import { useQueryClient } from "react-query";
 import { Button } from "@/components/button";
 import { buildFormData } from "@/utils/build-form-data";
+import { TextInput } from "@/components/text-input";
 
 interface PublisherDialogProps {
   open: boolean;
@@ -37,10 +37,12 @@ export const PublisherDialog: FC<PublisherDialogProps> = (props) => {
   const formik = useFormik({
     initialValues: {
       name: publisher?.name || "",
+      slug: publisher?.slug || "",
       logo: publisher?.logo.url || undefined,
     },
     validationSchema: Yup.object({
       name: Yup.string().max(255).required(),
+      slug: Yup.string().max(255),
       logo: Yup.mixed().required("File is required"),
     }),
     onSubmit: (values) => {
@@ -48,9 +50,7 @@ export const PublisherDialog: FC<PublisherDialogProps> = (props) => {
 
       if (mode === "create") {
         createPublisher.mutate(formData, {
-          onSuccess: () => {
-            onClose();
-          },
+          onSuccess: onClose,
         });
         return;
       }
@@ -59,9 +59,7 @@ export const PublisherDialog: FC<PublisherDialogProps> = (props) => {
         updatePublisher.mutate(
           { id: publisher._id, body: formData },
           {
-            onSuccess: () => {
-              onClose();
-            },
+            onSuccess: onClose,
           }
         );
       }
@@ -76,7 +74,7 @@ export const PublisherDialog: FC<PublisherDialogProps> = (props) => {
       <DialogContent sx={{ py: "24px !important" }}>
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            <TextField
+            <TextInput
               size="small"
               error={!!formik.touched.name && !!formik.errors.name}
               helperText={formik.touched.name && (formik.errors.name as string)}
@@ -87,6 +85,21 @@ export const PublisherDialog: FC<PublisherDialogProps> = (props) => {
               onBlur={formik.handleBlur}
               onChange={formik.handleChange}
               value={formik.values.name}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextInput
+              info="If a slug is not provided, one will be generated"
+              size="small"
+              error={!!formik.touched.slug && !!formik.errors.slug}
+              helperText={formik.touched.slug && (formik.errors.slug as string)}
+              fullWidth
+              id="slug"
+              label="Slug"
+              name="slug"
+              onBlur={formik.handleBlur}
+              onChange={formik.handleChange}
+              value={formik.values.slug}
             />
           </Grid>
           <Grid item xs={12}>

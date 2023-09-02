@@ -26,6 +26,9 @@ const baseThemeOptions: ThemeOptions = {
     },
     MuiCardHeader: {
       styleOverrides: {
+        root: {
+          minHeight: 60.5,
+        },
         title: {
           fontSize: 16,
           fontWeight: 700,
@@ -91,6 +94,13 @@ const baseThemeOptions: ThemeOptions = {
       styleOverrides: {
         root: {
           padding: "16px 24px",
+        },
+      },
+    },
+    MuiFormHelperText: {
+      styleOverrides: {
+        root: {
+          marginLeft: 0,
         },
       },
     },

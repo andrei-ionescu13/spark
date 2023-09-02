@@ -115,8 +115,10 @@ export const ProductImportKeysDialog: FC<ProductImportKeysDialogProps> = (
             </Typography>
           </Typography>
         )}
-        {!!formik.errors.keys && (
-          <FormHelperText error>{formik.errors.keys}</FormHelperText>
+        {importProductKeys.isError && (
+          <FormHelperText error sx={{ mt: 1 }}>
+            {importProductKeys.error.message}
+          </FormHelperText>
         )}
       </Box>
     </AlertDialog>

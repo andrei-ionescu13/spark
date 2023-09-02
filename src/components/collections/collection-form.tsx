@@ -11,7 +11,6 @@ import {
   List,
   ListItem,
   Switch,
-  TextField,
   Typography,
 } from "@mui/material";
 import { useFormik } from "formik";
@@ -31,6 +30,7 @@ import type { Collection } from "@/types/collection";
 import { useQueryClient } from "react-query";
 import type { Image } from "@/types/common";
 import { ToastCreatedMessage } from "../toast-created-message";
+import { TextInput } from "../text-input";
 
 const isImage = (file: any): file is Image => !!file?.public_id;
 
@@ -162,7 +162,7 @@ export const CollectionForm: FC<CollectionFormProps> = (props) => {
                   </Typography>
                 </Grid>
                 <Grid item xs={12}>
-                  <TextField
+                  <TextInput
                     error={!!formik.touched.title && !!formik.errors.title}
                     fullWidth
                     helperText={formik.touched.title && formik.errors.title}
@@ -175,7 +175,7 @@ export const CollectionForm: FC<CollectionFormProps> = (props) => {
                   />
                 </Grid>
                 <Grid item xs={12}>
-                  <TextField
+                  <TextInput
                     error={!!formik.touched.slug && !!formik.errors.slug}
                     fullWidth
                     helperText={formik.touched.slug && formik.errors.slug}
@@ -188,7 +188,7 @@ export const CollectionForm: FC<CollectionFormProps> = (props) => {
                   />
                 </Grid>
                 <Grid item xs={12}>
-                  <TextField
+                  <TextInput
                     error={
                       !!formik.touched.description &&
                       !!formik.errors.description
@@ -329,7 +329,7 @@ export const CollectionForm: FC<CollectionFormProps> = (props) => {
                   </Typography>
                 </Grid>
                 <Grid item xs={12}>
-                  <TextField
+                  <TextInput
                     error={
                       !!formik.touched.meta?.title &&
                       !!formik.errors.meta?.title
@@ -347,7 +347,7 @@ export const CollectionForm: FC<CollectionFormProps> = (props) => {
                   />
                 </Grid>
                 <Grid item xs={12}>
-                  <TextField
+                  <TextInput
                     error={
                       !!formik.touched.meta?.description &&
                       !!formik.errors.meta?.description
@@ -380,7 +380,7 @@ export const CollectionForm: FC<CollectionFormProps> = (props) => {
                     }}
                     options={metaKeywordOptions}
                     renderInput={(params) => (
-                      <TextField
+                      <TextInput
                         {...params}
                         label="Keywords"
                         name="meta.keywords"

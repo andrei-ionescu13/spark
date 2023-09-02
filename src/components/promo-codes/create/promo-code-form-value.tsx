@@ -22,6 +22,7 @@ import { Link } from "@/components/link";
 import { useFormikContext } from "formik";
 import type { PromoCodeFormValues } from "./promo-code-form";
 import { Button } from "@/components/button";
+import { TextInput } from "@/components/text-input";
 
 const typeOptions = [
   {
@@ -79,7 +80,7 @@ export const PromoCodeFormValue: FC = () => {
             </ButtonGroup>
           </Grid>
           <Grid item xs={12}>
-            <TextField
+            <TextInput
               error={!!formik.touched.value && !!formik.errors.value}
               helperText={formik.touched.value && formik.errors.value}
               fullWidth

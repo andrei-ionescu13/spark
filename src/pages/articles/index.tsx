@@ -36,6 +36,8 @@ import { ParsedUrlQuery } from "querystring";
 import { DataTableHead } from "@/components/data-table-head";
 import type { HeadCell } from "@/components/data-table-head";
 import { Button } from "@/components/button";
+import { TableNoData } from "@/components/table-no-data";
+import { TableDataError } from "@/components/table-data-error";
 
 interface Tab {
   label: string;
@@ -125,7 +127,7 @@ const Articles: FC = () => {
   const [selected, setSelected] = useState<string[]>([]);
   const [keyword, keywordParam, handleKeywordChange, handleSearch] =
     useSearch();
-  const { error, data, refetch, isLoading } = useQuery(
+  const { data, isError, refetch } = useQuery(
     ["articles", query],
     getArticles(query)
   );
@@ -263,6 +265,10 @@ const Articles: FC = () => {
                 onSelectAll={handleSelectAll}
               />
               <TableBody>
+                {/* <TableDataError
+                  colSpan={headCells.length + 2}
+                  onReload={refetch}
+                /> */}
                 {articles.map((article) => (
                   <ArticleTableRow
                     article={article}

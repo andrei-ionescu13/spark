@@ -23,9 +23,9 @@ export const GenresTableRow: FC<UsersTableRowProps> = (props) => {
   const { genre, selected, onSelect, shownLanguages } = props;
   const queryClient = useQueryClient();
   const [deleteDialogOpen, handleOpenDeleteDialog, handleCloseDeleteDialog] =
-    useDialog(false);
+    useDialog();
   const [updateDialogOpen, handleOpenUpdateDialog, handleCloseUpdateDialog] =
-    useDialog(false);
+    useDialog();
   const deleteGenre = useDeleteGenre(() =>
     queryClient.invalidateQueries("genres")
   );

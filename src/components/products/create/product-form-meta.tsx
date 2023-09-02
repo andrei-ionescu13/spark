@@ -1,21 +1,9 @@
 import type { FC, SyntheticEvent } from "react";
-import {
-  Autocomplete,
-  Box,
-  Card,
-  CardContent,
-  CardHeader,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Divider,
-  Grid,
-  TextField,
-} from "@mui/material";
+import { Autocomplete, Box, Card, CardContent, Grid } from "@mui/material";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Button } from "@/components/button";
+import { TextInput } from "@/components/text-input";
 
 const metaKeywordOptions = ["Games", "News", "Review"];
 
@@ -53,7 +41,7 @@ export const ProductFormMeta: FC<ProductFormMetaProps> = (props) => {
         <CardContent>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <TextField
+              <TextInput
                 error={!!formik.touched.metaTitle && !!formik.errors.metaTitle}
                 fullWidth
                 helperText={
@@ -69,7 +57,7 @@ export const ProductFormMeta: FC<ProductFormMetaProps> = (props) => {
               />
             </Grid>
             <Grid item xs={12}>
-              <TextField
+              <TextInput
                 error={
                   !!formik.touched.metaDescription &&
                   !!formik.errors.metaDescription
@@ -102,7 +90,7 @@ export const ProductFormMeta: FC<ProductFormMetaProps> = (props) => {
                 }}
                 options={metaKeywordOptions}
                 renderInput={(params) => (
-                  <TextField
+                  <TextInput
                     {...params}
                     label="Meta Keywords"
                     name="metaKeywords"

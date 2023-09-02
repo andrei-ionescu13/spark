@@ -1,15 +1,15 @@
-import type { FC, ReactNode } from 'react';
+import type { FC, ReactNode } from "react";
 import {
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
-  DialogTitle
+  DialogTitle,
 } from "@mui/material";
 import type { DialogProps } from "@mui/material";
-import { Button } from '@/components/button';
+import { Button } from "@/components/button";
 
-interface AlertDialogProps extends DialogProps {
+export interface AlertDialogProps extends DialogProps {
   open: boolean;
   onClose: () => void;
   onSubmit: any;
@@ -20,35 +20,30 @@ interface AlertDialogProps extends DialogProps {
 }
 
 export const AlertDialog: FC<AlertDialogProps> = (props) => {
-  const { open, onClose, onSubmit, title, content, isLoading, children, ...rest } = props;
+  const {
+    open,
+    onClose,
+    onSubmit,
+    title,
+    content,
+    isLoading,
+    children,
+    ...rest
+  } = props;
 
   const handleSubmit = (): void => {
     onSubmit();
-  }
+  };
 
   return (
-    <Dialog
-      open={open}
-      onClose={onClose}
-      {...rest}
-    >
-      <DialogTitle>
-        {title}
-      </DialogTitle>
+    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth {...rest}>
+      <DialogTitle>{title}</DialogTitle>
       <DialogContent>
-        {content && (
-          <DialogContentText>
-            {content}
-          </DialogContentText>
-        )}
+        {content && <DialogContentText>{content}</DialogContentText>}
         {children}
       </DialogContent>
       <DialogActions>
-        <Button
-          color="secondary"
-          onClick={onClose}
-          variant="text"
-        >
+        <Button color="secondary" onClick={onClose} variant="text">
           Cancel
         </Button>
         <Button

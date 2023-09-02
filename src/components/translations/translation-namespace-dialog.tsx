@@ -5,13 +5,13 @@ import {
   DialogContent,
   DialogTitle,
   Grid,
-  TextField,
 } from "@mui/material";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useCreateNamespace, useUpdateNamespaceName } from "@/api/translations";
 import { useQueryClient } from "react-query";
 import { Button } from "@/components/button";
+import { TextInput } from "../text-input";
 
 interface TranslationNamespaceDialogProps {
   namespace?: any;
@@ -68,7 +68,7 @@ export const TranslationNamespaceDialog: FC<TranslationNamespaceDialogProps> = (
       <DialogContent sx={{ py: "24px !important" }}>
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            <TextField
+            <TextInput
               error={!!formik.touched.name && !!formik.errors.name}
               fullWidth
               helperText={formik.touched.name && (formik.errors.name as string)}

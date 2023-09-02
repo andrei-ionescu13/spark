@@ -1,9 +1,9 @@
-import { useState } from 'react'
-import type { FC } from 'react'
-import { Box, FormControlLabel, Switch } from '@mui/material';
-import { useDeleteLanguage } from '@/api/translations';
-import { AlertDialog } from '@/components/alert-dialog';
-import { useQueryClient } from 'react-query';
+import { useState } from "react";
+import type { FC } from "react";
+import { Box, FormControlLabel, Switch } from "@mui/material";
+import { useDeleteLanguage } from "@/api/translations";
+import { AlertDialog } from "@/components/alert-dialog";
+import { useQueryClient } from "react-query";
 
 interface LanguagesDeleteDialogProps {
   open: boolean;
@@ -11,23 +11,31 @@ interface LanguagesDeleteDialogProps {
   language: any;
 }
 
-export const LanguagesDeleteDialog: FC<LanguagesDeleteDialogProps> = (props) => {
+export const LanguagesDeleteDialog: FC<LanguagesDeleteDialogProps> = (
+  props
+) => {
   const { open, onClose, language } = props;
   const queryClient = useQueryClient();
-  const deleteLanguage = useDeleteLanguage(() => queryClient.invalidateQueries('languages'));
-  const [shouldDeleteTranslations, setShouldDeleteTranslations] = useState(false);
+  const deleteLanguage = useDeleteLanguage(() =>
+    queryClient.invalidateQueries("translations-languages")
+  );
+  const [shouldDeleteTranslations, setShouldDeleteTranslations] =
+    useState(false);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setShouldDeleteTranslations(event.target.checked);
   };
 
   const handleDeleteLanguage = () => {
-    deleteLanguage.mutate({ id: language._id, shouldDeleteTranslations }, {
-      onSuccess: () => {
-        onClose();
+    deleteLanguage.mutate(
+      { id: language._id, shouldDeleteTranslations },
+      {
+        onSuccess: () => {
+          onClose();
+        },
       }
-    })
-  }
+    );
+  };
 
   return (
     <AlertDialog
@@ -40,14 +48,12 @@ export const LanguagesDeleteDialog: FC<LanguagesDeleteDialogProps> = (props) => 
     >
       <Box sx={{ pt: 3 }}>
         <FormControlLabel
-          control={(
-            <Switch
-              onChange={handleChange}
-              value={shouldDeleteTranslations} />
-          )}
+          control={
+            <Switch onChange={handleChange} value={shouldDeleteTranslations} />
+          }
           label="Remove all associated translations"
         />
       </Box>
     </AlertDialog>
-  )
-}
+  );
+};

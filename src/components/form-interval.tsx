@@ -8,6 +8,7 @@ import {
   Typography,
 } from "@mui/material";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+import { DateTimeInput } from "./date-time-picker";
 
 interface FormIntervalProps {
   formik: any;
@@ -27,7 +28,7 @@ export const FormInterval: FC<FormIntervalProps> = (props) => {
           </Typography>
         </Grid>
         <Grid item xs={12}>
-          <DateTimePicker
+          <DateTimeInput
             sx={{ width: "100%" }}
             disablePast
             label="Start date"
@@ -57,7 +58,7 @@ export const FormInterval: FC<FormIntervalProps> = (props) => {
         </Grid>
         {shouldSetEndDate && (
           <Grid item xs={12}>
-            <DateTimePicker
+            <DateTimeInput
               sx={{ width: "100%" }}
               disablePast
               label="End date"

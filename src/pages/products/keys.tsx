@@ -21,6 +21,7 @@ import { useQueryValue } from "@/hooks/useQueryValue";
 import { appFetch } from "@/utils/app-fetch";
 import { dehydrate, QueryClient, useQuery } from "react-query";
 import { Key } from "@/types/keys";
+import { KeysAddDialog } from "@/components/products/keys/keys-add-dialog";
 
 interface GetKeysData {
   keys: Key[];
@@ -41,6 +42,7 @@ const Keys: FC = () => {
   const { query } = useRouter();
   const [keyword, keywordParam, handleKeywordChange, handleSearch] =
     useSearch();
+  const [addKeyDialogOpen, handleOpenAddKey, handleCloseAddKey] = useDialog();
   const [status, setStatus] = useQueryValue("status", "all", "all");
   const { data, isError, isRefetching, refetch } = useQuery(
     ["keys", query],
@@ -55,6 +57,11 @@ const Keys: FC = () => {
 
   const actionItems: ActionsItem[] = [
     {
+      label: "Add key",
+      icon: KeyIcon,
+      onClick: handleOpenAddKey,
+    },
+    {
       label: "Import",
       icon: DownloadIcon,
       onClick: handleOpenImportKeys,
@@ -67,6 +74,7 @@ const Keys: FC = () => {
 
   return (
     <>
+      {addKeyDialogOpen && <KeysAddDialog onClose={handleCloseAddKey} open />}
       <KeysImportDialog
         open={importKeysDialogOpen}
         onClose={handleCloseImportKeys}

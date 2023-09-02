@@ -6,7 +6,6 @@ import {
   DialogContent,
   DialogTitle,
   Grid,
-  TextField,
 } from "@mui/material";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -14,6 +13,7 @@ import type { Product } from "@/types/products";
 import { useUpdateProductMeta } from "@/api/products";
 import { useQueryClient } from "react-query";
 import { Button } from "@/components/button";
+import { TextInput } from "@/components/text-input";
 
 interface ProductMetaFormProps {
   product: Product;
@@ -62,7 +62,7 @@ export const ProductMetaForm: FC<ProductMetaFormProps> = (props) => {
       <DialogContent sx={{ py: "24px !important" }}>
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            <TextField
+            <TextInput
               size="small"
               error={!!formik.touched.metaTitle && !!formik.errors.metaTitle}
               fullWidth
@@ -76,7 +76,7 @@ export const ProductMetaForm: FC<ProductMetaFormProps> = (props) => {
             />
           </Grid>
           <Grid item xs={12}>
-            <TextField
+            <TextInput
               size="small"
               error={
                 !!formik.touched.metaDescription &&
@@ -109,7 +109,7 @@ export const ProductMetaForm: FC<ProductMetaFormProps> = (props) => {
               }}
               options={metaKeywordOptions}
               renderInput={(params) => (
-                <TextField
+                <TextInput
                   {...params}
                   size="small"
                   label="Meta Keywords"
