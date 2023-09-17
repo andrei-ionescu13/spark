@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import type { FC, ChangeEvent, SyntheticEvent } from 'react';
+import { useState } from "react";
+import type { FC, ChangeEvent, SyntheticEvent } from "react";
 import {
   Box,
   Card,
@@ -8,35 +8,35 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
-} from '@mui/material';
-import type { SelectChangeEvent } from '@mui/material';
-import { SearchInput } from '@/components/search-input';
-import { useDialog } from '@/hooks/useDialog';
-import { AlertDialog } from '@/components/alert-dialog';
-import { KeysTableRow } from '@/components/keys-table-row';
-import { useDeleteKeys } from '@/api/keys';
-import { DataTable } from './data-table';
-import type { Key } from '@/types/keys';
-import { DataTableHead } from './data-table-head';
-import type { HeadCell } from '@/components/data-table-head';
-import { Button } from '@/components/button';
+} from "@mui/material";
+import type { SelectChangeEvent } from "@mui/material";
+import { SearchInput } from "@/components/search-input";
+import { useDialog } from "@/hooks/useDialog";
+import { AlertDialog } from "@/components/alert-dialog";
+import { KeysTableRow } from "@/components/keys-table-row";
+import { useDeleteKeys } from "@/api/keys";
+import { DataTable } from "./data-table";
+import type { Key } from "@/types/keys";
+import { DataTableHead } from "./data-table-head";
+import type { HeadCell } from "@/components/data-table-head";
+import { Button } from "@/components/button";
 
 const statusOptions = [
   {
-    label: 'All',
-    value: 'all'
+    label: "All",
+    value: "all",
   },
   {
-    label: 'Secret',
-    value: 'secret'
+    label: "Secret",
+    value: "secret",
   },
   {
-    label: 'Revealed',
-    value: 'revealed'
+    label: "Revealed",
+    value: "revealed",
   },
   {
-    label: 'Reported',
-    value: 'reported'
+    label: "Reported",
+    value: "reported",
   },
 ];
 
@@ -62,7 +62,7 @@ export const KeysTable: FC<KeysTableProps> = (props) => {
     onSearch,
     keyword,
     status,
-    refetch
+    refetch,
   } = props;
 
   const [selected, setSelected] = useState<string[]>([]);
@@ -71,32 +71,40 @@ export const KeysTable: FC<KeysTableProps> = (props) => {
 
   const headCells: HeadCell[] = [
     {
-      id: 'key',
-      label: 'Key',
+      id: "key",
+      label: "Key",
     },
-    ...(showProductCell ? [{
-      id: 'productName',
-      label: 'Product',
-    }] : []),
+    ...(showProductCell
+      ? [
+          {
+            id: "productName",
+            label: "Product",
+          },
+        ]
+      : []),
     {
-      id: 'createdAt',
-      label: 'Created At',
+      id: "createdAt",
+      label: "Created At",
     },
     {
-      id: 'status',
-      label: 'Status',
+      id: "availability",
+      label: "Availability",
     },
-  ]
+    {
+      id: "status",
+      label: "Status",
+    },
+  ];
 
   const handleSelect = (id: string): void => {
     setSelected((prevSelected) => {
       if (prevSelected.includes(id)) {
-        return prevSelected.filter((_id) => _id !== id)
+        return prevSelected.filter((_id) => _id !== id);
       }
 
       return [...prevSelected, id];
-    })
-  }
+    });
+  };
 
   const handleSelectAll = (): void => {
     setSelected((prevSelected) => {
@@ -104,18 +112,18 @@ export const KeysTable: FC<KeysTableProps> = (props) => {
         return [];
       }
 
-      return keys?.map((key) => key._id)
-    })
-  }
+      return keys?.map((key) => key._id);
+    });
+  };
 
   const handleDeleteKeys = () => {
     deleteKeys.mutate(selected, {
       onSuccess: () => {
         setSelected([]);
         handleCloseDialog();
-      }
-    })
-  }
+      },
+    });
+  };
 
   return (
     <>
@@ -130,12 +138,12 @@ export const KeysTable: FC<KeysTableProps> = (props) => {
       <Card>
         <Box
           sx={{
-            display: 'grid',
+            display: "grid",
             gap: 2,
             gridTemplateColumns: {
-              sm: `${!!selected.length ? 'auto' : ''} 1fr 240px`
+              sm: `${!!selected.length ? "auto" : ""} 1fr 240px`,
             },
-            p: 2
+            p: 2,
           }}
         >
           {!!selected.length && (
@@ -144,9 +152,7 @@ export const KeysTable: FC<KeysTableProps> = (props) => {
               onClick={handleOpenDialog}
               variant="contained"
             >
-              Bulk Delete
-              {" "}
-              {selected.length}
+              Bulk Delete {selected.length}
             </Button>
           )}
           <form onSubmit={onSearch}>
@@ -157,9 +163,7 @@ export const KeysTable: FC<KeysTableProps> = (props) => {
             />
           </form>
           <FormControl>
-            <InputLabel id="status">
-              Status
-            </InputLabel>
+            <InputLabel id="status">Status</InputLabel>
             <Select
               id="status"
               label="Status"
@@ -167,10 +171,7 @@ export const KeysTable: FC<KeysTableProps> = (props) => {
               value={status}
             >
               {statusOptions.map((status) => (
-                <MenuItem
-                  key={status.value}
-                  value={status.value}
-                >
+                <MenuItem key={status.value} value={status.value}>
                   {status.label}
                 </MenuItem>
               ))}
@@ -191,7 +192,9 @@ export const KeysTable: FC<KeysTableProps> = (props) => {
                 showProductCell={showProductCell}
                 productKey={key}
                 key={key._id}
-                onSelect={() => { handleSelect(key._id) }}
+                onSelect={() => {
+                  handleSelect(key._id);
+                }}
                 selected={selected.includes(key._id)}
               />
             ))}
@@ -199,5 +202,5 @@ export const KeysTable: FC<KeysTableProps> = (props) => {
         </DataTable>
       </Card>
     </>
-  )
-}
+  );
+};

@@ -1,18 +1,18 @@
-import type { FC } from 'react';
-import { Box, Checkbox, TableCell, Typography, useTheme } from '@mui/material';
-import { ActionsItem } from '@/components/actions-menu';
-import { AlertDialog } from '@/components/alert-dialog';
-import { ActionsIconButton } from '@/components/icon-actions';
-import { Link } from '@/components/link';
-import { Trash as TrashIcon } from '@/icons/trash';
-import { Pencil as PencilIcon } from '@/icons/pencil';
-import { useDialog } from '@/hooks/useDialog';
-import { Label } from '@/components/label';
-import { KeysUpdateDialog } from './products/keys/keys-update-dialog';
-import { formatDate } from '@/utils/format-date';
-import { useDeleteKey } from '@/api/keys';
-import type { Key } from '@/types/keys';
-import { DataTableRow } from './data-table-row';
+import type { FC } from "react";
+import { Box, Checkbox, TableCell, Typography, useTheme } from "@mui/material";
+import { ActionsItem } from "@/components/actions-menu";
+import { AlertDialog } from "@/components/alert-dialog";
+import { ActionsIconButton } from "@/components/icon-actions";
+import { Link } from "@/components/link";
+import { Trash as TrashIcon } from "@/icons/trash";
+import { Pencil as PencilIcon } from "@/icons/pencil";
+import { useDialog } from "@/hooks/useDialog";
+import { Label } from "@/components/label";
+import { KeysUpdateDialog } from "./products/keys/keys-update-dialog";
+import { formatDate } from "@/utils/format-date";
+import { useDeleteKey } from "@/api/keys";
+import type { Key } from "@/types/keys";
+import { DataTableRow } from "./data-table-row";
 
 interface UsersTableRowProps {
   productKey: Key;
@@ -23,40 +23,53 @@ interface UsersTableRowProps {
 }
 
 export const KeysTableRow: FC<UsersTableRowProps> = (props) => {
-  const { productKey: key, selected, onSelect, showProductCell = true, refetch } = props;
-  const theme = useTheme()
-  const [deleteDialogOpen, handleOpenDeleteDialog, handleCloseDeleteDialog] = useDialog(false);
-  const [editDialogOpen, handleOpenEditDialog, handleCloseEditDialog] = useDialog(false);
+  const {
+    productKey: key,
+    selected,
+    onSelect,
+    showProductCell = true,
+    refetch,
+  } = props;
+  const theme = useTheme();
+  const [deleteDialogOpen, handleOpenDeleteDialog, handleCloseDeleteDialog] =
+    useDialog(false);
+  const [editDialogOpen, handleOpenEditDialog, handleCloseEditDialog] =
+    useDialog(false);
   const deleteKey = useDeleteKey(refetch);
 
-  const mappedColors = {
+  const mappedStatusColors = {
     reported: theme.palette.error.main,
     revealed: theme.palette.success.main,
     secret: theme.palette.info.main,
-  }
+  };
+
+  const mappedAvailabilityColors = {
+    available: theme.palette.success.main,
+    unavailable: theme.palette.info.main,
+  };
 
   const handleDeleteKey = () => {
     deleteKey.mutate(key._id, {
       onSuccess: () => {
         handleCloseDeleteDialog();
-      }
-    })
-  }
+      },
+    });
+  };
 
   const actionItems: ActionsItem[] = [
     {
-      label: 'Edit',
+      label: "Edit",
       icon: PencilIcon,
       onClick: handleOpenEditDialog,
-      disabled: key.status === 'secret'
+      disabled: key.status === "secret",
     },
     {
-      label: 'Delete',
+      label: "Delete",
       icon: TrashIcon,
       onClick: handleOpenDeleteDialog,
-      color: 'error'
-    }
-  ]
+      color: "error",
+    },
+  ];
 
   return (
     <>
@@ -78,17 +91,10 @@ export const KeysTableRow: FC<UsersTableRowProps> = (props) => {
       )}
       <DataTableRow selected={selected}>
         <TableCell padding="checkbox">
-          <Checkbox
-            color="primary"
-            onChange={onSelect}
-            checked={selected}
-          />
+          <Checkbox color="primary" onChange={onSelect} checked={selected} />
         </TableCell>
         <TableCell>
-          <Typography
-            color="textPrimary"
-            variant="body1"
-          >
+          <Typography color="textPrimary" variant="body1">
             {key.value}
           </Typography>
         </TableCell>
@@ -104,14 +110,17 @@ export const KeysTableRow: FC<UsersTableRowProps> = (props) => {
             </Link>
           </TableCell>
         )}
+        <TableCell>{formatDate(key.createdAt)}</TableCell>
         <TableCell>
-          {formatDate(key.createdAt)}
+          <Box>
+            <Label color={mappedAvailabilityColors[key.availability]}>
+              {key.availability}
+            </Label>
+          </Box>
         </TableCell>
         <TableCell>
           <Box>
-            <Label color={mappedColors[key.status]}>
-              {key.status}
-            </Label>
+            <Label color={mappedStatusColors[key.status]}>{key.status}</Label>
           </Box>
         </TableCell>
         <TableCell align="right">

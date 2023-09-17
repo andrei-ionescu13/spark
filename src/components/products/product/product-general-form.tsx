@@ -18,9 +18,6 @@ import type { Product } from "@/types/products";
 import { Eye as EyeIcon } from "@/icons/eye";
 import { useUpdateProductGeneral } from "@/api/products";
 import { useQuery, useQueryClient } from "react-query";
-import { useListGenres } from "@/api/genres";
-import { useListPublishers } from "@/api/publishers";
-import { useListPlatforms } from "@/api/platforms";
 import { Button } from "@/components/button";
 import type { Publisher } from "@/types/publishers";
 import type { Genre } from "@/types/genres";
@@ -34,6 +31,7 @@ import { Developer } from "@/types/developer";
 import { Feature } from "@/types/feature";
 import { OperatingSystem } from "@/types/operating-sistem";
 import { Language } from "@/types/translations";
+import { getStatusFromInterval } from "@/utils/get-status-from-interval";
 
 const listGenres =
   (config: Record<string, any> = {}) =>
@@ -68,6 +66,27 @@ const listOperatingSystems =
       ...config,
     });
 
+interface FormValues
+  extends Pick<
+    Product,
+    | "title"
+    | "genres"
+    | "releaseDate"
+    | "publisher"
+    | "developers"
+    | "languages"
+    | "features"
+    | "link"
+    | "markdown"
+    | "slug"
+    | "os"
+    | "platform"
+    | "minimumRequirements"
+    | "recommendedRequirements"
+  > {
+  price?: number;
+}
+
 interface ProductGeneralFormProps {
   product: Product;
   open: boolean;
@@ -82,6 +101,9 @@ export const ProductGeneralForm: FC<ProductGeneralFormProps> = (props) => {
   const [previewSelected, setPreviewSelected] = useState<
     "minimumRequirements" | "recommendedRequirements" | "markdown" | undefined
   >();
+  const discountStatus =
+    product.discount &&
+    getStatusFromInterval(product.discount.startDate, product.discount.endDate);
 
   const [autocompleteOpen, setAutocompleteOpen] = useState({
     developers: false,
@@ -134,27 +156,29 @@ export const ProductGeneralForm: FC<ProductGeneralFormProps> = (props) => {
   const languages = languagesQuery.data || [];
   const operatingSystems = operatingSystemsQuery.data || [];
 
+  const initialValues: FormValues = {
+    title: product.title,
+    price: product.price,
+    genres: product.genres,
+    releaseDate: new Date(product.releaseDate),
+    publisher: product.publisher,
+    developers: product.developers,
+    languages: product.languages,
+    features: product.features,
+    link: product.link,
+    markdown: product.markdown,
+    slug: product.slug,
+    os: product.os,
+    platform: product.platform,
+    minimumRequirements: product.minimumRequirements,
+    recommendedRequirements: product.recommendedRequirements,
+  };
+
   const formik = useFormik({
-    initialValues: {
-      title: product.title,
-      price: product.price,
-      genres: product.genres,
-      releaseDate: new Date(product.releaseDate),
-      publisher: product.publisher,
-      developers: product.developers,
-      languages: product.languages,
-      features: product.features,
-      link: product.link,
-      markdown: product.markdown,
-      slug: product.slug,
-      os: product.os,
-      platform: product.platform,
-      minimumRequirements: product.minimumRequirements,
-      recommendedRequirements: product.recommendedRequirements,
-    },
+    initialValues,
     validationSchema: Yup.object({
       title: Yup.string().required(),
-      price: Yup.number().positive().required(),
+      price: Yup.number().positive(),
       genres: Yup.array().of(Yup.mixed()).min(1),
       releaseDate: Yup.date().required(),
       slug: Yup.string().required(),
@@ -173,13 +197,16 @@ export const ProductGeneralForm: FC<ProductGeneralFormProps> = (props) => {
       const formValues = {
         ...values,
         genres: values.genres.map((genre) => genre._id),
-        features: values.genres.map((feature) => feature._id),
-        developers: values.genres.map((developer) => developer._id),
+        features: values.features.map((feature) => feature._id),
+        developers: values.developers.map((developer) => developer._id),
         os: values.os.map((_os) => _os._id),
         platform: values.platform._id,
         publisher: values.publisher._id,
       };
 
+      if (discountStatus !== "expired") {
+        delete formValues.price;
+      }
       updateProductGeneral.mutate(formValues, {
         onSuccess: (updatedProduct) => {
           queryClient.setQueryData(["product", product._id], {
@@ -239,6 +266,7 @@ export const ProductGeneralForm: FC<ProductGeneralFormProps> = (props) => {
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextInput
+                disabled={product.discount && discountStatus !== "expired"}
                 error={!!formik.touched.price && !!formik.errors.price}
                 fullWidth
                 helperText={
@@ -256,6 +284,11 @@ export const ProductGeneralForm: FC<ProductGeneralFormProps> = (props) => {
                 onChange={formik.handleChange}
                 type="number"
                 value={formik.values.price}
+                info={
+                  product.discount && discountStatus !== "expired"
+                    ? `Cannot change price for a product with ${discountStatus} discount`
+                    : ""
+                }
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -388,7 +421,6 @@ export const ProductGeneralForm: FC<ProductGeneralFormProps> = (props) => {
                 loading={operatingSystemsQuery.isFetching}
                 value={formik.values.os}
                 filterSelectedOptions
-                freeSolo
                 getOptionLabel={(option) => option.name}
                 id="os"
                 multiple
@@ -487,7 +519,6 @@ export const ProductGeneralForm: FC<ProductGeneralFormProps> = (props) => {
                 loading={featuresQuery.isFetching}
                 value={formik.values.features}
                 filterSelectedOptions
-                freeSolo
                 getOptionLabel={(option) => option.name}
                 id="features"
                 multiple
@@ -600,7 +631,6 @@ export const ProductGeneralForm: FC<ProductGeneralFormProps> = (props) => {
                 loading={languagesQuery.isFetching}
                 value={formik.values.languages}
                 filterSelectedOptions
-                freeSolo
                 getOptionLabel={(option) => option.name}
                 id="languages"
                 multiple

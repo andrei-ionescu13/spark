@@ -1,7 +1,7 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
 import type { GetServerSideProps } from "next";
-import { Box, colors, Grid, useTheme } from "@mui/material";
+import { Grid } from "@mui/material";
 import { ProductGeneral } from "@/components/products/product/product-general";
 import { ProductMeta } from "@/components/products/product/product-meta";
 import { ProductStatus } from "@/components/products/product/product-status";
@@ -9,11 +9,9 @@ import { ProductLayout } from "@/components/products/product-layout";
 import { ProductMedia } from "@/components/products/product/product-media";
 import { dehydrate, QueryClient, useQuery } from "react-query";
 import { appFetch } from "@/utils/app-fetch";
-import {
-  Product as ProductI,
-  ProductStatus as ProductStatusI,
-} from "@/types/products";
+import { Product as ProductI } from "@/types/products";
 import { ProductDiscount } from "@/components/products/product/product-discount";
+import { getStatusFromInterval } from "@/utils/get-status-from-interval";
 
 const getProduct =
   (id: string, config: Record<string, any> = {}) =>
@@ -21,20 +19,16 @@ const getProduct =
     appFetch<ProductI>({ url: `/products/${id}`, withAuth: true, ...config });
 
 export const Product = () => {
-  const theme = useTheme();
   const router = useRouter();
   const id = router.query.id as string;
   const { data: product } = useQuery(["product", id], getProduct(id));
 
   if (!product) return null;
 
+  const discountStatus =
+    product.discount &&
+    getStatusFromInterval(product.discount.startDate, product.discount.endDate);
   const isEditDisabled = product.status === "archived";
-
-  const mappedColors: Record<ProductStatusI, string> = {
-    draft: colors.grey[500],
-    published: theme.palette.success.main,
-    archived: theme.palette.error.main,
-  };
 
   return (
     <>
@@ -66,7 +60,7 @@ export const Product = () => {
             <Grid item xs={12}>
               <ProductMeta isEditDisabled={isEditDisabled} product={product} />
             </Grid>
-            {product.discount && (
+            {product.discount && discountStatus != "expired" && (
               <Grid item xs={12}>
                 <ProductDiscount discount={product.discount} />
               </Grid>

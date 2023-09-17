@@ -329,7 +329,8 @@ export const ProductMediaForm: FC<ProductFormProps> = (props) => {
           Cancel
         </Button>
         <Button
-          disabled={updateProductMedia.isLoading}
+          isLoading={updateProductMedia.isLoading}
+          variant="contained"
           onClick={() => {
             formik.handleSubmit();
           }}
