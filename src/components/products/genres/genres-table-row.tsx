@@ -20,7 +20,7 @@ interface UsersTableRowProps {
 }
 
 export const GenresTableRow: FC<UsersTableRowProps> = (props) => {
-  const { genre, selected, onSelect, shownLanguages } = props;
+  const { genre, selected, onSelect } = props;
   const queryClient = useQueryClient();
   const [deleteDialogOpen, handleOpenDeleteDialog, handleCloseDeleteDialog] =
     useDialog();
@@ -73,11 +73,6 @@ export const GenresTableRow: FC<UsersTableRowProps> = (props) => {
           <Checkbox color="primary" onChange={onSelect} checked={selected} />
         </TableCell>
         <TableCell>{genre.name}</TableCell>
-        {shownLanguages.map((language) => (
-          <TableCell key={language.code}>
-            {genre.tanslations?.[language.code]}
-          </TableCell>
-        ))}
         <TableCell align="right">
           <ActionsIconButton items={actionItems} />
         </TableCell>

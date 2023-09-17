@@ -181,7 +181,7 @@ const Genres: FC = () => {
                 display: "grid",
                 gap: 2,
                 gridTemplateColumns: {
-                  sm: `${!!selected.length ? "auto" : ""} 1fr 160px`,
+                  sm: `${!!selected.length ? "auto" : ""} 1fr`,
                 },
                 p: 2,
               }}
@@ -206,21 +206,10 @@ const Genres: FC = () => {
                   value={keyword}
                 />
               </form>
-              <LanguagesMenu
-                languages={languages}
-                selectedLanguageCodes={selectedLanguageCodes}
-                onSelect={handleSelectLanguage}
-              />
             </Box>
             <DataTable count={count}>
               <DataTableHead
-                headCells={[
-                  ...headCells,
-                  ...shownLanguages.map((language) => ({
-                    label: language.name,
-                    id: language.code,
-                  })),
-                ]}
+                headCells={headCells}
                 selectedLength={selected.length}
                 itemsLength={genres.length}
                 onSelectAll={handleSelectAll}
