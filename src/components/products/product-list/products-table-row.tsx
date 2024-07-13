@@ -1,6 +1,6 @@
 import type { FC } from 'react';
 import { Checkbox, colors, TableCell, TableRow, useTheme } from '@mui/material';
-import { useQueryClient } from 'react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { ActionsItem } from '@/components/actions-menu';
 import { AlertDialog } from '@/components/alert-dialog';
 import { ActionsIconButton } from '@/components/icon-actions';
@@ -25,7 +25,7 @@ export const ProductTableRow: FC<ProductTableRow> = (props) => {
   const { product, selected, onSelect } = props;
   const theme = useTheme()
   const queryClient = useQueryClient();
-  const deleteProduct = useDeleteProduct(() => queryClient.invalidateQueries('products'))
+  const deleteProduct = useDeleteProduct(() => queryClient.invalidateQueries({ queryKey: ['products'] }))
   const [deleteDialogOpen, handleOpenDeleteDialog, handleCloseDeleteDialog] = useDialog(false);
 
   const mappedColors = {
@@ -70,7 +70,7 @@ export const ProductTableRow: FC<ProductTableRow> = (props) => {
         title={`Delete product ${product._id}`}
         content="Are you sure you want to permanently delete this product?"
         onSubmit={handleDeleteProduct}
-        isLoading={deleteProduct.isLoading}
+        isLoading={deleteProduct.isPending}
       />
       <DataTableRow selected={selected}>
         <TableCell padding="checkbox">

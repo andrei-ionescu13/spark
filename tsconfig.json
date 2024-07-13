@@ -28,7 +28,7 @@
       ],
       "@/pages/*": [
         "pages/*"
-      ],
+      ]
     },
     "target": "es5",
     "lib": [
@@ -40,14 +40,15 @@
     "skipLibCheck": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "incremental": true
+    "incremental": true,
+    "noEmit": true,
+    "noEmitOnError": true,
   },
   "include": [
     "next-env.d.ts",

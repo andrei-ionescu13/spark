@@ -14,7 +14,7 @@ import {
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useCreateTranslationsLanguage } from "@/api/translations";
-import { useQuery, useQueryClient } from "react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/button";
 import { appFetch } from "@/utils/app-fetch";
 import type { Language } from "@/types/translations";
@@ -27,34 +27,38 @@ interface LanguageTagDialogProps {
 
 const listLanguages =
   (config: Record<string, any> = {}) =>
-  () =>
-    appFetch<Language[]>({
-      url: "/languages",
-      withAuth: true,
-      ...config,
-    });
+    () =>
+      appFetch<Language[]>({
+        url: "/languages",
+        withAuth: true,
+        ...config,
+      });
 
 const listTranslationsLanguages =
   (config: Record<string, any> = {}) =>
-  () =>
-    appFetch<Language[]>({
-      url: "/translations/languages",
-      withAuth: true,
-      ...config,
-    });
+    () =>
+      appFetch<Language[]>({
+        url: "/translations/languages",
+        withAuth: true,
+        ...config,
+      });
 
 export const LanguageDialog: FC<LanguageTagDialogProps> = (props) => {
   const { open, onClose } = props;
   const [autocompleteOpen, setAutocompleteOpen] = useState(false);
 
-  const { data: translationsLanguages } = useQuery(
-    "translations-languages",
-    listTranslationsLanguages()
-  );
+  const { data: translationsLanguages } = useQuery({
+    queryKey: ["translations-languages"],
+    queryFn: listTranslationsLanguages()
+  });
   const { data: languages, isFetching } = useQuery(
-    "languages",
-    listLanguages(),
-    { enabled: autocompleteOpen, cacheTime: 0 }
+
+    {
+      queryKey: ["languages"],
+      queryFn: listLanguages(),
+      enabled: autocompleteOpen,
+      gcTime: 0
+    }
   );
 
   const languageCodes = (translationsLanguages || []).map(
@@ -63,7 +67,7 @@ export const LanguageDialog: FC<LanguageTagDialogProps> = (props) => {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const queryClient = useQueryClient();
   const createTranslationsLanguage = useCreateTranslationsLanguage(() =>
-    queryClient.invalidateQueries("translations-languages")
+    queryClient.invalidateQueries({ queryKey: ["translations-languages"] })
   );
 
   const initialValues: { language?: Language } = {
@@ -160,7 +164,7 @@ export const LanguageDialog: FC<LanguageTagDialogProps> = (props) => {
           variant="contained"
           color="primary"
           onClick={() => formik.handleSubmit()}
-          isLoading={createTranslationsLanguage.isLoading}
+          isLoading={createTranslationsLanguage.isPending}
         >
           Add
         </Button>

@@ -1,7 +1,7 @@
 import { appFetch } from "@/utils/app-fetch";
 import type { GetServerSideProps } from "next";
 import type { ParsedUrlQuery } from "querystring";
-import { dehydrate, QueryClient, useQuery } from "react-query";
+import { dehydrate, QueryClient, useQuery } from "@tanstack/react-query";
 import type { Order as OrderI } from "@/types/orders";
 import { useRouter } from "next/router";
 import { OrderLayout } from "@/components/orders/order-layout";
@@ -16,9 +16,12 @@ const getOrder = (orderNumber: string) => () =>
 const OrderItems = () => {
   const router = useRouter();
   const orderNumber = router.query.orderNumber as string;
-  const { data: order } = useQuery(
-    ["order-items", orderNumber],
-    getOrder(orderNumber)
+  const { data: order } = useQuery({
+    queryKey: ["order-items", orderNumber],
+    queryFn: getOrder(orderNumber)
+  }
+
+
   );
   return (
     <>
@@ -40,13 +43,16 @@ export const getServerSideProps: GetServerSideProps = async ({
   const { orderNumber } = query;
 
   try {
-    await queryClient.fetchQuery(["order-items", orderNumber], () =>
-      appFetch<OrderI>({
-        withAuth: true,
-        url: `/orders/${orderNumber}/items`,
-        req,
-        res,
-      })
+    await queryClient.fetchQuery({
+      queryKey: ["order-items", orderNumber],
+      queryFn: () =>
+        appFetch<OrderI>({
+          withAuth: true,
+          url: `/orders/${orderNumber}/items`,
+          req,
+          res,
+        })
+    }
     );
   } catch (error) {
     console.error(error);

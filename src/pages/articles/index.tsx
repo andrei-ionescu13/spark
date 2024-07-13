@@ -19,7 +19,7 @@ import {
   TableSortLabel,
   TextField,
 } from "@mui/material";
-import { dehydrate, QueryClient, useQuery, useQueryClient } from "react-query";
+import { dehydrate, QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ArticleTableRow } from "@/components/articles/list/article-table-row";
 import { AlertDialog } from "@/components/alert-dialog";
 import { PageHeader } from "@/components/page-header";
@@ -93,13 +93,13 @@ interface GetArticlesData {
 
 const getArticles =
   (query: ParsedUrlQuery, config: Record<string, any> = {}) =>
-  () =>
-    appFetch<GetArticlesData>({
-      url: "/articles",
-      query,
-      withAuth: true,
-      ...config,
-    });
+    () =>
+      appFetch<GetArticlesData>({
+        url: "/articles",
+        query,
+        withAuth: true,
+        ...config,
+      });
 
 const statusOptions = [
   {
@@ -127,10 +127,11 @@ const Articles: FC = () => {
   const [selected, setSelected] = useState<string[]>([]);
   const [keyword, keywordParam, handleKeywordChange, handleSearch] =
     useSearch();
-  const { data, isError, refetch } = useQuery(
-    ["articles", query],
-    getArticles(query)
-  );
+  const { data, isError, refetch } = useQuery({
+    queryKey: ["articles", query],
+    queryFn: getArticles(query)
+  });
+  console.log(["articles", query], 333)
   const [dialogOpen, setDialogOpen] = useState(false);
   const deleteArticles = useDeleteArticles(refetch);
 
@@ -152,7 +153,7 @@ const Articles: FC = () => {
         setSelected([]);
         handleCloseDialog();
       },
-      onError: (error) => {},
+      onError: (error) => { },
     });
   };
 
@@ -286,7 +287,7 @@ const Articles: FC = () => {
       </Box>
       <AlertDialog
         content="Are you sure you want to permanently delete these articles"
-        isLoading={deleteArticles.isLoading}
+        isLoading={deleteArticles.isPending}
         onClose={handleCloseDialog}
         onSubmit={handleDeleteArticles}
         open={dialogOpen}
@@ -303,15 +304,17 @@ export const getServerSideProps: GetServerSideProps = async ({
   res,
 }) => {
   const queryClient = new QueryClient();
-
+  console.log(["articles", query], 222)
   try {
-    await queryClient.fetchQuery(
-      ["articles", query],
-      getArticles(query, { req, res })
+    await queryClient.fetchQuery({
+      queryKey: ["articles", query],
+      queryFn: getArticles(query, { req, res })
+    }
     );
   } catch (error) {
     console.error(error);
   }
+
   return {
     props: {
       dehydratedState: dehydrate(queryClient),

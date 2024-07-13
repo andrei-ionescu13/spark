@@ -1,10 +1,10 @@
 import { Developer } from "@/types/developer";
 import { appFetch } from "@/utils/app-fetch";
-import { useMutation } from "react-query";
+import { useMutation } from "@tanstack/react-query";
 
 export const useCreateDeveloper = (onSuccess: any) =>
-  useMutation<{ name: string }, Error, Record<string, unknown>>(
-    (values) =>
+  useMutation<{ name: string }, Error, Record<string, unknown>>({
+    mutationFn: (values) =>
       appFetch({
         url: "/developers",
         config: {
@@ -13,12 +13,13 @@ export const useCreateDeveloper = (onSuccess: any) =>
         },
         withAuth: true,
       }),
-    { onSuccess }
+    onSuccess
+  }
   );
 
 export const useDeleteDeveloper = (onSuccess?: () => Promise<any>) =>
-  useMutation<{}, Error, string>(
-    (developerId) =>
+  useMutation<{}, Error, string>({
+    mutationFn: (developerId) =>
       appFetch({
         url: `/developers/${developerId}`,
         config: {
@@ -26,12 +27,12 @@ export const useDeleteDeveloper = (onSuccess?: () => Promise<any>) =>
         },
         withAuth: true,
       }),
-    { onSuccess }
-  );
+    onSuccess
+  });
 
 export const useUpdateDeveloper = (id: string, onSuccess: () => Promise<any>) =>
-  useMutation<{ name: string }, Error, { name: string; slug: string }>(
-    (value) =>
+  useMutation<{ name: string }, Error, { name: string; slug: string }>({
+    mutationFn: (value) =>
       appFetch({
         withAuth: true,
         url: `/developers/${id}`,
@@ -40,21 +41,21 @@ export const useUpdateDeveloper = (id: string, onSuccess: () => Promise<any>) =>
           method: "PUT",
         },
       }),
-    { onSuccess }
-  );
+    onSuccess
+  });
 
 export const listDevelopers =
   (config: Record<string, any> = {}) =>
-  () =>
-    appFetch<Developer[]>({
-      url: "/developers",
-      withAuth: true,
-      ...config,
-    });
+    () =>
+      appFetch<Developer[]>({
+        url: "/developers",
+        withAuth: true,
+        ...config,
+      });
 
 export const useDeleteDevelopers = (onSuccess?: () => Promise<any>) =>
-  useMutation<{}, Error, string[]>(
-    (developerIds) =>
+  useMutation<{}, Error, string[]>({
+    mutationFn: (developerIds) =>
       appFetch({
         url: `/developers`,
         config: {
@@ -63,5 +64,5 @@ export const useDeleteDevelopers = (onSuccess?: () => Promise<any>) =>
         },
         withAuth: true,
       }),
-    { onSuccess }
-  );
+    onSuccess
+  });

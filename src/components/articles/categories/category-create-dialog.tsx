@@ -3,14 +3,14 @@ import * as Yup from "yup";
 import { FC } from "react";
 import { Box, FormHelperText, Grid, Link, Typography } from "@mui/material";
 import { toast } from "react-toastify";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { AlertDialog, AlertDialogProps } from "@/components/alert-dialog";
 import { TextInput } from "@/components/text-input";
 import { useCreateArticleTag } from "@/api/article-tags";
 import { useCreateArticleCategory } from "@/api/article-categories";
 
 interface ArticleDuplicateDialog
-  extends Omit<AlertDialogProps, "title" | "onSubmit" | "isLoading"> {}
+  extends Omit<AlertDialogProps, "title" | "onSubmit" | "isLoading"> { }
 
 const ToastSuccess = (id: string) => (
   <Box>
@@ -34,7 +34,7 @@ export const ArticleCategoryCreateDialog: FC<ArticleDuplicateDialog> = (
   const { onClose, ...rest } = props;
   const queryClient = useQueryClient();
   const createArticleCategory = useCreateArticleCategory(() =>
-    queryClient.invalidateQueries("article-categories")
+    queryClient.invalidateQueries({ queryKey: ["article-categories"] })
   );
 
   const formik = useFormik({
@@ -61,7 +61,7 @@ export const ArticleCategoryCreateDialog: FC<ArticleDuplicateDialog> = (
       onSubmit={formik.handleSubmit}
       onClose={onClose}
       title={`Create article category`}
-      isLoading={createArticleCategory.isLoading}
+      isLoading={createArticleCategory.isPending}
       {...rest}
     >
       <Grid container spacing={3}>

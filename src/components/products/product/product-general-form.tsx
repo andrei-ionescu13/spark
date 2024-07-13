@@ -17,7 +17,7 @@ import * as Yup from "yup";
 import type { Product } from "@/types/products";
 import { Eye as EyeIcon } from "@/icons/eye";
 import { useUpdateProductGeneral } from "@/api/products";
-import { useQuery, useQueryClient } from "react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/button";
 import type { Publisher } from "@/types/publishers";
 import type { Genre } from "@/types/genres";
@@ -35,36 +35,36 @@ import { getStatusFromInterval } from "@/utils/get-status-from-interval";
 
 const listGenres =
   (config: Record<string, any> = {}) =>
-  () =>
-    appFetch<Genre[]>({ url: "/genres", withAuth: true, ...config });
+    () =>
+      appFetch<Genre[]>({ url: "/genres", withAuth: true, ...config });
 const listPublishers =
   (config: Record<string, any> = {}) =>
-  () =>
-    appFetch<Publisher[]>({ url: "/publishers", withAuth: true, ...config });
+    () =>
+      appFetch<Publisher[]>({ url: "/publishers", withAuth: true, ...config });
 const listPlatforms =
   (config: Record<string, any> = {}) =>
-  () =>
-    appFetch<Platform[]>({ url: "/platforms", withAuth: true, ...config });
+    () =>
+      appFetch<Platform[]>({ url: "/platforms", withAuth: true, ...config });
 const listDevelopers =
   (config: Record<string, any> = {}) =>
-  () =>
-    appFetch<Developer[]>({ url: "/developers", withAuth: true, ...config });
+    () =>
+      appFetch<Developer[]>({ url: "/developers", withAuth: true, ...config });
 const listFeatures =
   (config: Record<string, any> = {}) =>
-  () =>
-    appFetch<Feature[]>({ url: "/features", withAuth: true, ...config });
+    () =>
+      appFetch<Feature[]>({ url: "/features", withAuth: true, ...config });
 const listLanguages =
   (config: Record<string, any> = {}) =>
-  () =>
-    appFetch<Language[]>({ url: "/languages", withAuth: true, ...config });
+    () =>
+      appFetch<Language[]>({ url: "/languages", withAuth: true, ...config });
 const listOperatingSystems =
   (config: Record<string, any> = {}) =>
-  () =>
-    appFetch<OperatingSystem[]>({
-      url: "/operating-systems",
-      withAuth: true,
-      ...config,
-    });
+    () =>
+      appFetch<OperatingSystem[]>({
+        url: "/operating-systems",
+        withAuth: true,
+        ...config,
+      });
 
 interface FormValues
   extends Pick<
@@ -121,30 +121,41 @@ export const ProductGeneralForm: FC<ProductGeneralFormProps> = (props) => {
       [field]: value,
     }));
   };
-
-  const developersQuery = useQuery("developers", listDevelopers(), {
+  const developersQuery = useQuery({
+    queryKey: ["developers"],
+    queryFn: listDevelopers(),
     enabled: autocompleteOpen.developers,
   });
-  const featuresQuery = useQuery("features", listFeatures(), {
+  const featuresQuery = useQuery({
+    queryKey: ["features"],
+    queryFn: listFeatures(),
     enabled: autocompleteOpen.features,
   });
-  const genresQuery = useQuery("genres", listGenres(), {
+  const genresQuery = useQuery({
+    queryKey: ["genres"],
+    queryFn: listGenres(),
     enabled: autocompleteOpen.genres,
   });
-  const languagesQuery = useQuery("languages", listLanguages(), {
+  const languagesQuery = useQuery({
+    queryKey: ["languages"],
+    queryFn: listLanguages(),
     enabled: autocompleteOpen.languages,
   });
   const operatingSystemsQuery = useQuery(
-    "oerating-systems",
-    listOperatingSystems(),
     {
+      queryKey: ["operating-systems"],
+      queryFn: listOperatingSystems(),
       enabled: autocompleteOpen.os,
     }
   );
-  const platformsQuery = useQuery("platforms", listPlatforms(), {
+  const platformsQuery = useQuery({
+    queryKey: ["platforms"],
+    queryFn: listPlatforms(),
     enabled: autocompleteOpen.platform,
   });
-  const publishersQuery = useQuery("publishers", listPublishers(), {
+  const publishersQuery = useQuery({
+    queryKey: ["publishers"],
+    queryFn: listPublishers(),
     enabled: autocompleteOpen.publisher,
   });
 
@@ -805,7 +816,7 @@ export const ProductGeneralForm: FC<ProductGeneralFormProps> = (props) => {
             onClick={() => {
               formik.handleSubmit();
             }}
-            isLoading={updateProductGeneral.isLoading}
+            isLoading={updateProductGeneral.isPending}
           >
             Update
           </Button>

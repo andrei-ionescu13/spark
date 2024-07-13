@@ -1,6 +1,6 @@
 import type { FC } from "react";
 import { Box, Checkbox, TableCell, Typography } from "@mui/material";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { ActionsItem } from "@/components/actions-menu";
 import { AlertDialog } from "@/components/alert-dialog";
 import { ActionsIconButton } from "@/components/icon-actions";
@@ -44,7 +44,7 @@ export const CategoryTableRow: FC<CategoryTableRowProps> = (props) => {
   const [updateDialogOpen, handleOpenUpdateDialog, handleCloseUpdateDialog] =
     useDialog();
   const deleteArticle = useDeleteArticleCategory(() =>
-    queryClient.invalidateQueries("article-categories")
+    queryClient.invalidateQueries({ queryKey: ["article-categories"] })
   );
 
   const handleDeleteArticle = () => {
@@ -84,7 +84,7 @@ export const CategoryTableRow: FC<CategoryTableRowProps> = (props) => {
         title="Delete article"
         content="Are you sure you want to delete this article?"
         onSubmit={handleDeleteArticle}
-        isLoading={deleteArticle.isLoading}
+        isLoading={deleteArticle.isPending}
       />
       <DataTableRow key={articleCategory._id} selected={selected}>
         <TableCell padding="checkbox">

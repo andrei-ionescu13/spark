@@ -18,7 +18,7 @@ import { ProductImage } from "../product-image";
 import { Product } from "@/types/products";
 import { FileWithPath } from "react-dropzone";
 import { useUpdateProductMedia } from "@/api/products";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { buildFormData } from "@/utils/build-form-data";
 import type { Image } from "@/types/common";
 import { Button } from "@/components/button";
@@ -329,7 +329,7 @@ export const ProductMediaForm: FC<ProductFormProps> = (props) => {
           Cancel
         </Button>
         <Button
-          isLoading={updateProductMedia.isLoading}
+          isLoading={updateProductMedia.isPending}
           variant="contained"
           onClick={() => {
             formik.handleSubmit();

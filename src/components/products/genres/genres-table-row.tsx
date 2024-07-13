@@ -1,6 +1,6 @@
 import type { FC } from "react";
 import { Checkbox, TableCell } from "@mui/material";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { ActionsItem } from "@/components/actions-menu";
 import { AlertDialog } from "@/components/alert-dialog";
 import { ActionsIconButton } from "@/components/icon-actions";
@@ -27,7 +27,7 @@ export const GenresTableRow: FC<UsersTableRowProps> = (props) => {
   const [updateDialogOpen, handleOpenUpdateDialog, handleCloseUpdateDialog] =
     useDialog();
   const deleteGenre = useDeleteGenre(() =>
-    queryClient.invalidateQueries("genres")
+    queryClient.invalidateQueries({ queryKey: ["genres"] })
   );
 
   const actionItems: ActionsItem[] = [
@@ -66,7 +66,7 @@ export const GenresTableRow: FC<UsersTableRowProps> = (props) => {
         title={`Delete genre ${genre.id}`}
         content="Are you sure you want to permanently delete this genre?"
         onSubmit={handleDeleteGenre}
-        isLoading={deleteGenre.isLoading}
+        isLoading={deleteGenre.isPending}
       />
       <DataTableRow selected={selected}>
         <TableCell padding="checkbox">

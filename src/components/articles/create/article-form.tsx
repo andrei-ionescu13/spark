@@ -368,7 +368,7 @@ export const ArticleForm: FC<ArticleFormProps> = (props) => {
                 onClick={() => {
                   formik.handleSubmit();
                 }}
-                isLoading={createArticle.isLoading || updateArticle.isLoading}
+                isLoading={createArticle.isPending || updateArticle.isPending}
               >
                 Post
               </Button>

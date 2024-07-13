@@ -8,7 +8,7 @@ import { useCreateDiscount, useUpdateDiscount } from "@/api/discounts";
 import { Button } from "@/components/button";
 import { DiscountFormValue } from "@/components/discounts/create/discount-form-value";
 import type { Discount } from "@/types/discounts";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { DiscountSummary } from "@/components/discounts/create/discount-summary";
 import { Link } from "@/components/link";
@@ -48,12 +48,12 @@ export interface DiscountFormValues {
 }
 
 export const DiscountForm: FC<DiscountFormProps> = (props) => {
-  const { discount, mode, discountIsRefetching = false } = props;
+  const { discount, mode } = props;
   const queryClient = useQueryClient();
   const [shouldSetEndDate, setShouldSetEndDate] = useState(!!discount?.endDate);
   const createDiscount = useCreateDiscount();
   const updateDiscount = useUpdateDiscount(() =>
-    queryClient.invalidateQueries(["discount", discount?._id])
+    queryClient.invalidateQueries({ queryKey: ["discount", discount?._id] })
   );
   const [submitError, setSubmitError] = useState<string | null>(null);
 
@@ -76,7 +76,7 @@ export const DiscountForm: FC<DiscountFormProps> = (props) => {
     setShouldSetEndDate(!!discount?.endDate);
   }, [discount?.endDate]);
 
-  const isLoading = createDiscount.isLoading || updateDiscount.isLoading;
+  const isPending = createDiscount.isPending || updateDiscount.isPending;
 
   return (
     <Grid container spacing={3}>
@@ -117,7 +117,7 @@ export const DiscountForm: FC<DiscountFormProps> = (props) => {
               { id: discount._id, body: formValues },
               {
                 onSuccess: async () => {
-                  queryClient.invalidateQueries(["discount", discount?._id]);
+                  queryClient.invalidateQueries({ queryKey: ["discount", discount?._id] });
                 },
                 onError: (error) => {
                   setSubmitError(error.message);
@@ -184,7 +184,7 @@ export const DiscountForm: FC<DiscountFormProps> = (props) => {
                   fullWidth
                   size="large"
                   variant="contained"
-                  isLoading={isLoading}
+                  isLoading={isPending}
                   onClick={() => {
                     formik.handleSubmit();
                   }}

@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import Head from "next/head";
 import type { GetServerSideProps, NextPage } from "next";
-import { dehydrate, QueryClient, useQuery, useQueryClient } from "react-query";
+import { dehydrate, QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
 import { appFetch } from "@/utils/app-fetch";
 import { ParsedUrlQuery } from "querystring";
 import type { Review } from "@/types/review";
@@ -17,17 +17,17 @@ interface GetUserReviews {
 
 const getProduct =
   (id: string, config: Record<string, any> = {}) =>
-  () =>
-    appFetch<Product>({ url: `/products/${id}`, withAuth: true, ...config });
+    () =>
+      appFetch<Product>({ url: `/products/${id}`, withAuth: true, ...config });
 const getProductReviews =
   (id: string, query: ParsedUrlQuery, config: Record<string, any> = {}) =>
-  () =>
-    appFetch<GetUserReviews>({
-      url: `/products/${id}/reviews`,
-      query,
-      withAuth: true,
-      ...config,
-    });
+    () =>
+      appFetch<GetUserReviews>({
+        url: `/products/${id}/reviews`,
+        query,
+        withAuth: true,
+        ...config,
+      });
 
 const Reviews: NextPage = () => {
   const router = useRouter();
@@ -35,11 +35,17 @@ const Reviews: NextPage = () => {
     id: string;
     [key: string]: any;
   };
-  const { data, refetch } = useQuery(
-    ["product-reviews", id, query],
-    getProductReviews(id, query)
+  const { data, refetch } = useQuery({
+    queryKey: ["product-reviews", id, query],
+    queryFn: getProductReviews(id, query)
+  }
+
+
   );
-  const { data: product } = useQuery(["product", id], getProduct(id));
+  const { data: product } = useQuery({
+    queryKey: ["product", id],
+    queryFn: getProduct(id)
+  });
 
   if (!data || !product) return null;
 
@@ -76,10 +82,16 @@ export const getServerSideProps: GetServerSideProps = async ({
 
   try {
     await Promise.all([
-      queryClient.fetchQuery(["product", id], getProduct(id, { req, res })),
-      queryClient.fetchQuery(
-        ["product-reviews", id, queryRest],
-        getProductReviews(id, queryRest, { req, res })
+      queryClient.fetchQuery({
+        queryKey: ["product", id],
+        queryFn: getProduct(id, { req, res })
+      }),
+      queryClient.fetchQuery({
+        queryKey: ["product-reviews", id, queryRest],
+        queryFn: getProductReviews(id, queryRest, { req, res })
+      }
+
+
       ),
     ]);
   } catch (error) {

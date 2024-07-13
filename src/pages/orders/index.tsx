@@ -7,7 +7,7 @@ import { PageHeader } from "@/components/page-header";
 import { OrdersTable } from "@/components/orders-table";
 import type { ParsedUrlQuery } from "querystring";
 import { appFetch } from "@/utils/app-fetch";
-import { dehydrate, QueryClient, useQuery } from "react-query";
+import { dehydrate, QueryClient, useQuery } from "@tanstack/react-query";
 import type { Order } from "@/types/orders";
 
 interface GetOrdersData {
@@ -17,17 +17,20 @@ interface GetOrdersData {
 
 const getOrders =
   (query: ParsedUrlQuery, config: Record<string, any> = {}) =>
-  () =>
-    appFetch<GetOrdersData>({
-      url: "/orders/search",
-      query,
-      withAuth: true,
-      ...config,
-    });
+    () =>
+      appFetch<GetOrdersData>({
+        url: "/orders/search",
+        query,
+        withAuth: true,
+        ...config,
+      });
 
 const Orders: FC = () => {
   const { query } = useRouter();
-  const { error, data } = useQuery(["orders", query], getOrders(query));
+  const { error, data } = useQuery({
+    queryKey: ["orders", query],
+    queryFn: getOrders(query)
+  });
 
   if (!data) return null;
 
@@ -57,9 +60,12 @@ export const getServerSideProps: GetServerSideProps = async ({
   const queryClient = new QueryClient();
 
   try {
-    await queryClient.fetchQuery(
-      ["orders", query],
-      getOrders(query, { req, res })
+    await queryClient.fetchQuery({
+      queryKey: ["orders", query],
+      queryFn: getOrders(query, { req, res })
+    }
+
+
     );
   } catch (error) {
     console.error(error);

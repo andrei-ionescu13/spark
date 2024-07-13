@@ -8,7 +8,7 @@ import { Pencil as PencilIcon } from '@/icons/pencil';
 import { useDialog } from '@/hooks/useDialog';
 import { DataTableRow } from '@/components/data-table-row';
 import { PlatformDialog } from './platform-dialog';
-import { useQueryClient } from 'react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { useDeletePlatform } from '@/api/platforms';
 import Image from 'next/image';
 
@@ -23,7 +23,7 @@ export const PlatformsTableRow: FC<PlatformsTableRowProps> = (props) => {
   const queryClient = useQueryClient();
   const [deleteDialogOpen, handleOpenDeleteDialog, handleCloseDeleteDialog] = useDialog(false);
   const [updateDialogOpen, handleOpenUpdateDialog, handleCloseUpdateDialog] = useDialog(false);
-  const deletePlatform = useDeletePlatform(() => queryClient.invalidateQueries('platforms'));
+  const deletePlatform = useDeletePlatform(() => queryClient.invalidateQueries({ queryKey: ['platforms'] }));
 
   const actionItems: ActionsItem[] = [
     {
@@ -63,7 +63,7 @@ export const PlatformsTableRow: FC<PlatformsTableRowProps> = (props) => {
         title={`Delete user ${platform._id}`}
         content="Are you sure you want to permanently delete this platform?"
         onSubmit={handleDeletePlatform}
-        isLoading={deletePlatform.isLoading}
+        isLoading={deletePlatform.isPending}
       />
       <DataTableRow selected={selected} >
         <TableCell padding="checkbox">

@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { useCreateKey } from "@/api/keys";
 import { useRouter } from "next/router";
 import { Button } from "@/components/button";
@@ -23,12 +23,12 @@ interface SearchProductKeysData {
 
 const searchProductKeys =
   (id: string, query: Record<string, any>, config: Record<string, any> = {}) =>
-  () =>
-    appFetch<SearchProductKeysData>({
-      url: `/products/${id}/keys`,
-      query,
-      ...config,
-    });
+    () =>
+      appFetch<SearchProductKeysData>({
+        url: `/products/${id}/keys`,
+        query,
+        ...config,
+      });
 
 interface ProductAddKeyDialogProps {
   open: boolean;
@@ -41,7 +41,7 @@ export const ProductAddKeyDialog: FC<ProductAddKeyDialogProps> = (props) => {
   const { open, onClose, productId } = props;
   const queryClient = useQueryClient();
   const createKey = useCreateKey(() =>
-    queryClient.invalidateQueries(["product-keys", id, queryRest])
+    queryClient.invalidateQueries({ queryKey: ["product-keys", id, queryRest] })
   );
   const formik = useFormik({
     initialValues: {
@@ -92,7 +92,7 @@ export const ProductAddKeyDialog: FC<ProductAddKeyDialogProps> = (props) => {
           color="primary"
           onClick={() => formik.handleSubmit()}
           variant="contained"
-          isLoading={createKey.isLoading}
+          isLoading={createKey.isPending}
         >
           Add
         </Button>

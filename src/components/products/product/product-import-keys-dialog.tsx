@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import type { FC, ChangeEvent } from "react";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { AlertDialog } from "@/components/alert-dialog";
@@ -24,7 +24,7 @@ export const ProductImportKeysDialog: FC<ProductImportKeysDialogProps> = (
   const { id } = router.query as { id: string };
   const queryClient = useQueryClient();
   const importProductKeys = useImportProductKeys(() =>
-    queryClient.invalidateQueries(["product-keys", id])
+    queryClient.invalidateQueries({ queryKey: ["product-keys", id] })
   );
   const initialValues: { keys?: File } = {
     keys: undefined,
@@ -69,7 +69,7 @@ export const ProductImportKeysDialog: FC<ProductImportKeysDialogProps> = (
       onSubmit={() => {
         formik.handleSubmit();
       }}
-      isLoading={importProductKeys.isLoading}
+      isLoading={importProductKeys.isPending}
       maxWidth="sm"
       fullWidth
     >

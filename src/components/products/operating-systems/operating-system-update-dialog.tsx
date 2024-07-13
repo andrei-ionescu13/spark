@@ -3,7 +3,7 @@ import * as Yup from "yup";
 import { FC } from "react";
 import { Box, FormHelperText, Grid, Link, Typography } from "@mui/material";
 import { toast } from "react-toastify";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { AlertDialog, AlertDialogProps } from "@/components/alert-dialog";
 import { TextInput } from "@/components/text-input";
 import { useUpdateOperatingSystem } from "@/api/operating-systems";
@@ -29,7 +29,7 @@ export const OperatingSystemUpdateDialog: FC<
   const queryClient = useQueryClient();
   const updateOperatingSystem = useUpdateOperatingSystem(
     OperatingSystem._id,
-    () => queryClient.invalidateQueries("operatingSystems")
+    () => queryClient.invalidateQueries({ queryKey: ["operatingSystems"] })
   );
 
   const formik = useFormik({
@@ -56,7 +56,7 @@ export const OperatingSystemUpdateDialog: FC<
       onSubmit={formik.handleSubmit}
       onClose={onClose}
       title={`Update operatingSystem`}
-      isLoading={updateOperatingSystem.isLoading}
+      isLoading={updateOperatingSystem.isPending}
       {...rest}
     >
       <Grid container spacing={3}>

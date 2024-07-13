@@ -20,7 +20,7 @@ import {
   TableSortLabel,
   TextField,
 } from "@mui/material";
-import { dehydrate, QueryClient, useQuery, useQueryClient } from "react-query";
+import { dehydrate, QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
 import { RaviewTableRow } from "@/components/reviews/review-list/review-table-row";
 import { AlertDialog } from "@/components/alert-dialog";
 import { PageHeader } from "@/components/page-header";
@@ -45,19 +45,22 @@ interface GetReviewsData {
 
 const getReviews =
   (query: ParsedUrlQuery, config: Record<string, any> = {}) =>
-  () =>
-    appFetch<GetReviewsData>({
-      url: "/reviews",
-      query,
-      withAuth: true,
-      ...config,
-    });
+    () =>
+      appFetch<GetReviewsData>({
+        url: "/reviews",
+        query,
+        withAuth: true,
+        ...config,
+      });
 
 const Reviews: FC = (props) => {
   const { query } = useRouter();
-  const { error, data, refetch } = useQuery(
-    ["reviews", query],
-    getReviews(query)
+  const { error, data, refetch } = useQuery({
+    queryKey: ["reviews", query],
+    queryFn: getReviews(query)
+  }
+
+
   );
 
   if (!data) return null;
@@ -96,9 +99,12 @@ export const getServerSideProps: GetServerSideProps = async ({
   const queryClient = new QueryClient();
 
   try {
-    await queryClient.fetchQuery(
-      ["reviews", query],
-      getReviews(query, { req, res })
+    await queryClient.fetchQuery({
+      queryKey: ["reviews", query],
+      queryFn: getReviews(query, { req, res })
+    }
+
+
     );
   } catch (error) {
     console.error(error);

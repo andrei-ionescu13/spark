@@ -1,7 +1,7 @@
 import type { FC } from "react";
 import { toast } from "react-toastify";
 import { useFormik } from "formik";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import * as Yup from "yup";
 import {
   Card,

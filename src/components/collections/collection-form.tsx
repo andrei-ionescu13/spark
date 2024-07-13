@@ -27,7 +27,7 @@ import type { Product } from "@/types/products";
 import { Trash as TrashIcon } from "@/icons/trash";
 import { useCreateCollection, useUpdateCollection } from "@/api/collections";
 import type { Collection } from "@/types/collection";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import type { Image } from "@/types/common";
 import { ToastCreatedMessage } from "../toast-created-message";
 import { TextInput } from "../text-input";
@@ -64,7 +64,7 @@ export const CollectionForm: FC<CollectionFormProps> = (props) => {
   );
   const createCollection = useCreateCollection();
   const updateCollection = useUpdateCollection(() =>
-    queryClient.invalidateQueries(["collection", collection?._id])
+    queryClient.invalidateQueries({ queryKey: ["collection", collection?._id] })
   );
   const [dialogOpen, handleOpenDialog, handleCloseDialog] = useDialog();
   const queryClient = useQueryClient();
@@ -411,7 +411,7 @@ export const CollectionForm: FC<CollectionFormProps> = (props) => {
                 formik.handleSubmit();
               }}
               isLoading={
-                createCollection.isLoading || updateCollection.isLoading
+                createCollection.isPending || updateCollection.isPending
               }
             >
               {mode === "create" ? "Create" : "Update"}

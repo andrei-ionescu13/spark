@@ -3,7 +3,7 @@ import * as Yup from "yup";
 import { FC } from "react";
 import { Box, FormHelperText, Grid, Link, Typography } from "@mui/material";
 import { toast } from "react-toastify";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { AlertDialog, AlertDialogProps } from "@/components/alert-dialog";
 import { TextInput } from "@/components/text-input";
 import { useUpdateFeature } from "@/api/features";
@@ -26,7 +26,7 @@ export const FeatureUpdateDialog: FC<FeatureDuplicateDialogProps> = (props) => {
   const { onClose, Feature, ...rest } = props;
   const queryClient = useQueryClient();
   const updateFeature = useUpdateFeature(Feature._id, () =>
-    queryClient.invalidateQueries("features")
+    queryClient.invalidateQueries({ queryKey: ["features"] })
   );
 
   const formik = useFormik({
@@ -53,7 +53,7 @@ export const FeatureUpdateDialog: FC<FeatureDuplicateDialogProps> = (props) => {
       onSubmit={formik.handleSubmit}
       onClose={onClose}
       title={`Update feature`}
-      isLoading={updateFeature.isLoading}
+      isLoading={updateFeature.isPending}
       {...rest}
     >
       <Grid container spacing={3}>

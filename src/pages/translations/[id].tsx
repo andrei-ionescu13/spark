@@ -29,7 +29,7 @@ import { useSearch } from "@/hooks/useSearch";
 import { useSort } from "@/hooks/useSort";
 import { useDeleteNamespace } from "@/api/translations";
 import { LanguagesMenu } from "@/components/translations/languages-menu";
-import { dehydrate, QueryClient, useQuery, useQueryClient } from "react-query";
+import { dehydrate, QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AlertDialog } from "@/components/alert-dialog";
 import { appFetch } from "@/utils/app-fetch";
 import type { ParsedUrlQuery } from "querystring";
@@ -38,21 +38,21 @@ import { isString } from "lodash";
 
 const getLanguages =
   (config: Record<string, any> = {}) =>
-  () =>
-    appFetch<Language[]>({
-      url: "/languages",
-      withAuth: true,
-      ...config,
-    });
+    () =>
+      appFetch<Language[]>({
+        url: "/languages",
+        withAuth: true,
+        ...config,
+      });
 const getNamespace =
   (id: string, query: ParsedUrlQuery, config: Record<string, any> = {}) =>
-  () =>
-    appFetch<Namespace>({
-      url: `/namespaces/${id}/translations/search`,
-      query,
-      withAuth: true,
-      ...config,
-    });
+    () =>
+      appFetch<Namespace>({
+        url: `/namespaces/${id}/translations/search`,
+        query,
+        withAuth: true,
+        ...config,
+      });
 
 const TranslationList: FC = () => {
   const { query, push } = useRouter();
@@ -67,8 +67,14 @@ const TranslationList: FC = () => {
   const queryClient = useQueryClient();
   const deleteNamespace = useDeleteNamespace();
   const id = isString(query.id) ? query.id : "";
-  const { data: languages } = useQuery("namespaces-languages", getLanguages());
-  const { data: namespace } = useQuery("namespace", getNamespace(id, query));
+  const { data: languages } = useQuery({
+    queryKey: ["namespaces-languages"],
+    queryFn: getLanguages()
+  });
+  const { data: namespace } = useQuery({
+    queryKey: ["namespace"],
+    queryFn: getNamespace(id, query)
+  });
   const [selectedLanguageCodes, setSelectedLanguageCodes] = useState(() => {
     if (query?.language) {
       if (typeof query.language === "string") {
@@ -140,7 +146,7 @@ const TranslationList: FC = () => {
     deleteNamespace.mutate(namespace._id, {
       onSuccess: async () => {
         await push("/translations");
-        queryClient.invalidateQueries("namespace");
+        queryClient.invalidateQueries({ queryKey: ["namespace"] });
       },
     });
   };
@@ -165,7 +171,7 @@ const TranslationList: FC = () => {
           title={`Delete ${namespace.name} namespace`}
           content="Are you sure you want to permanently this namespace?"
           onSubmit={handleDeleteNamespace}
-          isLoading={deleteNamespace.isLoading}
+          isLoading={deleteNamespace.isPending}
         />
       )}
       <Box sx={{ py: 3 }}>
@@ -210,7 +216,7 @@ const TranslationList: FC = () => {
                   <TableRow>
                     <TableCell
                       sx={{ fontWeight: 600 }}
-                      // width={cell.width}
+                    // width={cell.width}
                     >
                       <TableSortLabel
                         active={"key" === sortBy}
@@ -293,14 +299,17 @@ export const getServerSideProps: GetServerSideProps = async ({
 
   try {
     await Promise.all([
-      queryClient.fetchQuery(
-        "namespaces-languages",
-        getLanguages({ req, res })
+      queryClient.fetchQuery({
+        queryKey: ["namespaces-languages"],
+        queryFn: getLanguages({ req, res })
+      }
+
+
       ),
-      queryClient.fetchQuery(
-        "namespace",
-        getNamespace(id, query, { req, res })
-      ),
+      queryClient.fetchQuery({
+        queryKey: ["namespace"],
+        queryFn: getNamespace(id, query, { req, res })
+      }),
     ]);
   } catch (error) {
     console.error(error);

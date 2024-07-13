@@ -1,7 +1,7 @@
 import type { FC } from "react";
 import { toast } from "react-toastify";
 import { useFormik } from "formik";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import * as Yup from "yup";
 import {
   Card,
@@ -155,7 +155,7 @@ export const ArticleStatusCategory: FC<ArticleStatusTagProps> = (props) => {
             <Button
               color="primary"
               variant="contained"
-              isLoading={updateArticleStatus.isLoading}
+              isLoading={updateArticleStatus.isPending}
               disabled={formikStatus.values.status === article.status}
               onClick={() => {
                 formikStatus.handleSubmit();
@@ -203,7 +203,7 @@ export const ArticleStatusCategory: FC<ArticleStatusTagProps> = (props) => {
                 isEditDisabled ||
                 formikTag.values.category === article.category._id
               }
-              isLoading={updateArticleCategory.isLoading}
+              isLoading={updateArticleCategory.isPending}
               onClick={() => {
                 formikTag.handleSubmit();
               }}

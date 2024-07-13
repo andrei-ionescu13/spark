@@ -13,7 +13,7 @@ import {
 import type { Product } from '@/types/products';
 import { appFetch } from '@/utils/app-fetch';
 import { Button } from '@/components/button';
-import { useQuery } from 'react-query';
+import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { SearchInput } from '@/components/search-input';
 import { Box } from '@mui/system';
 import { AddProductsDialogItem } from './add-products-dialog-item';
@@ -39,7 +39,11 @@ interface AddProductsDialogProps {
 export const AddProductsDialog: FC<AddProductsDialogProps> = (props) => {
   const { open, onClose, onAdd, selectedProducts: selectedProductsProp = [] } = props;
   const [keyword, setKeyword] = useState('');
-  const { error, data, isLoading } = useQuery(['products', { keyword }], getProducts({ keyword }), { keepPreviousData: true });
+  const { error, data, isLoading } = useQuery({
+    queryKey: ['products', { keyword }],
+    queryFn: getProducts({ keyword }),
+    placeholderData: keepPreviousData
+  });
   const products = data?.products || [];
   const [selectedProducts, setSelectedProducts] = useState<Product[]>(selectedProductsProp);
 

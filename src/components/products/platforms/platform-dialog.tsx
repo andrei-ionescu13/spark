@@ -12,7 +12,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Dropzone } from "@/components/dropzone";
 import { useCreatePlatform, useUpdatePlatform } from "@/api/platforms";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/button";
 import { buildFormData } from "@/utils/build-form-data";
 import { TextInput } from "@/components/text-input";
@@ -28,10 +28,10 @@ export const PlatformDialog: FC<PlatformDialogProps> = (props) => {
   const { open, onClose, platform, mode = "create" } = props;
   const queryClient = useQueryClient();
   const createPlatform = useCreatePlatform(() =>
-    queryClient.invalidateQueries("platforms")
+    queryClient.invalidateQueries({ queryKey: ["platforms"] })
   );
   const updatePlatform = useUpdatePlatform(() =>
-    queryClient.invalidateQueries("platforms")
+    queryClient.invalidateQueries({ queryKey: ["platforms"] })
   );
 
   const formik = useFormik({
@@ -113,7 +113,7 @@ export const PlatformDialog: FC<PlatformDialogProps> = (props) => {
             formik.handleSubmit();
           }}
           variant="contained"
-          isLoading={createPlatform.isLoading || updatePlatform.isLoading}
+          isLoading={createPlatform.isPending || updatePlatform.isPending}
         >
           {mode === "create" ? "Add" : "Update"}
         </Button>

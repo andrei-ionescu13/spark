@@ -25,7 +25,7 @@ import { useDialog } from "@/hooks/useDialog";
 import { useDeleteArticle, useDuplicateArticle } from "@/api/articles";
 import { Link } from "@/components/link";
 import { appFetch } from "@/utils/app-fetch";
-import { dehydrate, QueryClient, useQuery } from "react-query";
+import { dehydrate, QueryClient, useQuery } from "@tanstack/react-query";
 import { getCookie } from "cookies-next";
 import { Article as ArticleI, ArticleStatus } from "@/types/articles";
 import { Label } from "@/components/label";
@@ -50,25 +50,26 @@ const ToastSuccess = (id: string) => (
 
 const getArticle =
   (id: string, config: Record<string, any> = {}) =>
-  () =>
-    appFetch<ArticleI>({
-      url: `/articles/${id}`,
-      withAuth: true,
-      ...config,
-    });
+    () =>
+      appFetch<ArticleI>({
+        url: `/articles/${id}`,
+        withAuth: true,
+        ...config,
+      });
 
 const Article: FC = () => {
   const theme = useTheme();
   const router = useRouter();
   const { id } = router.query as { id: string };
-  const { data: article, isLoading } = useQuery(
-    ["articles", id],
-    getArticle(id)
-  );
-  const { data: articleCategories } = useQuery(
-    "article-categories",
-    listArticleCategories()
-  );
+  const { data: article, isLoading } = useQuery({
+    queryKey: ["articles", id],
+    queryFn: getArticle(id)
+  });
+  const { data: articleCategories } = useQuery({
+    queryKey: ["article-categories"],
+    queryFn: listArticleCategories()
+  });
+
   const [openDeleteDialog, handleOpenDeleteDialog, handleCloseDeleteDialog] =
     useDialog();
   const [
@@ -83,7 +84,7 @@ const Article: FC = () => {
   const isEditDisabled = article?.status === "archived";
 
   if (!article || !articleCategories) return null;
-  console.log(article);
+
   const handleDeleteArticle = () => {
     deleteArticle.mutate(article._id, {
       onSuccess: () => {
@@ -134,7 +135,7 @@ const Article: FC = () => {
         title="Delete article"
         content="Are you sure you want to delete this article?"
         onSubmit={handleDeleteArticle}
-        isLoading={deleteArticle.isLoading}
+        isLoading={deleteArticle.isPending}
       />
       <AlertDialog
         open={openDuplicateDialog}
@@ -142,7 +143,7 @@ const Article: FC = () => {
         title={`Duplicate article`}
         content="Are you sure you want to duplicate this article?"
         onSubmit={handleDuplicateArticle}
-        isLoading={duplicateArticle.isLoading}
+        isLoading={duplicateArticle.isPending}
       />
       <MarkdownPreview
         open={openPreviewDialog}
@@ -219,10 +220,15 @@ export const getServerSideProps: GetServerSideProps = async ({
 
   try {
     await Promise.all([
-      queryClient.fetchQuery(["articles", id], getArticle(id, { req, res })),
-      queryClient.fetchQuery(
-        "article-categories",
-        listArticleCategories({ req, res })
+      queryClient.fetchQuery({
+        queryKey: ["articles", id],
+        queryFn: getArticle(id, { req, res })
+      }),
+      queryClient.fetchQuery({
+        queryKey: ["article-categories"],
+        queryFn: listArticleCategories({ req, res })
+      }
+
       ),
     ]);
   } catch (error) {

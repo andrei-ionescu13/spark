@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/button";
 import { useCreateCurrency } from "@/api/currencies";
 import { TextInput } from "../text-input";
@@ -1103,7 +1103,7 @@ export const CurrencyDialog: FC<CurrencyDialogProps> = (props) => {
   const { open, onClose } = props;
   const queryClient = useQueryClient();
   const createCurrency = useCreateCurrency(() =>
-    queryClient.invalidateQueries("currencies")
+    queryClient.invalidateQueries({ queryKey: ["currencies"] })
   );
   const formik = useFormik({
     initialValues: {
@@ -1172,7 +1172,7 @@ export const CurrencyDialog: FC<CurrencyDialogProps> = (props) => {
           variant="contained"
           color="primary"
           onClick={() => formik.handleSubmit()}
-          isLoading={createCurrency.isLoading}
+          isLoading={createCurrency.isPending}
         >
           Add
         </Button>

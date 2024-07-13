@@ -3,13 +3,13 @@ import * as Yup from "yup";
 import { FC } from "react";
 import { Box, FormHelperText, Grid, Link, Typography } from "@mui/material";
 import { toast } from "react-toastify";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { AlertDialog, AlertDialogProps } from "@/components/alert-dialog";
 import { TextInput } from "@/components/text-input";
 import { useCreateDeveloper } from "@/api/developers";
 
 interface DeveloperCreateDialogProps
-  extends Omit<AlertDialogProps, "title" | "onSubmit" | "isLoading"> {}
+  extends Omit<AlertDialogProps, "title" | "onSubmit" | "isLoading"> { }
 
 const ToastSuccess = (id: string) => (
   <Box>
@@ -25,7 +25,7 @@ export const DeveloperCreateDialog: FC<DeveloperCreateDialogProps> = (
   const { onClose, ...rest } = props;
   const queryClient = useQueryClient();
   const createDeveloper = useCreateDeveloper(() =>
-    queryClient.invalidateQueries("developers")
+    queryClient.invalidateQueries({ queryKey: ["developers"] })
   );
 
   const formik = useFormik({
@@ -52,7 +52,7 @@ export const DeveloperCreateDialog: FC<DeveloperCreateDialogProps> = (
       onSubmit={formik.handleSubmit}
       onClose={onClose}
       title={`Create developer`}
-      isLoading={createDeveloper.isLoading}
+      isLoading={createDeveloper.isPending}
       {...rest}
     >
       <Grid container spacing={3}>

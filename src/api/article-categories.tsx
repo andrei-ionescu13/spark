@@ -1,24 +1,25 @@
 import { ArticleCategory } from "@/types/article-category";
 import { appFetch } from "@/utils/app-fetch";
-import { useMutation } from "react-query";
+import { useMutation } from "@tanstack/react-query";
 
 export const useDeleteCategories = (onSuccess?: () => Promise<any>) =>
-  useMutation<{}, Error, string[]>(
-    (categoryIds) =>
-      appFetch({
-        url: `/article-categories`,
-        config: {
-          body: JSON.stringify({ ids: categoryIds }),
-          method: "DELETE",
-        },
-        withAuth: true,
-      }),
-    { onSuccess }
-  );
+  useMutation<{}, Error, string[]>({
+    mutationFn:
+      (categoryIds) =>
+        appFetch({
+          url: `/article-categories`,
+          config: {
+            body: JSON.stringify({ ids: categoryIds }),
+            method: "DELETE",
+          },
+          withAuth: true,
+        }),
+    onSuccess
+  });
 
 export const useDeleteArticleCategory = (onSuccess?: () => Promise<any>) =>
-  useMutation<{}, Error, string>(
-    (categoryId) =>
+  useMutation<{}, Error, string>({
+    mutationFn: (categoryId) =>
       appFetch({
         url: `/article-categories/${categoryId}`,
         config: {
@@ -26,12 +27,13 @@ export const useDeleteArticleCategory = (onSuccess?: () => Promise<any>) =>
         },
         withAuth: true,
       }),
-    { onSuccess }
+    onSuccess
+  }
   );
 
 export const useCreateArticleCategory = (onSuccess: any) =>
-  useMutation<{ name: string }, Error, Record<string, unknown>>(
-    (values) =>
+  useMutation<{ name: string }, Error, Record<string, unknown>>({
+    mutationFn: (values) =>
       appFetch({
         url: "/article-categories",
         config: {
@@ -40,15 +42,15 @@ export const useCreateArticleCategory = (onSuccess: any) =>
         },
         withAuth: true,
       }),
-    { onSuccess }
-  );
+    onSuccess
+  });
 
 export const useUpdateArticleCategory = (
   articleCategoryId: string,
   onSuccess: any
 ) =>
-  useMutation<ArticleCategory, Error, Record<string, unknown>>(
-    (values) =>
+  useMutation<ArticleCategory, Error, Record<string, unknown>>({
+    mutationFn: (values) =>
       appFetch({
         url: `/article-categories/${articleCategoryId}`,
         config: {
@@ -57,14 +59,15 @@ export const useUpdateArticleCategory = (
         },
         withAuth: true,
       }),
-    { onSuccess }
+    onSuccess
+  }
   );
 
 export const listArticleCategories =
   (config: Record<string, any> = {}) =>
-  () =>
-    appFetch<ArticleCategory[]>({
-      url: "/article-categories",
-      withAuth: true,
-      ...config,
-    });
+    () =>
+      appFetch<ArticleCategory[]>({
+        url: "/article-categories",
+        withAuth: true,
+        ...config,
+      });

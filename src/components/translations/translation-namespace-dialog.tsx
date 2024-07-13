@@ -9,7 +9,7 @@ import {
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useCreateNamespace, useUpdateNamespaceName } from "@/api/translations";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/button";
 import { TextInput } from "../text-input";
 
@@ -26,10 +26,10 @@ export const TranslationNamespaceDialog: FC<TranslationNamespaceDialogProps> = (
   const { namespace, open, onClose, mode = "create" } = props;
   const queryClient = useQueryClient();
   const createNamespace = useCreateNamespace(() =>
-    queryClient.invalidateQueries("namespaces")
+    queryClient.invalidateQueries({ queryKey: ["namespaces"] })
   );
   const updateNamespaceName = useUpdateNamespaceName(() =>
-    queryClient.invalidateQueries("namespaces")
+    queryClient.invalidateQueries({ queryKey: ["namespaces"] })
   );
 
   const formik = useFormik({
@@ -90,7 +90,7 @@ export const TranslationNamespaceDialog: FC<TranslationNamespaceDialogProps> = (
           variant="contained"
           color="primary"
           onClick={() => formik.handleSubmit()}
-          isLoading={createNamespace.isLoading || updateNamespaceName.isLoading}
+          isLoading={createNamespace.isPending || updateNamespaceName.isPending}
         >
           {mode === "create" ? "Add" : "Edit"}
         </Button>

@@ -19,7 +19,7 @@ import {
   TableSortLabel,
   TextField,
 } from "@mui/material";
-import { dehydrate, QueryClient, useQuery, useQueryClient } from "react-query";
+import { dehydrate, QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AlertDialog } from "@/components/alert-dialog";
 import { PageHeader } from "@/components/page-header";
 import { SearchInput } from "@/components/search-input";
@@ -56,23 +56,23 @@ interface GetCategoriesData {
 
 const searchCategories =
   (query: ParsedUrlQuery, config: Record<string, any> = {}) =>
-  () =>
-    appFetch<GetCategoriesData>({
-      url: "/article-categories/search",
-      query,
-      withAuth: true,
-      ...config,
-    });
+    () =>
+      appFetch<GetCategoriesData>({
+        url: "/article-categories/search",
+        query,
+        withAuth: true,
+        ...config,
+      });
 
 const Categories: FC = () => {
   const { query } = useRouter();
   const [selected, setSelected] = useState<string[]>([]);
   const [keyword, keywordParam, handleKeywordChange, handleSearch] =
     useSearch();
-  const { data, refetch } = useQuery(
-    ["article-categories", query],
-    searchCategories(query)
-  );
+  const { data, refetch } = useQuery({
+    queryKey: ["article-categories", query],
+    queryFn: searchCategories(query)
+  });
   const [dialogOpen, setDialogOpen] = useState(false);
   const deleteCategories = useDeleteCategories(refetch);
   const [createDialogOpen, handleOpenCreateDialog, handleCloseCreateDialog] =
@@ -96,7 +96,7 @@ const Categories: FC = () => {
         setSelected([]);
         handleCloseDialog();
       },
-      onError: (error) => {},
+      onError: (error) => { },
     });
   };
 
@@ -192,7 +192,7 @@ const Categories: FC = () => {
       </Box>
       <AlertDialog
         content="Are you sure you want to permanently delete these categories"
-        isLoading={deleteCategories.isLoading}
+        isLoading={deleteCategories.isPending}
         onClose={handleCloseDialog}
         onSubmit={handleDeleteCategories}
         open={dialogOpen}

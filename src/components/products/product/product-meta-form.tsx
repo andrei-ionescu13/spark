@@ -11,7 +11,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import type { Product } from "@/types/products";
 import { useUpdateProductMeta } from "@/api/products";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/button";
 import { TextInput } from "@/components/text-input";
 
@@ -138,7 +138,7 @@ export const ProductMetaForm: FC<ProductMetaFormProps> = (props) => {
           onClick={() => {
             formik.handleSubmit();
           }}
-          isLoading={updateProductMeta.isLoading}
+          isLoading={updateProductMeta.isPending}
         >
           Update
         </Button>

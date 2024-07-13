@@ -4,7 +4,7 @@ import type { EmotionCache } from "@emotion/react";
 import Head from "next/head";
 import createEmotionCache from "createEmotionCache";
 import { useState } from "react";
-import { Hydrate, QueryClient, QueryClientProvider } from "react-query";
+import { HydrationBoundary, QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { createCustomTheme } from "theme";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
@@ -22,6 +22,7 @@ import { getCookie } from "cookies-next";
 import { Theme, useSettings } from "@/contexts/settings-context";
 import { Preset } from "theme/colors";
 import "react-toastify/dist/ReactToastify.css";
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 export interface MyAppProps extends AppProps {
   emotionCache?: EmotionCache;
@@ -71,22 +72,23 @@ const MyApp = (props: MyAppProps) => {
         <meta name="viewport" content="initial-scale=1, width=device-width" />
       </Head>
       <QueryClientProvider client={queryClient}>
-        <Hydrate state={pageProps.dehydratedState}>
+        <ReactQueryDevtools initialIsOpen={false} />
+        <HydrationBoundary state={pageProps.dehydratedState}>
           <ThemeProvider theme={theme}>
+            <ToastContainer
+              theme={settings.theme}
+              closeOnClick={false}
+              pauseOnHover={false}
+            />
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <ThemeDrawer />
               <CssBaseline />
               <Layout admin={admin}>
                 <Component {...pageProps} />
-                <ToastContainer
-                  theme={settings.theme}
-                  closeOnClick={false}
-                  pauseOnHover={false}
-                />
               </Layout>
             </LocalizationProvider>
           </ThemeProvider>
-        </Hydrate>
+        </HydrationBoundary>
       </QueryClientProvider>
     </CacheProvider>
   );

@@ -52,7 +52,7 @@ const Login: FC = () => {
         }
 
         setSubmitError(data.message);
-      } catch (error) {}
+      } catch (error) { }
     },
   });
   const [showPassword, setShowPassword] = useState(false);

@@ -3,13 +3,13 @@ import * as Yup from "yup";
 import { FC } from "react";
 import { Box, FormHelperText, Grid, Link, Typography } from "@mui/material";
 import { toast } from "react-toastify";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { AlertDialog, AlertDialogProps } from "@/components/alert-dialog";
 import { TextInput } from "@/components/text-input";
 import { useCreateArticleTag } from "@/api/article-tags";
 
 interface ArticleDuplicateDialog
-  extends Omit<AlertDialogProps, "title" | "onSubmit" | "isLoading"> {}
+  extends Omit<AlertDialogProps, "title" | "onSubmit" | "isLoading"> { }
 
 const ToastSuccess = (id: string) => (
   <Box>
@@ -31,7 +31,7 @@ export const ArticleTagCreateDialog: FC<ArticleDuplicateDialog> = (props) => {
   const { onClose, ...rest } = props;
   const queryClient = useQueryClient();
   const createArticleTag = useCreateArticleTag(() =>
-    queryClient.invalidateQueries("article-tags")
+    queryClient.invalidateQueries({ queryKey: ["article-tags"] })
   );
 
   const formik = useFormik({
@@ -58,7 +58,7 @@ export const ArticleTagCreateDialog: FC<ArticleDuplicateDialog> = (props) => {
       onSubmit={formik.handleSubmit}
       onClose={onClose}
       title={`Duplicate article`}
-      isLoading={createArticleTag.isLoading}
+      isLoading={createArticleTag.isPending}
       {...rest}
     >
       <Grid container spacing={3}>

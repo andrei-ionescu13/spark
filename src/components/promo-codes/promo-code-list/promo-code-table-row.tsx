@@ -1,6 +1,6 @@
 import type { FC } from 'react';
 import { Checkbox, colors, TableCell, Typography, useTheme } from '@mui/material';
-import { useQueryClient } from 'react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import type { ActionsItem } from '@/components/actions-menu';
 import { AlertDialog } from '@/components/alert-dialog';
 import { ActionsIconButton } from '@/components/icon-actions';
@@ -25,8 +25,8 @@ export const PromoCodeTableRow: FC<PromoCodeTableRowProps> = (props) => {
   const { promoCode, selected, onSelect } = props;
   const theme = useTheme()
   const queryClient = useQueryClient();
-  const deletePromoCode = useDeletePromoCode(() => queryClient.invalidateQueries('promo-codes'))
-  const deactivatePromoCode = useDeactivatePromoCode(() => queryClient.invalidateQueries('promo-codes'))
+  const deletePromoCode = useDeletePromoCode(() => queryClient.invalidateQueries({ queryKey: ['promo-codes'] }))
+  const deactivatePromoCode = useDeactivatePromoCode(() => queryClient.invalidateQueries({ queryKey: ['promo-codes'] }))
   const [deleteDialogOpen, handleOpenDeleteDialog, handleCloseDeleteDialog] = useDialog(false);
   const [deactivateDialogOpen, handleOpenDeactivateDialog, handleCloseDeactivateDialog] = useDialog(false);
   const status = getStatusFromInterval(promoCode.startDate, promoCode.endDate);
@@ -79,7 +79,7 @@ export const PromoCodeTableRow: FC<PromoCodeTableRowProps> = (props) => {
         title={`Delete promoCode`}
         content="Are you sure you want to delete this promoCode?"
         onSubmit={handleDeletePromoCode}
-        isLoading={deletePromoCode.isLoading}
+        isLoading={deletePromoCode.isPending}
       />
       <AlertDialog
         open={deactivateDialogOpen}
@@ -87,7 +87,7 @@ export const PromoCodeTableRow: FC<PromoCodeTableRowProps> = (props) => {
         title={`Deactivate promoCode`}
         content="Are you sure you want to deactivate this promoCode?"
         onSubmit={handleDeactivatePromoCode}
-        isLoading={deactivatePromoCode.isLoading}
+        isLoading={deactivatePromoCode.isPending}
       />
       <DataTableRow selected={selected}>
         <TableCell padding="checkbox">

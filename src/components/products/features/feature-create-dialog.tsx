@@ -3,13 +3,13 @@ import * as Yup from "yup";
 import { FC } from "react";
 import { Box, FormHelperText, Grid, Link, Typography } from "@mui/material";
 import { toast } from "react-toastify";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { AlertDialog, AlertDialogProps } from "@/components/alert-dialog";
 import { TextInput } from "@/components/text-input";
 import { useCreateFeature } from "@/api/features";
 
 interface FeatureCreateDialogProps
-  extends Omit<AlertDialogProps, "title" | "onSubmit" | "isLoading"> {}
+  extends Omit<AlertDialogProps, "title" | "onSubmit" | "isLoading"> { }
 
 const ToastSuccess = (id: string) => (
   <Box>
@@ -23,7 +23,7 @@ export const FeatureCreateDialog: FC<FeatureCreateDialogProps> = (props) => {
   const { onClose, ...rest } = props;
   const queryClient = useQueryClient();
   const createFeature = useCreateFeature(() =>
-    queryClient.invalidateQueries("features")
+    queryClient.invalidateQueries({ queryKey: ["features"] })
   );
 
   const formik = useFormik({
@@ -50,7 +50,7 @@ export const FeatureCreateDialog: FC<FeatureCreateDialogProps> = (props) => {
       onSubmit={formik.handleSubmit}
       onClose={onClose}
       title={`Create feature`}
-      isLoading={createFeature.isLoading}
+      isLoading={createFeature.isPending}
       {...rest}
     >
       <Grid container spacing={3}>

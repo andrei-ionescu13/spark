@@ -8,7 +8,7 @@ import { Pencil as PencilIcon } from '@/icons/pencil';
 import { useDialog } from '@/hooks/useDialog';
 import { DataTableRow } from '@/components/data-table-row';
 import { PublisherDialog } from './publisher-dialog';
-import { useQueryClient } from 'react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { useDeletePublisher } from '@/api/publishers';
 import Image from 'next/image';
 
@@ -42,7 +42,7 @@ export const PublishersTableRow: FC<PublishersTableRowProps> = (props) => {
   const handleDeletePublisher = () => {
     deletePublisher.mutate(publisher._id, {
       onSuccess: () => {
-        queryClient.invalidateQueries('publishers');
+        queryClient.invalidateQueries({ queryKey: ['publishers'] });
         handleCloseDeleteDialog()
       }
     })
@@ -64,7 +64,7 @@ export const PublishersTableRow: FC<PublishersTableRowProps> = (props) => {
         title={`Delete user ${publisher._id}`}
         content="Are you sure you want to permanently delete this publisher?"
         onSubmit={handleDeletePublisher}
-        isLoading={deletePublisher.isLoading}
+        isLoading={deletePublisher.isPending}
       />
       <DataTableRow selected={selected} >
         <TableCell padding="checkbox">

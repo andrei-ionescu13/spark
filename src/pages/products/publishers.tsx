@@ -13,7 +13,7 @@ import { AlertDialog } from "@/components/alert-dialog";
 import { Plus as PlusIcon } from "@/icons/plus";
 import { PublisherDialog } from "@/components/products/publishers/publisher-dialog";
 import { PublishersTableRow } from "@/components/products/publishers/publishers-table-row";
-import { dehydrate, QueryClient, useQuery, useQueryClient } from "react-query";
+import { dehydrate, QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useDeletePublishers } from "@/api/publishers";
 import { appFetch } from "@/utils/app-fetch";
 import { DataTable } from "@/components/data-table";
@@ -36,13 +36,13 @@ interface GetPublishers {
 
 const getPublishers =
   (query: Record<string, any>, config: Record<string, any> = {}) =>
-  () =>
-    appFetch<GetPublishers>({
-      url: "/publishers/search",
-      query,
-      withAuth: true,
-      ...config,
-    });
+    () =>
+      appFetch<GetPublishers>({
+        url: "/publishers/search",
+        query,
+        withAuth: true,
+        ...config,
+      });
 
 const Publishers: FC = () => {
   const { query } = useRouter();
@@ -50,12 +50,15 @@ const Publishers: FC = () => {
   const [keyword, keywordParam, handleKeywordChange, handleSearch] =
     useSearch();
   const [selected, setSelected] = useState<string[]>([]);
-  const { error, data } = useQuery(["publishers", query], getPublishers(query));
+  const { error, data } = useQuery({
+    queryKey: ["publishers", query],
+    queryFn: getPublishers(query)
+  });
   const [dialogOpen, handleOpenDialog, handleCloseDialog] = useDialog();
   const [addDialogOpen, handleOpenAddDialog, handleCloseAddDialog] =
     useDialog();
   const deletePublishers = useDeletePublishers(() =>
-    queryClient.invalidateQueries("publishers")
+    queryClient.invalidateQueries({ queryKey: ["publishers"] })
   );
 
   if (!data) return null;
@@ -99,7 +102,7 @@ const Publishers: FC = () => {
         title={`Delete multiple publishers`}
         content="Are you sure you want to permanently delete these publisher?"
         onSubmit={handleDeletePublishers}
-        isLoading={deletePublishers.isLoading}
+        isLoading={deletePublishers.isPending}
       />
       {addDialogOpen && <PublisherDialog open onClose={handleCloseAddDialog} />}
       <Head>
@@ -179,10 +182,10 @@ export const getServerSideProps: GetServerSideProps = async ({
   const queryClient = new QueryClient();
 
   try {
-    await queryClient.fetchQuery(
-      ["publishers", query],
-      getPublishers(query, { req, res })
-    );
+    await queryClient.fetchQuery({
+      queryKey: ["publishers", query],
+      queryFn: getPublishers(query, { req, res })
+    });
   } catch (error) {
     console.error(error);
   }

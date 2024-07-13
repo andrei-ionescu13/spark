@@ -12,7 +12,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Dropzone } from "@/components/dropzone";
 import { useCreatePublisher, useUpdatePublisher } from "@/api/publishers";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/button";
 import { buildFormData } from "@/utils/build-form-data";
 import { TextInput } from "@/components/text-input";
@@ -28,10 +28,10 @@ export const PublisherDialog: FC<PublisherDialogProps> = (props) => {
   const { open, onClose, publisher, mode = "create" } = props;
   const queryClient = useQueryClient();
   const createPublisher = useCreatePublisher(() =>
-    queryClient.invalidateQueries("publishers")
+    queryClient.invalidateQueries({ queryKey: ["publishers"] })
   );
   const updatePublisher = useUpdatePublisher(() =>
-    queryClient.invalidateQueries("publishers")
+    queryClient.invalidateQueries({ queryKey: ["publishers"] })
   );
 
   const formik = useFormik({
@@ -128,7 +128,7 @@ export const PublisherDialog: FC<PublisherDialogProps> = (props) => {
             formik.handleSubmit();
           }}
           variant="contained"
-          isLoading={createPublisher.isLoading || updatePublisher.isLoading}
+          isLoading={createPublisher.isPending || updatePublisher.isPending}
         >
           {mode === "create" ? "Add" : "Update"}
         </Button>

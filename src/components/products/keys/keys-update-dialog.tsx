@@ -14,7 +14,7 @@ import * as Yup from 'yup';
 import { StatusSelect } from '@/components/status';
 import type { StatusOption } from '@/components/status';
 import { useUpdateKeyStatus } from '@/api/keys';
-import { useQueryClient } from 'react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { Key } from '@/types/keys';
 import { Button } from '@/components/button';
 
@@ -27,7 +27,6 @@ interface KeysUpdateDialogProps {
 
 export const KeysUpdateDialog: FC<KeysUpdateDialogProps> = (props) => {
   const { open, onClose, productKey, refetch } = props
-  const queryClient = useQueryClient();
   const theme = useTheme();
   const updateKeyStatus = useUpdateKeyStatus(productKey._id);
 
@@ -107,7 +106,7 @@ export const KeysUpdateDialog: FC<KeysUpdateDialogProps> = (props) => {
           color="primary"
           onClick={() => (formik.handleSubmit())}
           variant="contained"
-          disabled={updateKeyStatus.isLoading}
+          disabled={updateKeyStatus.isPending}
         >
           Update
         </Button>

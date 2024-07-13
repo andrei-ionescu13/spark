@@ -79,7 +79,7 @@ export const KeysTableRow: FC<UsersTableRowProps> = (props) => {
         title={`Delete productKey ${key._id}`}
         content="Are you sure you want to permanently delete this productKey?"
         onSubmit={handleDeleteKey}
-        isLoading={deleteKey.isLoading}
+        isLoading={deleteKey.isPending}
       />
       {editDialogOpen && (
         <KeysUpdateDialog

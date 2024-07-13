@@ -10,7 +10,7 @@ import { Trash as TrashIcon } from '@/icons/trash';
 import { useDialog } from "@/hooks/useDialog";
 import type { Language, Translation } from "@/types/translations";
 import { useDeleteNamespaceTranslation } from '@/api/translations';
-import { useQueryClient } from 'react-query';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface TranslationsTableRowProps extends TableRowProps {
   translation: Translation;
@@ -32,8 +32,8 @@ export const TranslationsTableRow: FC<TranslationsTableRowProps> = (props) => {
       translationKey: translation.key
     }, {
       onSuccess: () => {
-        queryClient.invalidateQueries('namespaces')
-        queryClient.invalidateQueries('namespace')
+        queryClient.invalidateQueries({ queryKey: ['namespaces'] })
+        queryClient.invalidateQueries({ queryKey: ['namespace'] })
         handleCloseDeleteDialog();
       }
     })

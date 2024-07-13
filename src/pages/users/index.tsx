@@ -38,7 +38,7 @@ import { generateArray } from "@/utils/generate-array";
 import { TableRowSkeleton } from "@/components/table-row-skeleton";
 import { UsersTableRow } from "@/components/users/users-list/users-table-row";
 import { AlertDialog } from "@/components/alert-dialog";
-import { dehydrate, QueryClient, useQuery } from "react-query";
+import { dehydrate, QueryClient, useQuery } from "@tanstack/react-query";
 import { appFetch } from "@/utils/app-fetch";
 import type { User } from "@/types/user";
 import { DataTable } from "@/components/data-table";
@@ -100,13 +100,13 @@ interface GetUsersData {
 
 const getUsers =
   (query: Record<string, any>, config: Record<string, any> = {}) =>
-  () =>
-    appFetch<GetUsersData>({
-      url: "/users/search",
-      query,
-      withAuth: true,
-      ...config,
-    });
+    () =>
+      appFetch<GetUsersData>({
+        url: "/users/search",
+        query,
+        withAuth: true,
+        ...config,
+      });
 
 const Users: FC = () => {
   const { query } = useRouter();
@@ -115,7 +115,10 @@ const Users: FC = () => {
   const [selected, setSelected] = useState<string[]>([]);
   const [status, setStatus] = useQueryValue("status", "all", "all");
   const [dialogOpen, handleOpenDialog, handleCloseDialog] = useDialog();
-  const { error, data } = useQuery(["users", query], getUsers(query));
+  const { error, data } = useQuery({
+    queryKey: ["users", query],
+    queryFn: getUsers(query)
+  });
 
   if (!data) return null;
 
@@ -238,10 +241,10 @@ export const getServerSideProps: GetServerSideProps = async ({
   const queryClient = new QueryClient();
 
   try {
-    await queryClient.fetchQuery(
-      ["users", query],
-      getUsers(query, { req, res })
-    );
+    await queryClient.fetchQuery({
+      queryKey: ["users", query],
+      queryFn: getUsers(query, { req, res })
+    });
   } catch (error) {
     console.error(error);
   }

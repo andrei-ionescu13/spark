@@ -4,7 +4,7 @@ import type { GetServerSideProps } from "next";
 import { Box, colors, Container, useTheme } from "@mui/material";
 import { PageHeader } from "@/components/page-header";
 import { appFetch } from "@/utils/app-fetch";
-import { dehydrate, QueryClient, useQuery, useQueryClient } from "react-query";
+import { dehydrate, QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import type { ActionsItem } from "@/components/actions-menu";
 import { Trash as TrashIcon } from "@/icons/trash";
@@ -19,20 +19,23 @@ import { Label } from "@/components/label";
 
 const getPromoCode =
   (id: string, config: Record<string, any> = {}) =>
-  () =>
-    appFetch<PromoCodeI>({
-      url: `/promo-codes/${id}`,
-      withAuth: true,
-      ...config,
-    });
+    () =>
+      appFetch<PromoCodeI>({
+        url: `/promo-codes/${id}`,
+        withAuth: true,
+        ...config,
+      });
 
 const PromoCode: FC = () => {
   const theme = useTheme();
   const router = useRouter();
   const id = router.query.id as string;
-  const { data: promoCode, isRefetching } = useQuery(
-    ["promo-code", id],
-    getPromoCode(id)
+  const { data: promoCode, isRefetching } = useQuery({
+    queryKey: ["promo-code", id],
+    queryFn: getPromoCode(id)
+  }
+
+
   );
   const [deleteDialogOpen, handleOpenDeleteDialog, handleCloseDeleteDialog] =
     useDialog(false);
@@ -43,7 +46,7 @@ const PromoCode: FC = () => {
   ] = useDialog(false);
   const deletePromoCode = useDeletePromoCode();
   const deactivatePromoCode = useDeactivatePromoCode(() =>
-    queryClient.invalidateQueries(["promo-code", id])
+    queryClient.invalidateQueries({ queryKey: ["promo-code", id] })
   );
   const queryClient = useQueryClient();
 
@@ -95,7 +98,7 @@ const PromoCode: FC = () => {
         title={`Delete promoCode`}
         content="Are you sure you want to delete this promoCode?"
         onSubmit={handleDeletePromoCode}
-        isLoading={deletePromoCode.isLoading}
+        isLoading={deletePromoCode.isPending}
       />
       <AlertDialog
         open={deactivateDialogOpen}
@@ -103,7 +106,7 @@ const PromoCode: FC = () => {
         title={`Deactivate promoCode`}
         content="Are you sure you want to deactivate this promoCode?"
         onSubmit={handleDeactivatePromoCode}
-        isLoading={deactivatePromoCode.isLoading}
+        isLoading={deactivatePromoCode.isPending}
       />
       <Head>
         <title>Promo Code</title>
@@ -139,9 +142,12 @@ export const getServerSideProps: GetServerSideProps = async ({
   const queryClient = new QueryClient();
 
   try {
-    await queryClient.fetchQuery(
-      ["promo-code", id],
-      getPromoCode(id, { req, res })
+    await queryClient.fetchQuery({
+      queryKey: ["promo-code", id],
+      queryFn: getPromoCode(id, { req, res })
+    }
+
+
     );
   } catch (error) {
     console.error(error);

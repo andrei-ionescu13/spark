@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { FC, SyntheticEvent } from "react";
 import { useFormik } from "formik";
-import { useQuery, useQueryClient } from "react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import * as Yup from "yup";
 import {
   Autocomplete,
@@ -28,7 +28,10 @@ export const ArticleDetailsTagsForm: FC<ArticleDetailsMetaFormProps> = (
   props
 ) => {
   const { open, onClose, article } = props;
-  const { data: tags, isLoading } = useQuery("article-tags", listTags());
+  const { data: tags, isLoading } = useQuery({
+    queryKey: ["article-tags"],
+    queryFn: listTags()
+  });
 
   const updateArticleTags = useUpdateArticleTags(article._id);
   const queryClient = useQueryClient();
@@ -110,7 +113,7 @@ export const ArticleDetailsTagsForm: FC<ArticleDetailsMetaFormProps> = (
         </Button>
         <Button
           color="primary"
-          isLoading={updateArticleTags.isLoading}
+          isLoading={updateArticleTags.isPending}
           onClick={() => {
             formik.handleSubmit();
           }}

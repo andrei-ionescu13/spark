@@ -3,7 +3,7 @@ import Head from "next/head";
 import type { GetServerSideProps } from "next";
 import { Box, Container, useTheme, colors } from "@mui/material";
 import { PageHeader } from "@/components/page-header";
-import { dehydrate, QueryClient, useQuery, useQueryClient } from "react-query";
+import { dehydrate, QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import type { ActionsItem } from "@/components/actions-menu";
 import { Trash as TrashIcon } from "@/icons/trash";
@@ -22,19 +22,22 @@ import { appFetch } from "@/utils/app-fetch";
 
 const getCollection =
   (id: string, config: Record<string, any> = {}) =>
-  () =>
-    appFetch<CollectionI>({
-      url: `/collections/${id}`,
-      withAuth: true,
-      ...config,
-    });
+    () =>
+      appFetch<CollectionI>({
+        url: `/collections/${id}`,
+        withAuth: true,
+        ...config,
+      });
 
 const Collection: FC = () => {
   const theme = useTheme();
   const router = useRouter();
   const queryClient = useQueryClient();
   const id = router.query.id as string;
-  const { data: collection } = useQuery(["collection", id], getCollection(id));
+  const { data: collection } = useQuery({
+    queryKey: ["collection", id],
+    queryFn: getCollection(id)
+  });
   const [deleteDialogOpen, handleOpenDeleteDialog, handleCloseDeleteDialog] =
     useDialog(false);
   const [
@@ -82,7 +85,9 @@ const Collection: FC = () => {
   const handleDeactivatePromoCode = (): void => {
     deactivateCollection.mutate(collection._id, {
       onSuccess: () => {
-        queryClient.invalidateQueries(["collection", id]);
+        queryClient.invalidateQueries({
+          queryKey: ["collection", id]
+        });
         handleCloseDeactivateDialog();
       },
     });
@@ -96,7 +101,7 @@ const Collection: FC = () => {
         title={`Delete collection`}
         content="Are you sure you want to delete this collection?"
         onSubmit={handleDeletePromoCode}
-        isLoading={deleteCollection.isLoading}
+        isLoading={deleteCollection.isPending}
       />
       <AlertDialog
         open={deactivateDialogOpen}
@@ -104,7 +109,7 @@ const Collection: FC = () => {
         title={`Deactivate collection`}
         content="Are you sure you want to deactivate this collection?"
         onSubmit={handleDeactivatePromoCode}
-        isLoading={deactivateCollection.isLoading}
+        isLoading={deactivateCollection.isPending}
       />
       <Head>
         <title>Collection</title>
@@ -136,9 +141,12 @@ export const getServerSideProps: GetServerSideProps = async ({
   const queryClient = new QueryClient();
 
   try {
-    await queryClient.fetchQuery(
-      ["collection", id],
-      getCollection(id, { req, res })
+    await queryClient.fetchQuery({
+      queryKey: ["collection", id],
+      queryFn: getCollection(id, { req, res })
+    }
+
+
     );
   } catch (error) {
     console.error(error);

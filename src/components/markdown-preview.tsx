@@ -157,7 +157,7 @@ export const MarkdownPreview: FC<MarkdownPreviewProps> = (props) => {
             {cover && (
               <Image
                 src={cover}
-                alt={title}
+                alt={title || 'cover'}
                 layout="responsive"
                 width={16}
                 height={9}

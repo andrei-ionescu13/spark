@@ -26,7 +26,7 @@ import { TextInput } from "@/components/text-input";
 import { DateInput } from "@/components/date-picker";
 import { Developer } from "@/types/developer";
 import { appFetch } from "@/utils/app-fetch";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { Feature } from "@/types/feature";
 import { Language } from "@/types/translations";
 import { OperatingSystem } from "@/types/operating-sistem";
@@ -38,36 +38,36 @@ interface ProductFormGeneralProps {
 
 const listGenres =
   (config: Record<string, any> = {}) =>
-  () =>
-    appFetch<Genre[]>({ url: "/genres", withAuth: true, ...config });
+    () =>
+      appFetch<Genre[]>({ url: "/genres", withAuth: true, ...config });
 const listPublishers =
   (config: Record<string, any> = {}) =>
-  () =>
-    appFetch<Publisher[]>({ url: "/publishers", withAuth: true, ...config });
+    () =>
+      appFetch<Publisher[]>({ url: "/publishers", withAuth: true, ...config });
 const listPlatforms =
   (config: Record<string, any> = {}) =>
-  () =>
-    appFetch<Platform[]>({ url: "/platforms", withAuth: true, ...config });
+    () =>
+      appFetch<Platform[]>({ url: "/platforms", withAuth: true, ...config });
 const listDevelopers =
   (config: Record<string, any> = {}) =>
-  () =>
-    appFetch<Developer[]>({ url: "/developers", withAuth: true, ...config });
+    () =>
+      appFetch<Developer[]>({ url: "/developers", withAuth: true, ...config });
 const listFeatures =
   (config: Record<string, any> = {}) =>
-  () =>
-    appFetch<Feature[]>({ url: "/features", withAuth: true, ...config });
+    () =>
+      appFetch<Feature[]>({ url: "/features", withAuth: true, ...config });
 const listLanguages =
   (config: Record<string, any> = {}) =>
-  () =>
-    appFetch<Language[]>({ url: "/languages", withAuth: true, ...config });
+    () =>
+      appFetch<Language[]>({ url: "/languages", withAuth: true, ...config });
 const listOperatingSystems =
   (config: Record<string, any> = {}) =>
-  () =>
-    appFetch<OperatingSystem[]>({
-      url: "/operating-systems",
-      withAuth: true,
-      ...config,
-    });
+    () =>
+      appFetch<OperatingSystem[]>({
+        url: "/operating-systems",
+        withAuth: true,
+        ...config,
+      });
 
 export const ProductFormGeneral: FC<ProductFormGeneralProps> = (props) => {
   const { onNext, product } = props;
@@ -92,29 +92,39 @@ export const ProductFormGeneral: FC<ProductFormGeneralProps> = (props) => {
     }));
   };
 
-  const developersQuery = useQuery("developers", listDevelopers(), {
+  const developersQuery = useQuery({
+    queryKey: ["developers"],
+    queryFn: listDevelopers(),
     enabled: autocompleteOpen.developers,
   });
-  const featuresQuery = useQuery("features", listFeatures(), {
+  const featuresQuery = useQuery({
+    queryKey: ["features"],
+    queryFn: listFeatures(),
     enabled: autocompleteOpen.features,
   });
-  const genresQuery = useQuery("genres", listGenres(), {
+  const genresQuery = useQuery({
+    queryKey: ["genres"],
+    queryFn: listGenres(),
     enabled: autocompleteOpen.genres,
   });
-  const languagesQuery = useQuery("languages", listLanguages(), {
+  const languagesQuery = useQuery({
+    queryKey: ["languages"],
+    queryFn: listLanguages(),
     enabled: autocompleteOpen.languages,
   });
-  const operatingSystemsQuery = useQuery(
-    "oerating-systems",
-    listOperatingSystems(),
-    {
-      enabled: autocompleteOpen.os,
-    }
-  );
-  const platformsQuery = useQuery("platforms", listPlatforms(), {
+  const operatingSystemsQuery = useQuery({
+    queryKey: ["operating-systems"],
+    queryFn: listOperatingSystems(),
+    enabled: autocompleteOpen.os,
+  });
+  const platformsQuery = useQuery({
+    queryKey: ["platforms"],
+    queryFn: listPlatforms(),
     enabled: autocompleteOpen.platform,
   });
-  const publishersQuery = useQuery("publishers", listPublishers(), {
+  const publishersQuery = useQuery({
+    queryKey: ["publishers"],
+    queryFn: listPublishers(),
     enabled: autocompleteOpen.publisher,
   });
 

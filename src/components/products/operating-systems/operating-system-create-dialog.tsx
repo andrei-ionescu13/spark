@@ -3,13 +3,13 @@ import * as Yup from "yup";
 import { FC } from "react";
 import { Box, FormHelperText, Grid, Link, Typography } from "@mui/material";
 import { toast } from "react-toastify";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { AlertDialog, AlertDialogProps } from "@/components/alert-dialog";
 import { TextInput } from "@/components/text-input";
 import { useCreateOperatingSystem } from "@/api/operating-systems";
 
 interface OperatingSystemCreateDialogProps
-  extends Omit<AlertDialogProps, "title" | "onSubmit" | "isLoading"> {}
+  extends Omit<AlertDialogProps, "title" | "onSubmit" | "isLoading"> { }
 
 const ToastSuccess = (id: string) => (
   <Box>
@@ -25,7 +25,7 @@ export const OperatingSystemCreateDialog: FC<
   const { onClose, ...rest } = props;
   const queryClient = useQueryClient();
   const createOperatingSystem = useCreateOperatingSystem(() =>
-    queryClient.invalidateQueries("operatingSystems")
+    queryClient.invalidateQueries({ queryKey: ["operatingSystems"] })
   );
 
   const formik = useFormik({
@@ -52,7 +52,7 @@ export const OperatingSystemCreateDialog: FC<
       onSubmit={formik.handleSubmit}
       onClose={onClose}
       title={`Create Operating System`}
-      isLoading={createOperatingSystem.isLoading}
+      isLoading={createOperatingSystem.isPending}
       {...rest}
     >
       <Grid container spacing={3}>

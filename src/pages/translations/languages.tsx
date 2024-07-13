@@ -18,7 +18,7 @@ import { PageHeader } from "@/components/page-header";
 import { Plus as PlusIcon } from "@/icons/plus";
 import { Trash as TrashIcon } from "@/icons/trash";
 import { useDialog } from "@/hooks/useDialog";
-import { dehydrate, QueryClient, useQuery, useQueryClient } from "react-query";
+import { dehydrate, QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
 import { LanguagesDeleteDialog } from "@/components/translations/languages/languages-delete-dialog";
 import { appFetch } from "@/utils/app-fetch";
 import type { Language } from "@/types/translations";
@@ -71,18 +71,18 @@ const headCells: HeadCell[] = [
 
 const getLanguages =
   (config: Record<string, any> = {}) =>
-  () =>
-    appFetch<Language[]>({
-      url: "/translations/languages",
-      withAuth: true,
-      ...config,
-    });
+    () =>
+      appFetch<Language[]>({
+        url: "/translations/languages",
+        withAuth: true,
+        ...config,
+      });
 
 const TranslationList: FC = () => {
-  const { data: languages } = useQuery(
-    "translations-languages",
-    getLanguages()
-  );
+  const { data: languages } = useQuery({
+    queryKey: ["translations-languages"],
+    queryFn: getLanguages()
+  });
   const [openDialog, handleOpenDialog, handleCloseDialog] = useDialog();
 
   if (!languages) return null;
@@ -140,7 +140,10 @@ export const getServerSideProps: GetServerSideProps = async ({
   const queryClient = new QueryClient();
 
   try {
-    await queryClient.fetchQuery("languages", getLanguages({ req, res }));
+    await queryClient.fetchQuery({
+      queryKey: ["translations-languages"],
+      queryFn: getLanguages({ req, res })
+    });
   } catch (error) {
     console.error(error);
   }

@@ -5,7 +5,7 @@ import type { GetServerSideProps } from "next";
 import { UserLayout } from "@/components/users/user-layout";
 import { Grid } from "@mui/material";
 import { UserGeneralDetails } from "@/components/users/user-general/user-general-details";
-import { dehydrate, QueryClient, useQuery } from "react-query";
+import { dehydrate, QueryClient, useQuery } from "@tanstack/react-query";
 import { appFetch } from "@/utils/app-fetch";
 import { User as UserI } from "@/types/user";
 
@@ -38,17 +38,20 @@ const orders = [
 
 const getUser =
   (id: string, config: Record<string, any> = {}) =>
-  () =>
-    appFetch<UserI>({
-      url: `/users/${id}`,
-      withAuth: true,
-      ...config,
-    });
+    () =>
+      appFetch<UserI>({
+        url: `/users/${id}`,
+        withAuth: true,
+        ...config,
+      });
 
 const User: FC = () => {
   const router = useRouter();
   const id = router.query.id as string;
-  const { data: user } = useQuery(["users", id], getUser(id));
+  const { data: user } = useQuery({
+    queryKey: ["users", id],
+    queryFn: getUser(id)
+  });
 
   if (!user) return null;
 
@@ -85,7 +88,10 @@ export const getServerSideProps: GetServerSideProps = async ({
   const queryClient = new QueryClient();
 
   try {
-    await queryClient.fetchQuery(["users", id], getUser(id, { req, res }));
+    await queryClient.fetchQuery({
+      queryKey: ["users", id],
+      queryFn: getUser(id, { req, res })
+    });
   } catch (error) {
     console.error(error);
   }

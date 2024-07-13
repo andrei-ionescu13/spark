@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { FC } from "react";
 import { useFormik } from "formik";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import * as Yup from "yup";
 import {
   Dialog,
@@ -176,7 +176,7 @@ export const ArticleDetailsGeneralForm: FC<ArticleDetailsGeneralFormProps> = (
         </Button>
         <Button
           color="primary"
-          isLoading={updateArticleDetails.isLoading}
+          isLoading={updateArticleDetails.isPending}
           onClick={() => {
             formik.handleSubmit();
           }}

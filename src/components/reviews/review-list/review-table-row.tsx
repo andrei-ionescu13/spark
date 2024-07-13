@@ -128,7 +128,7 @@ export const StatusUpdate: FC<StatusUpdateProps> = (props) => {
         <Button
           autoFocus
           color="primary"
-          isLoading={updateReviewStatus.isLoading}
+          isLoading={updateReviewStatus.isPending}
           onClick={() => formik.handleSubmit()}
           variant="contained"
         >
@@ -200,7 +200,7 @@ export const RaviewTableRow: FC<RaviewTableRowProps> = (props) => {
         title="Delete review"
         content="Are you sure you want to delete this review?"
         onSubmit={handleDeleteReview}
-        isLoading={deleteReview.isLoading}
+        isLoading={deleteReview.isPending}
       />
       <StatusUpdate
         open={updateDialogOpen}

@@ -1,10 +1,10 @@
 import type { Translation } from "@/types/translations";
 import { appFetch } from "@/utils/app-fetch";
-import { useMutation } from "react-query";
+import { useMutation } from "@tanstack/react-query";
 
 export const useCreateTranslationsLanguage = (onSuccess?: () => Promise<any>) =>
-  useMutation<{}, Error, Record<string, unknown>>(
-    (values) =>
+  useMutation<{}, Error, Record<string, unknown>>({
+    mutationFn: (values) =>
       appFetch({
         url: "/translations/languages",
         config: {
@@ -13,12 +13,12 @@ export const useCreateTranslationsLanguage = (onSuccess?: () => Promise<any>) =>
         },
         withAuth: true,
       }),
-    { onSuccess }
-  );
+    onSuccess
+  });
 
 export const useDeleteLanguage = (onSuccess?: () => Promise<any>) =>
-  useMutation<{}, Error, { id: string; shouldDeleteTranslations: boolean }>(
-    ({ id, shouldDeleteTranslations }) =>
+  useMutation<{}, Error, { id: string; shouldDeleteTranslations: boolean }>({
+    mutationFn: ({ id, shouldDeleteTranslations }) =>
       appFetch({
         url: `/translations/languages/${id}`,
         config: {
@@ -27,12 +27,12 @@ export const useDeleteLanguage = (onSuccess?: () => Promise<any>) =>
         },
         withAuth: true,
       }),
-    { onSuccess }
-  );
+    onSuccess
+  });
 
 export const useCreateNamespace = (onSuccess?: () => Promise<any>) =>
-  useMutation<{}, Error, Record<string, string>>(
-    (values) =>
+  useMutation<{}, Error, Record<string, string>>({
+    mutationFn: (values) =>
       appFetch({
         url: "/translations/namespaces",
         config: {
@@ -41,23 +41,23 @@ export const useCreateNamespace = (onSuccess?: () => Promise<any>) =>
         },
         withAuth: true,
       }),
-    { onSuccess }
-  );
+    onSuccess
+  });
 
 export const useDeleteNamespace = (onSuccess?: () => Promise<any>) =>
-  useMutation<{}, Error, string>(
-    (id) =>
+  useMutation<{}, Error, string>({
+    mutationFn: (id) =>
       appFetch({
         url: `/translations/namespaces/${id}`,
         config: { method: "DELETE" },
         withAuth: true,
       }),
-    { onSuccess }
-  );
+    onSuccess
+  });
 
 export const useAddNamespaceTranslation = (onSuccess?: () => Promise<any>) =>
-  useMutation<{}, Error, { id: string; body: Record<string, any> }>(
-    ({ id, body }) =>
+  useMutation<{}, Error, { id: string; body: Record<string, any> }>({
+    mutationFn: ({ id, body }) =>
       appFetch({
         url: `/translations/namespaces/${id}/translation`,
         config: {
@@ -66,12 +66,12 @@ export const useAddNamespaceTranslation = (onSuccess?: () => Promise<any>) =>
         },
         withAuth: true,
       }),
-    { onSuccess }
-  );
+    onSuccess
+  });
 
 export const useUpdateNamespaceName = (onSuccess?: () => Promise<any>) =>
-  useMutation<{}, Error, { id: string; name: string }>(
-    ({ id, name }) =>
+  useMutation<{}, Error, { id: string; name: string }>({
+    mutationFn: ({ id, name }) =>
       appFetch({
         url: `/translations/namespaces/${id}/name`,
         config: {
@@ -80,26 +80,26 @@ export const useUpdateNamespaceName = (onSuccess?: () => Promise<any>) =>
         },
         withAuth: true,
       }),
-    { onSuccess }
-  );
+    onSuccess
+  });
 
 export const useDeleteNamespaceTranslation = () =>
-  useMutation<{}, Error, { id: string; translationKey: string }>(
-    ({ id, translationKey }) =>
+  useMutation<{}, Error, { id: string; translationKey: string }>({
+    mutationFn: ({ id, translationKey }) =>
       appFetch({
         url: `/translations/namespaces/${id}/translations/${translationKey}`,
         config: { method: "DELETE" },
         withAuth: true,
       })
-  );
+  });
 
 export const useUpdateNamespaceTranslation = (onSuccess?: () => Promise<any>) =>
   useMutation<
     {},
     Error,
     { id: string; translationKey: string; body: Record<string, any> }
-  >(
-    ({ id, translationKey, body }) =>
+  >({
+    mutationFn: ({ id, translationKey, body }) =>
       appFetch({
         url: `/translations/namespaces/${id}/translations/${translationKey}`,
         config: {
@@ -108,5 +108,5 @@ export const useUpdateNamespaceTranslation = (onSuccess?: () => Promise<any>) =>
         },
         withAuth: true,
       }),
-    { onSuccess }
-  );
+    onSuccess
+  });

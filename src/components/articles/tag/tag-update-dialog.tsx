@@ -3,7 +3,7 @@ import * as Yup from "yup";
 import { FC } from "react";
 import { Box, FormHelperText, Grid, Link, Typography } from "@mui/material";
 import { toast } from "react-toastify";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { AlertDialog, AlertDialogProps } from "@/components/alert-dialog";
 import { TextInput } from "@/components/text-input";
 import { useUpdateArticleCategory } from "@/api/article-categories";
@@ -36,7 +36,7 @@ export const ArticleTagUpdateDialog: FC<ArticleDuplicateDialog> = (props) => {
   const { onClose, articleTag, ...rest } = props;
   const queryClient = useQueryClient();
   const updateArticleTag = useUpdateArticleTag(articleTag._id, () =>
-    queryClient.invalidateQueries("article-tags")
+    queryClient.invalidateQueries({ queryKey: ["article-tags"] })
   );
 
   const formik = useFormik({
@@ -63,7 +63,7 @@ export const ArticleTagUpdateDialog: FC<ArticleDuplicateDialog> = (props) => {
       onSubmit={formik.handleSubmit}
       onClose={onClose}
       title={`Update article tag`}
-      isLoading={updateArticleTag.isLoading}
+      isLoading={updateArticleTag.isPending}
       {...rest}
     >
       <Grid container spacing={3}>

@@ -6,7 +6,7 @@ import { TextInput } from "../text-input";
 import { Box, FormHelperText, Grid, Link, Typography } from "@mui/material";
 import { useDuplicateArticle } from "@/api/articles";
 import { toast } from "react-toastify";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface ProductDuplicateDialog
   extends Omit<AlertDialogProps, "title" | "onSubmit" | "isLoading"> {
@@ -33,7 +33,7 @@ export const ProductDuplicateDialog: FC<ProductDuplicateDialog> = (props) => {
   const { articleId, onClose, ...rest } = props;
   const queryClient = useQueryClient();
   const duplicateArticle = useDuplicateArticle(articleId, () =>
-    queryClient.invalidateQueries("articles")
+    queryClient.invalidateQueries({ queryKey: ["articles"] })
   );
 
   const formik = useFormik({
@@ -60,7 +60,7 @@ export const ProductDuplicateDialog: FC<ProductDuplicateDialog> = (props) => {
       onSubmit={formik.handleSubmit}
       onClose={onClose}
       title={`Duplicate article`}
-      isLoading={duplicateArticle.isLoading}
+      isLoading={duplicateArticle.isPending}
       {...rest}
     >
       <Grid container spacing={3}>

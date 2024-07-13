@@ -7,7 +7,7 @@ import { OrdersTable } from "@/components/orders-table";
 import type { ParsedUrlQuery } from "querystring";
 import { appFetch } from "@/utils/app-fetch";
 import type { Order } from "@/types/orders";
-import { dehydrate, QueryClient, useQuery } from "react-query";
+import { dehydrate, QueryClient, useQuery } from "@tanstack/react-query";
 import type { User } from "@/types/user";
 
 interface GetOrdersData {
@@ -17,29 +17,35 @@ interface GetOrdersData {
 
 const getOrders =
   (query: ParsedUrlQuery, config: Record<string, any> = {}) =>
-  () =>
-    appFetch<GetOrdersData>({
-      url: "/orders/search",
-      query,
-      withAuth: true,
-      ...config,
-    });
+    () =>
+      appFetch<GetOrdersData>({
+        url: "/orders/search",
+        query,
+        withAuth: true,
+        ...config,
+      });
 
 const getUser =
   (id: string, config: Record<string, any> = {}) =>
-  () =>
-    appFetch<User>({
-      url: `/users/${id}`,
-      withAuth: true,
-      ...config,
-    });
+    () =>
+      appFetch<User>({
+        url: `/users/${id}`,
+        withAuth: true,
+        ...config,
+      });
 
 const User: FC = () => {
   const router = useRouter();
   const id = router.query.id as string;
   const { query } = useRouter();
-  const { error, data } = useQuery(["user-orders", query], getOrders(query));
-  const { data: user } = useQuery(["users", id], getUser(id));
+  const { error, data } = useQuery({
+    queryKey: ["user-orders", query],
+    queryFn: getOrders(query)
+  });
+  const { data: user } = useQuery({
+    queryKey: ["users", id],
+    queryFn: getUser(id)
+  });
 
   if (!data || !user) return null;
 
@@ -69,11 +75,14 @@ export const getServerSideProps: GetServerSideProps = async ({
   };
 
   try {
-    await queryClient.fetchQuery(
-      ["user-orders", query],
-      getOrders(queryRest, { req, res })
-    );
-    await queryClient.fetchQuery(["users", id], getUser(id, { req, res }));
+    await queryClient.fetchQuery({
+      queryKey: ["user-orders", query],
+      queryFn: getOrders(queryRest, { req, res })
+    });
+    await queryClient.fetchQuery({
+      queryKey: ["users", id],
+      queryFn: getUser(id, { req, res })
+    });
   } catch (error) {
     console.error(error);
   }

@@ -15,7 +15,7 @@ import { useSearch } from "@/hooks/useSearch";
 import { useSort } from "@/hooks/useSort";
 import { SearchInput } from "@/components/search-input";
 import { GetServerSideProps } from "next";
-import { QueryClient, useQuery, useQueryClient, dehydrate } from "react-query";
+import { QueryClient, useQuery, useQueryClient, dehydrate } from "@tanstack/react-query";
 import { useDialog } from "@/hooks/useDialog";
 import { AlertDialog } from "@/components/alert-dialog";
 import { Plus as PlusIcon } from "@/icons/plus";
@@ -75,13 +75,13 @@ interface GetDiscountsData {
 
 const getProducts =
   (query: Record<string, any>, config: Record<string, any> = {}) =>
-  () =>
-    appFetch<GetDiscountsData>({
-      url: "/discounts/search",
-      query,
-      withAuth: true,
-      ...config,
-    });
+    () =>
+      appFetch<GetDiscountsData>({
+        url: "/discounts/search",
+        query,
+        withAuth: true,
+        ...config,
+      });
 
 const Discounts: FC = () => {
   const { query } = useRouter();
@@ -90,9 +90,12 @@ const Discounts: FC = () => {
     useSearch();
   const [selected, setSelected] = useState<string[]>([]);
   const [dialogOpen, handleOpenDialog, handleCloseDialog] = useDialog();
-  const { error, data } = useQuery(["discounts", query], getProducts(query));
+  const { error, data } = useQuery({
+    queryKey: ["discounts", query],
+    queryFn: getProducts(query)
+  });
   const deleteDiscounts = useDeleteDiscounts(() =>
-    queryClient.invalidateQueries("discounts")
+    queryClient.invalidateQueries({ queryKey: ["discounts"] })
   );
   const [status, setStatus] = useQueryValue("status", "all", "all");
 
@@ -140,7 +143,7 @@ const Discounts: FC = () => {
       </Head>
       <AlertDialog
         content="Are you sure you want to permanently delete these discounts?"
-        isLoading={deleteDiscounts.isLoading}
+        isLoading={deleteDiscounts.isPending}
         onClose={handleCloseDialog}
         onSubmit={handleDeleteDiscounts}
         open={dialogOpen}
@@ -234,9 +237,12 @@ export const getServerSideProps: GetServerSideProps = async ({
   const queryClient = new QueryClient();
 
   try {
-    await queryClient.fetchQuery(
-      ["discounts", query],
-      getProducts(query, { req, res })
+    await queryClient.fetchQuery({
+      queryKey: ["discounts", query],
+      queryFn: getProducts(query, { req, res })
+    }
+
+
     );
   } catch (error) {
     console.error(error);

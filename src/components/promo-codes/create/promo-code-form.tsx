@@ -5,7 +5,7 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import { FormInterval } from "@/components/form-interval";
 import { Button } from "@/components/button";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { PromoCodeFormCode } from "./promo-code-form-code";
 import { Link } from "@/components/link";
@@ -61,7 +61,7 @@ export const PromoCodeForm: FC<PromoCodeFormProps> = (props) => {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const createPromoCode = useCreatePromoCode();
   const updatePromoCode = useUpdatePromoCode(() =>
-    queryClient.invalidateQueries(["promo-code", promoCode?._id])
+    queryClient.invalidateQueries({ queryKey: ["promo-code", promoCode?._id] })
   );
   const initialValues: PromoCodeFormValues = {
     products: promoCode?.products || [],
@@ -85,7 +85,7 @@ export const PromoCodeForm: FC<PromoCodeFormProps> = (props) => {
     setShouldSetEndDate(!!promoCode?.endDate);
   }, [promoCode?.endDate]);
 
-  const isLoading = createPromoCode.isLoading || updatePromoCode.isLoading;
+  const isPending = createPromoCode.isPending || updatePromoCode.isPending;
 
   return (
     <Grid container spacing={3}>
@@ -144,7 +144,7 @@ export const PromoCodeForm: FC<PromoCodeFormProps> = (props) => {
             updatePromoCode.mutate(
               { id: promoCode._id, body: formValues },
               {
-                onSuccess: async (data) => {},
+                onSuccess: async (data) => { },
                 onError: (error) => {
                   setSubmitError(error.message);
                 },
@@ -188,7 +188,7 @@ export const PromoCodeForm: FC<PromoCodeFormProps> = (props) => {
               </Grid>
               <Grid item xs={12}>
                 <Button
-                  isLoading={isLoading}
+                  isLoading={isPending}
                   color="primary"
                   fullWidth
                   size="large"

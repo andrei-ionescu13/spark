@@ -12,7 +12,7 @@ import {
 } from '@mui/material'
 import { appFetch } from '@/utils/app-fetch';
 import { Button } from '@/components/button';
-import { useQuery } from 'react-query';
+import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { SearchInput } from '@/components/search-input';
 import { Box } from '@mui/system';
 import type { User } from '@/types/user';
@@ -39,7 +39,11 @@ interface AddUsersDialogProps {
 export const AddUsersDialog: FC<AddUsersDialogProps> = (props) => {
   const { open, onClose, onAdd, selectedUsers: selectedUsersProp = [] } = props;
   const [keyword, setKeyword] = useState('');
-  const { error, data, isLoading } = useQuery(['users', { keyword }], getUsers({ keyword }), { keepPreviousData: true });
+  const { error, data, isLoading } = useQuery({
+    queryKey: ['users', { keyword }],
+    queryFn: getUsers({ keyword }),
+    placeholderData: keepPreviousData
+  });
   const users = data?.users || [];
   const [selectedUsers, setSelectedUsers] = useState<User[]>(selectedUsersProp);
 

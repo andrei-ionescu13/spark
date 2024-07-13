@@ -3,7 +3,7 @@ import type { FC } from "react";
 import { Box, FormControlLabel, Switch } from "@mui/material";
 import { useDeleteLanguage } from "@/api/translations";
 import { AlertDialog } from "@/components/alert-dialog";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface LanguagesDeleteDialogProps {
   open: boolean;
@@ -17,7 +17,7 @@ export const LanguagesDeleteDialog: FC<LanguagesDeleteDialogProps> = (
   const { open, onClose, language } = props;
   const queryClient = useQueryClient();
   const deleteLanguage = useDeleteLanguage(() =>
-    queryClient.invalidateQueries("translations-languages")
+    queryClient.invalidateQueries({ queryKey: ["translations-languages"] })
   );
   const [shouldDeleteTranslations, setShouldDeleteTranslations] =
     useState(false);
@@ -44,7 +44,7 @@ export const LanguagesDeleteDialog: FC<LanguagesDeleteDialogProps> = (
       title={`Delete ${language.name} language`}
       content="Are you sure you want to permanently delete this language?"
       onSubmit={handleDeleteLanguage}
-      isLoading={deleteLanguage.isLoading}
+      isLoading={deleteLanguage.isPending}
     >
       <Box sx={{ pt: 3 }}>
         <FormControlLabel

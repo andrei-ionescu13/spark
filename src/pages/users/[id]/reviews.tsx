@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import Head from "next/head";
 import type { GetServerSideProps, NextPage } from "next";
-import { dehydrate, QueryClient, useQuery } from "react-query";
+import { dehydrate, QueryClient, useQuery } from "@tanstack/react-query";
 import { appFetch } from "@/utils/app-fetch";
 import { ParsedUrlQuery } from "querystring";
 import type { Review } from "@/types/review";
@@ -16,22 +16,22 @@ interface GetUserReviews {
 
 const getUserReviews =
   (id: string, query: ParsedUrlQuery, config: Record<string, any> = {}) =>
-  () =>
-    appFetch<GetUserReviews>({
-      url: `/users/${id}/reviews`,
-      query,
-      withAuth: true,
-      ...config,
-    });
+    () =>
+      appFetch<GetUserReviews>({
+        url: `/users/${id}/reviews`,
+        query,
+        withAuth: true,
+        ...config,
+      });
 
 const getUser =
   (id: string, config: Record<string, any> = {}) =>
-  () =>
-    appFetch<User>({
-      url: `/users/${id}`,
-      withAuth: true,
-      ...config,
-    });
+    () =>
+      appFetch<User>({
+        url: `/users/${id}`,
+        withAuth: true,
+        ...config,
+      });
 
 const Reviews: NextPage = () => {
   const router = useRouter();
@@ -39,11 +39,17 @@ const Reviews: NextPage = () => {
     id: string;
     [key: string]: string;
   };
-  const { data, refetch } = useQuery(
-    ["user-reviews", id, query],
-    getUserReviews(id, query)
+  const { data, refetch } = useQuery({
+    queryKey: ["user-reviews", id, query],
+    queryFn: getUserReviews(id, query)
+  }
+
+
   );
-  const { data: user } = useQuery(["users", id], getUser(id));
+  const { data: user } = useQuery({
+    queryKey: ["users", id],
+    queryFn: getUser(id)
+  });
 
   if (!data || !user) return null;
 
@@ -79,11 +85,14 @@ export const getServerSideProps: GetServerSideProps = async ({
   };
 
   try {
-    await queryClient.fetchQuery(
-      ["user-reviews", id, query],
-      getUserReviews(id, queryRest, { req, res })
-    );
-    await queryClient.fetchQuery(["users", id], getUser(id, { req, res }));
+    await queryClient.fetchQuery({
+      queryKey: ["user-reviews", id, query],
+      queryFn: getUserReviews(id, queryRest, { req, res })
+    });
+    await queryClient.fetchQuery({
+      queryKey: ["users", id],
+      queryFn: getUser(id, { req, res })
+    });
   } catch (error) {
     console.error(error);
   }

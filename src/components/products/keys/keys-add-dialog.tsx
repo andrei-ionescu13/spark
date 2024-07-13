@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { FC, SyntheticEvent } from "react";
 import { useFormik } from "formik";
-import { useQuery, useQueryClient } from "react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import * as Yup from "yup";
 import {
   Autocomplete,
@@ -19,12 +19,6 @@ import { TextInput } from "../../text-input";
 import { appFetch } from "@/utils/app-fetch";
 import { Product } from "@/types/products";
 import { useCreateKey } from "@/api/keys";
-
-interface Values {
-  description: string;
-  keywords: string[];
-  title: string;
-}
 
 interface ArticleDetailsMetaFormProps {
   open: boolean;
@@ -57,11 +51,11 @@ export const KeysAddDialog: FC<ArticleDetailsMetaFormProps> = (props) => {
   const { open, onClose } = props;
   const queryClient = useQueryClient();
   const [keyword, setKeyword] = useState("");
-  const createKey = useCreateKey(() => queryClient.invalidateQueries(["keys"]));
-  const { error, data: productsData } = useQuery(
-    ["keys", "products", { keyword }],
-    getProducts({ keyword })
-  );
+  const createKey = useCreateKey(() => queryClient.invalidateQueries({ queryKey: ["keys"] }));
+  const { error, data: productsData } = useQuery({
+    queryKey: ["keys", "products", { keyword }],
+    queryFn: getProducts({ keyword })
+  });
   const { products } = productsData || { products: [], count: 0 };
 
   const formik = useFormik({
@@ -140,7 +134,7 @@ export const KeysAddDialog: FC<ArticleDetailsMetaFormProps> = (props) => {
         </Button>
         <Button
           color="primary"
-          isLoading={createKey.isLoading}
+          isLoading={createKey.isPending}
           onClick={() => {
             formik.handleSubmit();
           }}

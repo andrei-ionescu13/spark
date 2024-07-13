@@ -109,7 +109,7 @@ export const ProductLayout: FC<ProductLayoutProps> = (props) => {
             title={`Delete product ${id}`}
             content="Are you sure you want to permanently delete this product?"
             onSubmit={handleDeleteProduct}
-            isLoading={deleteProduct.isLoading}
+            isLoading={deleteProduct.isPending}
           />
         </>
       )}

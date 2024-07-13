@@ -24,19 +24,19 @@ const getHeadCells = (showProduct: boolean, showUser: boolean): HeadCell[] => [
   },
   ...(showProduct
     ? [
-        {
-          id: "product",
-          label: "Product",
-        },
-      ]
+      {
+        id: "product",
+        label: "Product",
+      },
+    ]
     : []),
   ...(showUser
     ? [
-        {
-          id: "user",
-          label: "User",
-        },
-      ]
+      {
+        id: "user",
+        label: "User",
+      },
+    ]
     : []),
   {
     id: "createdAt",
@@ -105,7 +105,7 @@ const ReviewsTable: FC<ReviewsTableProps> = (props) => {
         refetch();
         handleCloseDialog();
       },
-      onError: (error) => {},
+      onError: (error) => { },
     });
   };
 
@@ -202,7 +202,7 @@ const ReviewsTable: FC<ReviewsTableProps> = (props) => {
       </Card>
       <AlertDialog
         content="Are you sure you want to permanently delete these reviews"
-        isLoading={deleteReviews.isLoading}
+        isLoading={deleteReviews.isPending}
         onClose={handleCloseDialog}
         onSubmit={handleDeleteReviews}
         open={dialogOpen}

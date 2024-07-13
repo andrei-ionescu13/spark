@@ -1,6 +1,6 @@
 import type { FC } from 'react';
 import { Checkbox, colors, TableCell, useTheme } from '@mui/material';
-import { useQueryClient } from 'react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import type { ActionsItem } from '@/components/actions-menu';
 import { AlertDialog } from '@/components/alert-dialog';
 import { ActionsIconButton } from '@/components/icon-actions';
@@ -54,7 +54,7 @@ export const CollectionsTableRow: FC<CollectionsTableRowProps> = (props) => {
   const handleDeleteCollection = (): void => {
     deleteCollection.mutate(collection._id, {
       onSuccess: (data) => {
-        queryClient.invalidateQueries('collections')
+        queryClient.invalidateQueries({ queryKey: ['collections'] })
         handleCloseDeleteDialog()
       }
     })
@@ -63,7 +63,7 @@ export const CollectionsTableRow: FC<CollectionsTableRowProps> = (props) => {
   const handleDeactivateCollection = (): void => {
     deactivateCollection.mutate(collection._id, {
       onSuccess: (data) => {
-        queryClient.invalidateQueries('collections')
+        queryClient.invalidateQueries({ queryKey: ['collections'] })
         handleCloseDeactivateDialog()
       }
     })
@@ -78,7 +78,7 @@ export const CollectionsTableRow: FC<CollectionsTableRowProps> = (props) => {
         title={`Delete collection`}
         content="Are you sure you want to delete this collection?"
         onSubmit={handleDeleteCollection}
-        isLoading={deleteCollection.isLoading}
+        isLoading={deleteCollection.isPending}
       />
       <AlertDialog
         open={deactivateDialogOpen}
@@ -86,7 +86,7 @@ export const CollectionsTableRow: FC<CollectionsTableRowProps> = (props) => {
         title={`Deactivate collection`}
         content="Are you sure you want to deactivate this collection?"
         onSubmit={handleDeactivateCollection}
-        isLoading={deactivateCollection.isLoading}
+        isLoading={deactivateCollection.isPending}
       />
       <DataTableRow selected={selected}>
         <TableCell padding="checkbox">

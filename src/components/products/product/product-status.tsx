@@ -18,7 +18,7 @@ import type { Product } from '@/types/products';
 import { StatusSelect } from '@/components/status';
 import type { StatusOption } from '@/components/status';
 import { useUpdateProductStatus } from '@/api/products';
-import { useQueryClient } from 'react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import { Button } from '@/components/button';
 
@@ -107,7 +107,7 @@ export const ProductStatus: FC<ProductStatusProps> = (props) => {
             color='primary'
             variant='contained'
             disabled={isDisabled}
-            isLoading={updateProductStatus.isLoading}
+            isLoading={updateProductStatus.isPending}
             onClick={() => { formik.handleSubmit(); }}
           >
             Update

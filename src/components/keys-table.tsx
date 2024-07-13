@@ -76,11 +76,11 @@ export const KeysTable: FC<KeysTableProps> = (props) => {
     },
     ...(showProductCell
       ? [
-          {
-            id: "productName",
-            label: "Product",
-          },
-        ]
+        {
+          id: "productName",
+          label: "Product",
+        },
+      ]
       : []),
     {
       id: "createdAt",
@@ -133,7 +133,7 @@ export const KeysTable: FC<KeysTableProps> = (props) => {
         title={`Delete keys`}
         content="Are you sure you want to delete these keys?"
         onSubmit={handleDeleteKeys}
-        isLoading={deleteKeys.isLoading}
+        isLoading={deleteKeys.isPending}
       />
       <Card>
         <Box

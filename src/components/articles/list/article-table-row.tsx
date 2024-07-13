@@ -7,7 +7,7 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { ActionsItem } from "@/components/actions-menu";
 import { AlertDialog } from "@/components/alert-dialog";
 import { ActionsIconButton } from "@/components/icon-actions";
@@ -44,10 +44,7 @@ export const ArticleTableRow: FC<ArticleTableRowProps> = (props) => {
   const [openPreviewDialog, handleOpenPreviewDialog, handleClosePreviewDialog] =
     useDialog();
   const deleteArticle = useDeleteArticle(() =>
-    queryClient.invalidateQueries("articles")
-  );
-  const duplicateArticle = useDuplicateArticle(() =>
-    queryClient.invalidateQueries("articles")
+    queryClient.invalidateQueries({ queryKey: ["articles"] })
   );
 
   const handleDeleteArticle = () => {
@@ -91,7 +88,7 @@ export const ArticleTableRow: FC<ArticleTableRowProps> = (props) => {
         title="Delete article"
         content="Are you sure you want to delete this article?"
         onSubmit={handleDeleteArticle}
-        isLoading={deleteArticle.isLoading}
+        isLoading={deleteArticle.isPending}
       />
       <ArticleDuplicateDialog
         open={openDuplicateDialog}
@@ -123,7 +120,7 @@ export const ArticleTableRow: FC<ArticleTableRowProps> = (props) => {
           </Link>
         </TableCell>
         <TableCell>{article.slug}</TableCell>
-        <TableCell>{article.category}</TableCell>
+        <TableCell>{article.category.name}</TableCell>
         <TableCell>{formatDate(article.createdAt)}</TableCell>
         <TableCell>
           <Label color={mappedColors[article.status]}>{article.status}</Label>

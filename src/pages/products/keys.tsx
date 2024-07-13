@@ -19,7 +19,7 @@ import { KeysImportDialog } from "@/components/products/keys/keys-import-dialog"
 import { KeysTable } from "@/components/keys-table";
 import { useQueryValue } from "@/hooks/useQueryValue";
 import { appFetch } from "@/utils/app-fetch";
-import { dehydrate, QueryClient, useQuery } from "react-query";
+import { dehydrate, QueryClient, useQuery } from "@tanstack/react-query";
 import { Key } from "@/types/keys";
 import { KeysAddDialog } from "@/components/products/keys/keys-add-dialog";
 
@@ -30,13 +30,13 @@ interface GetKeysData {
 
 const getKeys =
   (query: Record<string, any>, config: Record<string, any> = {}) =>
-  () =>
-    appFetch<GetKeysData>({
-      url: "/keys",
-      query,
-      withAuth: true,
-      ...config,
-    });
+    () =>
+      appFetch<GetKeysData>({
+        url: "/keys",
+        query,
+        withAuth: true,
+        ...config,
+      });
 
 const Keys: FC = () => {
   const { query } = useRouter();
@@ -44,10 +44,13 @@ const Keys: FC = () => {
     useSearch();
   const [addKeyDialogOpen, handleOpenAddKey, handleCloseAddKey] = useDialog();
   const [status, setStatus] = useQueryValue("status", "all", "all");
-  const { data, isError, isRefetching, refetch } = useQuery(
-    ["keys", query],
-    getKeys(query)
-  );
+  const { data, isError, isRefetching, refetch } = useQuery({
+    queryKey: ["keys", query],
+    queryFn: getKeys(query)
+  });
+
+
+
   const [importKeysDialogOpen, handleOpenImportKeys, handleCloseImportKeys] =
     useDialog(false);
 
@@ -110,7 +113,10 @@ export const getServerSideProps: GetServerSideProps = async ({
   const queryClient = new QueryClient();
 
   try {
-    await queryClient.fetchQuery(["keys", query], getKeys(query, { req, res }));
+    await queryClient.fetchQuery({
+      queryKey: ["keys", query],
+      queryFn: getKeys(query, { req, res })
+    });
   } catch (error) {
     console.error(error);
   }

@@ -5,7 +5,7 @@ import { Box, FormHelperText, Typography } from '@mui/material';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useImportKeys } from '@/api/keys';
-import { useQueryClient } from 'react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { Link } from '@/components/link';
 import { buildFormData } from '@/utils/build-form-data';
 import { Button } from '@/components/button';
@@ -36,7 +36,7 @@ export const KeysImportDialog: FC<KeysImportDialogProps> = (props) => {
       importKeys.mutate(formData, {
         onSuccess: () => {
           onClose();
-          queryClient.invalidateQueries('keys')
+          queryClient.invalidateQueries({ queryKey: ['keys'] })
         }
       })
     },
@@ -61,7 +61,7 @@ export const KeysImportDialog: FC<KeysImportDialogProps> = (props) => {
       onClose={onClose}
       title='Import keys'
       onSubmit={formik.handleSubmit}
-      isLoading={importKeys.isLoading}
+      isLoading={importKeys.isPending}
       maxWidth="sm"
       fullWidth
       sx={{

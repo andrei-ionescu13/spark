@@ -5,7 +5,7 @@ import { PageHeader } from "@/components/page-header";
 import { useDeactivateDiscount, useDeleteDiscount } from "@/api/discounts";
 import { appFetch } from "@/utils/app-fetch";
 import type { Discount as DiscountI } from "@/types/discounts";
-import { dehydrate, QueryClient, useQuery, useQueryClient } from "react-query";
+import { dehydrate, QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import type { ActionsItem } from "@/components/actions-menu";
 import { Trash as TrashIcon } from "@/icons/trash";
@@ -20,21 +20,21 @@ import { Box, Container, colors } from "@mui/material";
 
 const getDiscount =
   (id: string, config: Record<string, any> = {}) =>
-  () =>
-    appFetch<DiscountI>({
-      url: `/discounts/${id}`,
-      withAuth: true,
-      ...config,
-    });
+    () =>
+      appFetch<DiscountI>({
+        url: `/discounts/${id}`,
+        withAuth: true,
+        ...config,
+      });
 
 const Discount: FC = () => {
   const theme = useTheme();
   const router = useRouter();
   const id = router.query.id as string;
-  const { data: discount, isRefetching } = useQuery(
-    ["discount", id],
-    getDiscount(id)
-  );
+  const { data: discount, isRefetching } = useQuery({
+    queryKey: ["discount", id],
+    queryFn: getDiscount(id)
+  });
   const [deleteDialogOpen, handleOpenDeleteDialog, handleCloseDeleteDialog] =
     useDialog(false);
   const [
@@ -81,7 +81,9 @@ const Discount: FC = () => {
   const handleDeactivateDiscount = (): void => {
     deactivateDiscount.mutate(discount._id, {
       onSuccess: () => {
-        queryClient.invalidateQueries(["discount", id]);
+        queryClient.invalidateQueries({
+          queryKey: ["discount", id]
+        });
         handleCloseDeactivateDialog();
       },
     });
@@ -95,7 +97,7 @@ const Discount: FC = () => {
         title={`Delete discount`}
         content="Are you sure you want to delete this discount?"
         onSubmit={handleDeleteDiscount}
-        isLoading={deleteDiscount.isLoading}
+        isLoading={deleteDiscount.isPending}
       />
       <AlertDialog
         open={deactivateDialogOpen}
@@ -103,7 +105,7 @@ const Discount: FC = () => {
         title={`Deactivate discount`}
         content="Are you sure you want to deactivate this discount?"
         onSubmit={handleDeactivateDiscount}
-        isLoading={deactivateDiscount.isLoading}
+        isLoading={deactivateDiscount.isPending}
       />
       <Head>
         <title>Discount</title>
@@ -139,9 +141,11 @@ export const getServerSideProps: GetServerSideProps = async ({
   const queryClient = new QueryClient();
 
   try {
-    await queryClient.fetchQuery(
-      ["discount", id],
-      getDiscount(id, { req, res })
+    await queryClient.fetchQuery({
+      queryKey: ["discount", id],
+      queryFn: getDiscount(id, { req, res })
+    }
+
     );
   } catch (error) {
     console.error(error);

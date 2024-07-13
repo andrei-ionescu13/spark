@@ -20,7 +20,7 @@ import { useSearch } from "@/hooks/useSearch";
 import { useSort } from "@/hooks/useSort";
 import { SearchInput } from "@/components/search-input";
 import { GetServerSideProps } from "next";
-import { QueryClient, useQuery, useQueryClient, dehydrate } from "react-query";
+import { QueryClient, useQuery, useQueryClient, dehydrate } from "@tanstack/react-query";
 import { useDialog } from "@/hooks/useDialog";
 import { AlertDialog } from "@/components/alert-dialog";
 import { Plus as PlusIcon } from "@/icons/plus";
@@ -80,13 +80,13 @@ interface GetPromoCodesData {
 
 const getPromoCodes =
   (query: Record<string, any>, config: Record<string, any> = {}) =>
-  () =>
-    appFetch<GetPromoCodesData>({
-      url: "/promo-codes/search",
-      query,
-      withAuth: true,
-      ...config,
-    });
+    () =>
+      appFetch<GetPromoCodesData>({
+        url: "/promo-codes/search",
+        query,
+        withAuth: true,
+        ...config,
+      });
 
 const Discounts: FC = () => {
   const { query } = useRouter();
@@ -96,12 +96,15 @@ const Discounts: FC = () => {
   const [selected, setSelected] = useState<string[]>([]);
   const [statusSelected, setStatusSelected] = useState("");
   const [dialogOpen, handleOpenDialog, handleCloseDialog] = useDialog();
-  const { error, data } = useQuery(
-    ["promo-codes", query],
-    getPromoCodes(query)
+  const { error, data } = useQuery({
+    queryKey: ["promo-codes", query],
+    queryFn: getPromoCodes(query)
+  }
+
+
   );
   const deletePromoCodes = useDeletePromoCodes(() =>
-    queryClient.invalidateQueries("promo-codes")
+    queryClient.invalidateQueries({ queryKey: ["promo-codes"] })
   );
   const [status, setStatus] = useQueryValue("status", "all", "all");
 
@@ -149,7 +152,7 @@ const Discounts: FC = () => {
       </Head>
       <AlertDialog
         content="Are you sure you want to permanently delete these promoCodes?"
-        isLoading={deletePromoCodes.isLoading}
+        isLoading={deletePromoCodes.isPending}
         onClose={handleCloseDialog}
         onSubmit={handleDeleteDiscounts}
         open={dialogOpen}
@@ -243,9 +246,12 @@ export const getServerSideProps: GetServerSideProps = async ({
   const queryClient = new QueryClient();
 
   try {
-    await queryClient.fetchQuery(
-      ["promo-codes", query],
-      getPromoCodes(query, { req, res })
+    await queryClient.fetchQuery({
+      queryKey: ["promo-codes", query],
+      queryFn: getPromoCodes(query, { req, res })
+    }
+
+
     );
   } catch (error) {
     console.error(error);

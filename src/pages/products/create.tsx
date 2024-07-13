@@ -16,7 +16,7 @@ import { ProductFormMeta } from "@/components/products/create/product-form-meta"
 import { ProductFormKeys } from "@/components/products/create/product-form-keys";
 import { useCreateProduct } from "@/api/products";
 import { appFetch } from "@/utils/app-fetch";
-import { dehydrate, QueryClient, useQuery } from "react-query";
+import { dehydrate, QueryClient, useQuery } from "@tanstack/react-query";
 import { buildFormData } from "@/utils/build-form-data";
 import { toast } from "react-toastify";
 import type { Genre } from "@/types/genres";
@@ -104,7 +104,7 @@ const ProductCreate: FC = () => {
               values={values}
               onBack={handleBack}
               onSubmit={handleSubmit}
-              isLoading={createProduct.isLoading}
+              isLoading={createProduct.isPending}
             />
           )}
         </Container>

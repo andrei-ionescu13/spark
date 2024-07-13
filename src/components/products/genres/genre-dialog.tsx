@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { useCreateGenre, useUpdateGenre } from "@/api/genres";
 import { Button } from "@/components/button";
 import { TextInput } from "@/components/text-input";
@@ -26,10 +26,10 @@ export const GenreDialog: FC<GenreDialogProps> = (props) => {
   const { open, onClose, genre, mode = "create" } = props;
   const queryClient = useQueryClient();
   const createGenre = useCreateGenre(() =>
-    queryClient.invalidateQueries("genres")
+    queryClient.invalidateQueries({ queryKey: ["genres"] })
   );
   const updateGenre = useUpdateGenre(() =>
-    queryClient.invalidateQueries("genres")
+    queryClient.invalidateQueries({ queryKey: ["genres"] })
   );
 
   const formik = useFormik({
@@ -45,7 +45,7 @@ export const GenreDialog: FC<GenreDialogProps> = (props) => {
       if (mode === "create") {
         createGenre.mutate(values, {
           onSuccess: () => {
-            queryClient.invalidateQueries("genres");
+            queryClient.invalidateQueries({ queryKey: ["genres"] });
             onClose();
           },
         });
@@ -58,7 +58,7 @@ export const GenreDialog: FC<GenreDialogProps> = (props) => {
           { id: genre._id, body: values },
           {
             onSuccess: () => {
-              queryClient.invalidateQueries("genres");
+              queryClient.invalidateQueries({ queryKey: ["genres"] });
               onClose();
             },
           }
@@ -109,7 +109,7 @@ export const GenreDialog: FC<GenreDialogProps> = (props) => {
         </Button>
         <Button
           color="primary"
-          isLoading={createGenre.isLoading || updateGenre.isLoading}
+          isLoading={createGenre.isPending || updateGenre.isPending}
           onClick={() => {
             formik.handleSubmit();
           }}

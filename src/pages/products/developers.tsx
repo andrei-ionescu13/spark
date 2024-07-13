@@ -19,7 +19,7 @@ import {
   TableSortLabel,
   TextField,
 } from "@mui/material";
-import { dehydrate, QueryClient, useQuery, useQueryClient } from "react-query";
+import { dehydrate, QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AlertDialog } from "@/components/alert-dialog";
 import { PageHeader } from "@/components/page-header";
 import { SearchInput } from "@/components/search-input";
@@ -57,22 +57,25 @@ interface GetDeveloperData {
 
 const searchDeveloper =
   (query: ParsedUrlQuery, config: Record<string, any> = {}) =>
-  () =>
-    appFetch<GetDeveloperData>({
-      url: "/developers/search",
-      query,
-      withAuth: true,
-      ...config,
-    });
+    () =>
+      appFetch<GetDeveloperData>({
+        url: "/developers/search",
+        query,
+        withAuth: true,
+        ...config,
+      });
 
 const Developers: FC = () => {
   const { query } = useRouter();
   const [selected, setSelected] = useState<string[]>([]);
   const [keyword, keywordParam, handleKeywordChange, handleSearch] =
     useSearch();
-  const { data, refetch } = useQuery(
-    ["developers", query],
-    searchDeveloper(query)
+  const { data, refetch } = useQuery({
+    queryKey: ["developers", query],
+    queryFn: searchDeveloper(query)
+  }
+
+
   );
   const [dialogOpen, setDialogOpen] = useState(false);
   const deleteCategories = useDeleteDevelopers(refetch);
@@ -97,7 +100,7 @@ const Developers: FC = () => {
         setSelected([]);
         handleCloseDialog();
       },
-      onError: (error) => {},
+      onError: (error) => { },
     });
   };
 
@@ -193,7 +196,7 @@ const Developers: FC = () => {
       </Box>
       <AlertDialog
         content="Are you sure you want to permanently delete these developers"
-        isLoading={deleteCategories.isLoading}
+        isLoading={deleteCategories.isPending}
         onClose={handleCloseDialog}
         onSubmit={handleDeleteDeveloper}
         open={dialogOpen}

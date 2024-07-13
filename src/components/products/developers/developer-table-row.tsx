@@ -1,6 +1,6 @@
 import type { FC } from "react";
 import { Box, Checkbox, TableCell, Typography } from "@mui/material";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { ActionsItem } from "@/components/actions-menu";
 import { AlertDialog } from "@/components/alert-dialog";
 import { ActionsIconButton } from "@/components/icon-actions";
@@ -29,7 +29,7 @@ export const DeveloperTableRow: FC<DeveloperTableRowProps> = (props) => {
     useDialog();
 
   const deleteDeveloper = useDeleteDeveloper(() =>
-    queryClient.invalidateQueries("developers")
+    queryClient.invalidateQueries({ queryKey: ["developers"] })
   );
 
   const handleDeleteDeveloper = () => {
@@ -69,7 +69,7 @@ export const DeveloperTableRow: FC<DeveloperTableRowProps> = (props) => {
         title="Delete developer"
         content="Are you sure you want to delete this developer?"
         onSubmit={handleDeleteDeveloper}
-        isLoading={deleteDeveloper.isLoading}
+        isLoading={deleteDeveloper.isPending}
       />
       <DataTableRow key={developer._id} selected={selected}>
         <TableCell padding="checkbox">

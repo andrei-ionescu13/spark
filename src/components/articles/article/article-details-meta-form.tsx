@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { FC, SyntheticEvent } from "react";
 import { useFormik } from "formik";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import * as Yup from "yup";
 import {
   Autocomplete,
@@ -144,7 +144,7 @@ export const ArticleDetailsMetaForm: FC<ArticleDetailsMetaFormProps> = (
         </Button>
         <Button
           color="primary"
-          isLoading={updateArticleMeta.isLoading}
+          isLoading={updateArticleMeta.isPending}
           onClick={() => {
             formik.handleSubmit();
           }}

@@ -25,7 +25,7 @@ import { PageHeader } from "@/components/page-header";
 import { Trash as TrashIcon } from "@/icons/trash";
 import { useDialog } from "@/hooks/useDialog";
 import { Link } from "@/components/link";
-import { dehydrate, QueryClient, useQuery, useQueryClient } from "react-query";
+import { dehydrate, QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { Review as ReviewI } from "@/types/review";
 import { formatDate } from "@/utils/format-date";
 import { useFormik } from "formik";
@@ -78,7 +78,7 @@ export const ReviewStatus: FC<ProductStatusProps> = (props) => {
     onSubmit: (values) => {
       updateReviewStatus.mutate(values, {
         onSuccess: () => {
-          queryClient.invalidateQueries(["reviews", review._id]);
+          queryClient.invalidateQueries({ queryKey: ["reviews", review._id] });
           toast.success("Review updated");
         },
         onError: (error) => {
@@ -136,7 +136,7 @@ export const ReviewStatus: FC<ProductStatusProps> = (props) => {
             fullWidth
             color="primary"
             variant="contained"
-            isLoading={updateReviewStatus.isLoading}
+            isLoading={updateReviewStatus.isPending}
             disabled={isDisabled}
             onClick={() => {
               formik.handleSubmit();
@@ -152,12 +152,12 @@ export const ReviewStatus: FC<ProductStatusProps> = (props) => {
 
 const getReview =
   (id: string, config: Record<string, any> = {}) =>
-  () =>
-    appFetch<ReviewI>({
-      url: `/reviews/${id}`,
-      withAuth: true,
-      ...config,
-    });
+    () =>
+      appFetch<ReviewI>({
+        url: `/reviews/${id}`,
+        withAuth: true,
+        ...config,
+      });
 
 const Review: FC = () => {
   const theme = useTheme();
@@ -165,7 +165,10 @@ const Review: FC = () => {
   const [deleteDialogOpen, handleOpenDeleteDialog, handleCloseDeleteDialog] =
     useDialog();
   const { id } = router.query as { id: string };
-  const { data: review } = useQuery(["reviews", id], getReview(id));
+  const { data: review } = useQuery({
+    queryKey: ["reviews", id],
+    queryFn: getReview(id)
+  });
   const deleteReview = useDeleteReview();
 
   if (!review) return null;
@@ -192,7 +195,7 @@ const Review: FC = () => {
         title="Delete review"
         content="Are you sure you want to delete this review?"
         onSubmit={handleDeleteReview}
-        isLoading={deleteReview.isLoading}
+        isLoading={deleteReview.isPending}
       />
       <Head>
         <title>Review</title>
@@ -320,7 +323,10 @@ export const getServerSideProps: GetServerSideProps = async ({
   const queryClient = new QueryClient();
 
   try {
-    await queryClient.fetchQuery(["reviews", id], getReview(id, { req, res }));
+    await queryClient.fetchQuery({
+      queryKey: ["reviews", id],
+      queryFn: getReview(id, { req, res })
+    });
   } catch (error) {
     console.error(error);
   }

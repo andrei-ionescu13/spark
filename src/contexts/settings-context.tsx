@@ -29,8 +29,8 @@ const defaultSettings: Settings = {
 
 const SettingsContext = createContext<SettingsContextI>({
   settings: defaultSettings,
-  updateSettings: () => {},
-  restoreInitialSettings: () => {},
+  updateSettings: () => { },
+  restoreInitialSettings: () => { },
 });
 
 export const SettingsProvider: FC<SettingsProviderProps> = (props) => {
@@ -40,13 +40,6 @@ export const SettingsProvider: FC<SettingsProviderProps> = (props) => {
     preset: presetProp || defaultSettings.preset,
   };
   const [settings, setSettings] = useState<Settings>(initialSettings);
-
-  // const restoreSettings = () => {
-  //   const theme = themeProp || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-  //   const preset = presetProp || initialSettings.preset
-
-  //   setSettings({ theme, preset })
-  // }
 
   const restoreDefaultSettings = (): void => {
     setSettings(initialSettings);
@@ -63,8 +56,6 @@ export const SettingsProvider: FC<SettingsProviderProps> = (props) => {
       ...newSettings,
     }));
   };
-
-  // useEffect(() => { restoreSettings() }, [])
 
   return (
     <SettingsContext.Provider

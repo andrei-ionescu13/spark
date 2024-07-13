@@ -22,7 +22,7 @@ import { SearchInput } from "@/components/search-input";
 import { GetServerSideProps } from "next";
 import { useDeleteProducts } from "@/api/products";
 import { ProductTableRow } from "@/components/products/product-list/products-table-row";
-import { QueryClient, useQuery, useQueryClient, dehydrate } from "react-query";
+import { QueryClient, useQuery, useQueryClient, dehydrate } from "@tanstack/react-query";
 import { useDialog } from "@/hooks/useDialog";
 import { AlertDialog } from "@/components/alert-dialog";
 import { Plus as PlusIcon } from "@/icons/plus";
@@ -77,11 +77,12 @@ interface GetProductsData {
   count: number;
 }
 
-const getProducts = (query: Record<string, any>) => () =>
+const getProducts = (query: Record<string, any>, config: Record<string, any> = {}) => () =>
   appFetch<GetProductsData>({
     url: "/products",
     query,
     withAuth: true,
+    ...config,
   });
 
 const Products: FC = () => {
@@ -92,12 +93,15 @@ const Products: FC = () => {
   const [selected, setSelected] = useState<string[]>([]);
   const [status, setStatus] = useQueryValue("status", "all", "all");
   const [dialogOpen, handleOpenDialog, handleCloseDialog] = useDialog();
-  const { error, data } = useQuery(
-    ["products", router.query],
-    getProducts(router.query)
+  const { error, data } = useQuery({
+    queryKey: ["products", router.query],
+    queryFn: getProducts(router.query)
+  }
+
+
   );
   const deleteProducts = useDeleteProducts(() =>
-    queryClient.invalidateQueries("products")
+    queryClient.invalidateQueries({ queryKey: ["products"] })
   );
 
   if (!data) return null;
@@ -144,7 +148,7 @@ const Products: FC = () => {
       </Head>
       <AlertDialog
         content="Are you sure you want to permanently delete these products?"
-        isLoading={deleteProducts.isLoading}
+        isLoading={deleteProducts.isPending}
         onClose={handleCloseDialog}
         onSubmit={handleDeleteProducts}
         open={dialogOpen}
@@ -239,15 +243,10 @@ export const getServerSideProps: GetServerSideProps = async ({
   const queryClient = new QueryClient();
 
   try {
-    await queryClient.fetchQuery(["products", query], () =>
-      appFetch<GetProductsData>({
-        withAuth: true,
-        url: "/products",
-        query,
-        req,
-        res,
-      })
-    );
+    await queryClient.fetchQuery({
+      queryKey: ["products", query],
+      queryFn: getProducts(query, { res, req })
+    });
   } catch (error) {
     console.error(error);
   }

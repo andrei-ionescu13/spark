@@ -7,7 +7,7 @@ import { ProductMeta } from "@/components/products/product/product-meta";
 import { ProductStatus } from "@/components/products/product/product-status";
 import { ProductLayout } from "@/components/products/product-layout";
 import { ProductMedia } from "@/components/products/product/product-media";
-import { dehydrate, QueryClient, useQuery } from "react-query";
+import { dehydrate, QueryClient, useQuery } from "@tanstack/react-query";
 import { appFetch } from "@/utils/app-fetch";
 import { Product as ProductI } from "@/types/products";
 import { ProductDiscount } from "@/components/products/product/product-discount";
@@ -15,13 +15,16 @@ import { getStatusFromInterval } from "@/utils/get-status-from-interval";
 
 const getProduct =
   (id: string, config: Record<string, any> = {}) =>
-  () =>
-    appFetch<ProductI>({ url: `/products/${id}`, withAuth: true, ...config });
+    () =>
+      appFetch<ProductI>({ url: `/products/${id}`, withAuth: true, ...config });
 
 export const Product = () => {
   const router = useRouter();
   const id = router.query.id as string;
-  const { data: product } = useQuery(["product", id], getProduct(id));
+  const { data: product } = useQuery({
+    queryKey: ["product", id],
+    queryFn: getProduct(id)
+  });
 
   if (!product) return null;
 
@@ -82,7 +85,10 @@ export const getServerSideProps: GetServerSideProps = async ({
   const queryClient = new QueryClient();
 
   try {
-    await queryClient.fetchQuery(["product", id], getProduct(id, { req, res }));
+    await queryClient.fetchQuery({
+      queryKey: ["product", id],
+      queryFn: getProduct(id, { req, res })
+    });
   } catch (error) {
     console.error(error);
   }

@@ -15,7 +15,7 @@ import { useSearch } from "@/hooks/useSearch";
 import { useSort } from "@/hooks/useSort";
 import { SearchInput } from "@/components/search-input";
 import { GetServerSideProps } from "next";
-import { QueryClient, useQuery, useQueryClient, dehydrate } from "react-query";
+import { QueryClient, useQuery, useQueryClient, dehydrate } from "@tanstack/react-query";
 import { useDialog } from "@/hooks/useDialog";
 import { AlertDialog } from "@/components/alert-dialog";
 import { Plus as PlusIcon } from "@/icons/plus";
@@ -79,13 +79,13 @@ interface GetCollectionsData {
 
 const searchCollections =
   (query: Record<string, any>, config: Record<string, any> = {}) =>
-  () =>
-    appFetch<GetCollectionsData>({
-      url: "/collections/search",
-      query,
-      withAuth: true,
-      ...config,
-    });
+    () =>
+      appFetch<GetCollectionsData>({
+        url: "/collections/search",
+        query,
+        withAuth: true,
+        ...config,
+      });
 
 const Collections: FC = () => {
   const { query } = useRouter();
@@ -94,13 +94,16 @@ const Collections: FC = () => {
     useSearch();
   const [selected, setSelected] = useState<string[]>([]);
   const [dialogOpen, handleOpenDialog, handleCloseDialog] = useDialog();
-  const { error, data } = useQuery(
-    ["collections", query],
-    searchCollections(query)
+  const { error, data } = useQuery({
+    queryKey: ["collections", query],
+    queryFn: searchCollections(query)
+  }
+
+
   );
   const [status, setStatus] = useQueryValue("status", "all", "all");
   const deleteCollections = useDeleteCollections(() =>
-    queryClient.invalidateQueries(["collections"])
+    queryClient.invalidateQueries({ queryKey: ["collections"] })
   );
 
   if (!data) return null;
@@ -117,7 +120,7 @@ const Collections: FC = () => {
         setSelected([]);
         handleCloseDialog();
       },
-      onError: (error) => {},
+      onError: (error) => { },
     });
   };
 
@@ -223,7 +226,7 @@ const Collections: FC = () => {
       </Box>
       <AlertDialog
         content="Are you sure you want toelete these collections"
-        isLoading={deleteCollections.isLoading}
+        isLoading={deleteCollections.isPending}
         onClose={handleCloseDialog}
         onSubmit={handleDeleteCollections}
         open={dialogOpen}
@@ -242,9 +245,12 @@ export const getServerSideProps: GetServerSideProps = async ({
   const queryClient = new QueryClient();
 
   try {
-    await queryClient.fetchQuery(
-      ["collections", query],
-      searchCollections(query, { req, res })
+    await queryClient.fetchQuery({
+      queryKey: ["collections", query],
+      queryFn: searchCollections(query, { req, res })
+    }
+
+
     );
   } catch (error) {
     console.error(error);

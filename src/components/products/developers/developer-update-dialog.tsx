@@ -3,7 +3,7 @@ import * as Yup from "yup";
 import { FC } from "react";
 import { Box, FormHelperText, Grid, Link, Typography } from "@mui/material";
 import { toast } from "react-toastify";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { AlertDialog, AlertDialogProps } from "@/components/alert-dialog";
 import { TextInput } from "@/components/text-input";
 import { useUpdateDeveloper } from "@/api/developers";
@@ -28,7 +28,7 @@ export const DeveloperUpdateDialog: FC<DeveloperDuplicateDialogProps> = (
   const { onClose, Developer, ...rest } = props;
   const queryClient = useQueryClient();
   const updateDeveloper = useUpdateDeveloper(Developer._id, () =>
-    queryClient.invalidateQueries("developers")
+    queryClient.invalidateQueries({ queryKey: ["developers"] })
   );
 
   const formik = useFormik({
@@ -55,7 +55,7 @@ export const DeveloperUpdateDialog: FC<DeveloperDuplicateDialogProps> = (
       onSubmit={formik.handleSubmit}
       onClose={onClose}
       title={`Update developer`}
-      isLoading={updateDeveloper.isLoading}
+      isLoading={updateDeveloper.isPending}
       {...rest}
     >
       <Grid container spacing={3}>

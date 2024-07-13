@@ -19,7 +19,7 @@ import {
   TableSortLabel,
   TextField,
 } from "@mui/material";
-import { dehydrate, QueryClient, useQuery, useQueryClient } from "react-query";
+import { dehydrate, QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AlertDialog } from "@/components/alert-dialog";
 import { PageHeader } from "@/components/page-header";
 import { SearchInput } from "@/components/search-input";
@@ -57,20 +57,23 @@ interface GetFeatureData {
 
 const searchFeature =
   (query: ParsedUrlQuery, config: Record<string, any> = {}) =>
-  () =>
-    appFetch<GetFeatureData>({
-      url: "/features/search",
-      query,
-      withAuth: true,
-      ...config,
-    });
+    () =>
+      appFetch<GetFeatureData>({
+        url: "/features/search",
+        query,
+        withAuth: true,
+        ...config,
+      });
 
 const Features: FC = () => {
   const { query } = useRouter();
   const [selected, setSelected] = useState<string[]>([]);
   const [keyword, keywordParam, handleKeywordChange, handleSearch] =
     useSearch();
-  const { data, refetch } = useQuery(["features", query], searchFeature(query));
+  const { data, refetch } = useQuery({
+    queryKey: ["features", query],
+    queryFn: searchFeature(query)
+  });
   const [dialogOpen, setDialogOpen] = useState(false);
   const deleteCategories = useDeleteFeatures(refetch);
   const [createDialogOpen, handleOpenCreateDialog, handleCloseCreateDialog] =
@@ -94,7 +97,7 @@ const Features: FC = () => {
         setSelected([]);
         handleCloseDialog();
       },
-      onError: (error) => {},
+      onError: (error) => { },
     });
   };
 
@@ -190,7 +193,7 @@ const Features: FC = () => {
       </Box>
       <AlertDialog
         content="Are you sure you want to permanently delete these features"
-        isLoading={deleteCategories.isLoading}
+        isLoading={deleteCategories.isPending}
         onClose={handleCloseDialog}
         onSubmit={handleDeleteFeature}
         open={dialogOpen}

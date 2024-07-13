@@ -15,7 +15,7 @@ import { PageHeader } from "@/components/page-header";
 import { Plus as PlusIcon } from "@/icons/plus";
 import { Trash as TrashIcon } from "@/icons/trash";
 import { useDialog } from "@/hooks/useDialog";
-import { dehydrate, QueryClient, useQuery, useQueryClient } from "react-query";
+import { dehydrate, QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
 import { appFetch } from "@/utils/app-fetch";
 import type { Currency } from "@/types/currencies";
 import { CurrencyDialog } from "@/components/currencies/currency-dialog";
@@ -35,7 +35,7 @@ const CurrenciesTableRow: FC<CurrenciesTableRowProps> = (props) => {
   const { currency } = props;
   const queryClient = useQueryClient();
   const deleteLanguage = useDeleteCurrency(() =>
-    queryClient.invalidateQueries("currencies")
+    queryClient.invalidateQueries({ queryKey: ["currencies"] })
   );
   const [deleteDialogOpen, handleOpenDeleteDialog, handleCloseDeleteDialog] =
     useDialog();
@@ -56,7 +56,7 @@ const CurrenciesTableRow: FC<CurrenciesTableRowProps> = (props) => {
         title={`Delete ${currency.name} currency`}
         content="Are you sure you want to permanently delete this language?"
         onSubmit={handleDeleteLanguage}
-        isLoading={deleteLanguage.isLoading}
+        isLoading={deleteLanguage.isPending}
       />
       <TableRow key={currency._id}>
         <TableCell>{currency.name}</TableCell>
@@ -92,16 +92,19 @@ const headCells = [
 
 const getCurrencies =
   (config: Record<string, any> = {}) =>
-  () =>
-    appFetch<{ currencies: Currency[]; count: number }>({
-      url: "/currencies/search",
-      withAuth: true,
-      ...config,
-    });
+    () =>
+      appFetch<{ currencies: Currency[]; count: number }>({
+        url: "/currencies/search",
+        withAuth: true,
+        ...config,
+      });
 
 const CurrencyList: FC = () => {
   const { query } = useRouter();
-  const { data } = useQuery("currencies", getCurrencies(query));
+  const { data } = useQuery({
+    queryKey: ["currencies"],
+    queryFn: getCurrencies(query)
+  });
   const [keyword, keywordParam, handleKeywordChange, handleSearch] =
     useSearch();
   const [openDialog, handleOpenDialog, handleCloseDialog] = useDialog();
@@ -160,7 +163,10 @@ export const getServerSideProps: GetServerSideProps = async ({
   const queryClient = new QueryClient();
 
   try {
-    await queryClient.fetchQuery("currencies", getCurrencies({ req, res }));
+    await queryClient.fetchQuery({
+      queryKey: ["currencies"],
+      queryFn: getCurrencies({ req, res })
+    });
   } catch (error) {
     console.error(error);
   }

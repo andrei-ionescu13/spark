@@ -24,7 +24,7 @@ import { useDialog } from '@/hooks/useDialog';
 import type { Language, Namespace } from '@/types/translations';
 import { TranslationsDialog } from '../translations-dialog';
 import { useDeleteNamespace } from '@/api/translations';
-import { useQueryClient } from 'react-query';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface NamespaceTableRowProps {
   namespace: Namespace;
@@ -38,7 +38,7 @@ export const NamespaceTableRow: FC<NamespaceTableRowProps> = (props) => {
   const [deleteDialogOpen, handleOpenDeleteDialog, handleCloseDeleteDialog] = useDialog();
   const [addDialogOpen, handleOpenAddDialog, handleCloseAddDialog] = useDialog();
   const queryClient = useQueryClient();
-  const deleteNamespace = useDeleteNamespace(() => queryClient.invalidateQueries('namespaces'));
+  const deleteNamespace = useDeleteNamespace(() => queryClient.invalidateQueries({ queryKey: ['namespaces'] }));
   const [open, setOpen] = useState(false);
   const theme = useTheme()
 
@@ -110,7 +110,7 @@ export const NamespaceTableRow: FC<NamespaceTableRowProps> = (props) => {
           title={`Delete ${namespace.name} namespace`}
           content="Are you sure you want to permanently this namespace?"
           onSubmit={handleDeleteNamespace}
-          isLoading={deleteNamespace.isLoading}
+          isLoading={deleteNamespace.isPending}
         />
       )}
       <TableRow

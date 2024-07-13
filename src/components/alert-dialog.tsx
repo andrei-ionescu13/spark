@@ -26,15 +26,14 @@ export const AlertDialog: FC<AlertDialogProps> = (props) => {
     onSubmit,
     title,
     content,
-    isLoading,
     children,
+    isLoading,
     ...rest
   } = props;
 
   const handleSubmit = (): void => {
     onSubmit();
   };
-
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth {...rest}>
       <DialogTitle>{title}</DialogTitle>

@@ -12,7 +12,7 @@ import { AlertDialog } from "@/components/alert-dialog";
 import { GenresTableRow } from "@/components/products/genres/genres-table-row";
 import { GenreDialog } from "@/components/products/genres/genre-dialog";
 import { Plus as PlusIcon } from "@/icons/plus";
-import { dehydrate, QueryClient, useQuery, useQueryClient } from "react-query";
+import { dehydrate, QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useDeleteGenres } from "@/api/genres";
 import { appFetch } from "@/utils/app-fetch";
 import { Genre } from "@/types/genres";
@@ -38,22 +38,22 @@ interface GetGenresData {
 
 const getGenres =
   (query: ParsedUrlQuery, config: Record<string, any> = {}) =>
-  () =>
-    appFetch<GetGenresData>({
-      url: "/genres/search",
-      query,
-      withAuth: true,
-      ...config,
-    });
+    () =>
+      appFetch<GetGenresData>({
+        url: "/genres/search",
+        query,
+        withAuth: true,
+        ...config,
+      });
 
 const getLanguages =
   (config: Record<string, any> = {}) =>
-  () =>
-    appFetch<Language[]>({
-      url: "/languages",
-      withAuth: true,
-      ...config,
-    });
+    () =>
+      appFetch<Language[]>({
+        url: "/languages",
+        withAuth: true,
+        ...config,
+      });
 
 const extractLanguagesCodeFromQuery = (
   query: ParsedUrlQuery
@@ -83,17 +83,20 @@ const Genres: FC = () => {
   const [keyword, keywordParam, handleKeywordChange, handleSearch] =
     useSearch();
   const [selected, setSelected] = useState<string[]>([]);
-  const { error, data: genresData } = useQuery(
-    ["genres", query],
-    getGenres(query)
-  );
+  const { error, data: genresData } = useQuery({
+    queryKey: ["genres", query],
+    queryFn: getGenres(query)
+  });
   const [dialogOpen, handleOpenDialog, handleCloseDialog] = useDialog();
   const [addDialogOpen, handleOpenAddDialog, handleCloseAddDialog] =
     useDialog();
   const deleteGenres = useDeleteGenres(() =>
-    queryClient.invalidateQueries("genres")
+    queryClient.invalidateQueries({ queryKey: ["genres"] })
   );
-  const { data: languages } = useQuery("languages", getLanguages());
+  const { data: languages } = useQuery({
+    queryKey: ["languages"],
+    queryFn: getLanguages()
+  });
   const [selectedLanguageCodes, setSelectedLanguageCodes] = useState(
     getLanguageCodesFromQueryOrDefaultLanguages(query, languages || [])
   );
@@ -159,7 +162,7 @@ const Genres: FC = () => {
         title={`Delete multiple genres`}
         content="Are you sure you want to permanently delete these genre?"
         onSubmit={handleDeleteGenres}
-        isLoading={deleteGenres.isLoading}
+        isLoading={deleteGenres.isPending}
       />
       {addDialogOpen && <GenreDialog open onClose={handleCloseAddDialog} />}
       <Head>
@@ -245,8 +248,14 @@ export const getServerSideProps: GetServerSideProps = async ({
 
   try {
     await Promise.all([
-      queryClient.fetchQuery("languages", getLanguages({ req, res })),
-      queryClient.fetchQuery(["genres", query], getGenres(query, { req, res })),
+      queryClient.fetchQuery({
+        queryKey: ["languages"],
+        queryFn: getLanguages({ req, res })
+      }),
+      queryClient.fetchQuery({
+        queryKey: ["genres", query],
+        queryFn: getGenres(query, { req, res })
+      }),
     ]);
   } catch (error) {
     console.error(error);

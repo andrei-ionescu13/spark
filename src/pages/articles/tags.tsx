@@ -19,7 +19,7 @@ import {
   TableSortLabel,
   TextField,
 } from "@mui/material";
-import { dehydrate, QueryClient, useQuery, useQueryClient } from "react-query";
+import { dehydrate, QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AlertDialog } from "@/components/alert-dialog";
 import { PageHeader } from "@/components/page-header";
 import { SearchInput } from "@/components/search-input";
@@ -59,23 +59,23 @@ interface GetTagsData {
 
 const searchTags =
   (query: ParsedUrlQuery, config: Record<string, any> = {}) =>
-  () =>
-    appFetch<GetTagsData>({
-      url: "/article-tags/search",
-      query,
-      withAuth: true,
-      ...config,
-    });
+    () =>
+      appFetch<GetTagsData>({
+        url: "/article-tags/search",
+        query,
+        withAuth: true,
+        ...config,
+      });
 
 const ArticleTags: FC = () => {
   const { query } = useRouter();
   const [selected, setSelected] = useState<string[]>([]);
   const [keyword, keywordParam, handleKeywordChange, handleSearch] =
     useSearch();
-  const { data, refetch } = useQuery(
-    ["article-tags", query],
-    searchTags(query)
-  );
+  const { data, refetch } = useQuery({
+    queryKey: ["article-tags", query],
+    queryFn: searchTags(query)
+  });
   const [dialogOpen, setDialogOpen] = useState(false);
   const deleteCategories = useDeleteArticleTags(refetch);
   const [createDialogOpen, handleOpenCreateDialog, handleCloseCreateDialog] =
@@ -99,7 +99,7 @@ const ArticleTags: FC = () => {
         setSelected([]);
         handleCloseDialog();
       },
-      onError: (error) => {},
+      onError: (error) => { },
     });
   };
 
@@ -195,7 +195,7 @@ const ArticleTags: FC = () => {
       </Box>
       <AlertDialog
         content="Are you sure you want to permanently delete these categories"
-        isLoading={deleteCategories.isLoading}
+        isLoading={deleteCategories.isPending}
         onClose={handleCloseDialog}
         onSubmit={handleDeleteTags}
         open={dialogOpen}

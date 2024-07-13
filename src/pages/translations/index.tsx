@@ -43,7 +43,7 @@ import { LanguagesMenu } from "@/components/translations/languages-menu";
 import { useQueryValue } from "@/hooks/useQueryValue";
 import { download } from "@/utils/download";
 import { ActionsItem } from "@/components/actions-menu";
-import { dehydrate, QueryClient, useQuery } from "react-query";
+import { dehydrate, QueryClient, useQuery } from "@tanstack/react-query";
 import { appFetch } from "@/utils/app-fetch";
 import { DataTable } from "@/components/data-table";
 import type { ParsedUrlQuery } from "querystring";
@@ -76,20 +76,20 @@ interface GetNamespacesData {
 
 const getLanguages =
   (config: Record<string, any> = {}) =>
-  () =>
-    appFetch<Language[]>({
-      url: "/translations/languages",
-      withAuth: true,
-      ...config,
-    });
+    () =>
+      appFetch<Language[]>({
+        url: "/translations/languages",
+        withAuth: true,
+        ...config,
+      });
 const getNamespaces =
   (query: ParsedUrlQuery, config: Record<string, any> = {}) =>
-  () =>
-    appFetch<GetNamespacesData>({
-      url: "/translations/namespaces/search",
-      query,
-      ...config,
-    });
+    () =>
+      appFetch<GetNamespacesData>({
+        url: "/translations/namespaces/search",
+        query,
+        ...config,
+      });
 
 const TranslationList: FC = () => {
   const { query } = useRouter();
@@ -100,8 +100,14 @@ const TranslationList: FC = () => {
   ] = useDialog();
   const [keyword, keywordParam, handleKeywordChange, handleSearch] =
     useSearch();
-  const { data: languages } = useQuery("namespace-languages", getLanguages());
-  const { data: namespacesData } = useQuery("namespaces", getNamespaces(query));
+  const { data: languages } = useQuery({
+    queryKey: ["namespace-languages"],
+    queryFn: getLanguages()
+  });
+  const { data: namespacesData } = useQuery({
+    queryKey: ["namespaces"],
+    queryFn: getNamespaces(query)
+  });
 
   const [selectedLanguageCodes, setSelectedLanguageCodes] = useState(() => {
     if (query?.language) {
@@ -269,8 +275,14 @@ export const getServerSideProps: GetServerSideProps = async ({
 
   try {
     await Promise.all([
-      queryClient.fetchQuery("namespace-languages", getLanguages({ req, res })),
-      queryClient.fetchQuery("namespaces", getNamespaces(query, { req, res })),
+      queryClient.fetchQuery({
+        queryKey: ["namespace-languages"],
+        queryFn: getLanguages({ req, res })
+      }),
+      queryClient.fetchQuery({
+        queryKey: ["namespaces"],
+        queryFn: getNamespaces(query, { req, res })
+      })
     ]);
   } catch (error) {
     console.error(error);

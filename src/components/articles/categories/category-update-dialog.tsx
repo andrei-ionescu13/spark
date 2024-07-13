@@ -3,7 +3,7 @@ import * as Yup from "yup";
 import { FC } from "react";
 import { Box, FormHelperText, Grid, Link, Typography } from "@mui/material";
 import { toast } from "react-toastify";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { AlertDialog, AlertDialogProps } from "@/components/alert-dialog";
 import { TextInput } from "@/components/text-input";
 import { useUpdateArticleCategory } from "@/api/article-categories";
@@ -37,7 +37,7 @@ export const ArticleCategoryUpdateDialog: FC<ArticleDuplicateDialog> = (
   const queryClient = useQueryClient();
   const createArticleCategory = useUpdateArticleCategory(
     articleCategory._id,
-    () => queryClient.invalidateQueries("article-categories")
+    () => queryClient.invalidateQueries({ queryKey: ["article-categories"] })
   );
 
   const formik = useFormik({
@@ -64,7 +64,7 @@ export const ArticleCategoryUpdateDialog: FC<ArticleDuplicateDialog> = (
       onSubmit={formik.handleSubmit}
       onClose={onClose}
       title={`Update article category`}
-      isLoading={createArticleCategory.isLoading}
+      isLoading={createArticleCategory.isPending}
       {...rest}
     >
       <Grid container spacing={3}>

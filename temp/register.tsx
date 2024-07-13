@@ -19,7 +19,7 @@ import { Eye } from "@/icons/eye";
 import { Button } from "@/components/button";
 import { TextInput } from "@/components/text-input";
 
-const Login: FC = () => {
+const Register: FC = () => {
   const { push } = useRouter();
   const [submitError, setSubmitError] = useState<string | null>(null);
 
@@ -52,7 +52,7 @@ const Login: FC = () => {
         }
 
         setSubmitError(data.message);
-      } catch (error) {}
+      } catch (error) { }
     },
   });
   const [showPassword, setShowPassword] = useState(false);
@@ -145,4 +145,4 @@ const Login: FC = () => {
   );
 };
 
-export default Login;
+export default Register;

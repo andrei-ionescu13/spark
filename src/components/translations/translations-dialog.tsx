@@ -13,7 +13,7 @@ import {
   useAddNamespaceTranslation,
   useUpdateNamespaceTranslation,
 } from "@/api/translations";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/button";
 import { TextInput } from "../text-input";
 
@@ -37,10 +37,10 @@ export const TranslationsDialog: FC<TranslationsDialogProps> = (props) => {
   } = props;
   const queryClient = useQueryClient();
   const addNamespaceTranslation = useAddNamespaceTranslation(() =>
-    queryClient.invalidateQueries("namespaces")
+    queryClient.invalidateQueries({ queryKey: ["namespaces"] })
   );
   const updateNamespaceTranslation = useUpdateNamespaceTranslation(() =>
-    queryClient.invalidateQueries("namespaces")
+    queryClient.invalidateQueries({ queryKey: ["namespaces"] })
   );
 
   const initialValues: Translation = languages.reduce(
@@ -134,8 +134,8 @@ export const TranslationsDialog: FC<TranslationsDialogProps> = (props) => {
           color="primary"
           onClick={() => formik.handleSubmit()}
           isLoading={
-            addNamespaceTranslation.isLoading ||
-            updateNamespaceTranslation.isLoading
+            addNamespaceTranslation.isPending ||
+            updateNamespaceTranslation.isPending
           }
         >
           {mode === "create" ? "Add" : "Update"}

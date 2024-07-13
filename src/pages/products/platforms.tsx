@@ -25,7 +25,7 @@ import { AlertDialog } from "@/components/alert-dialog";
 import { Plus as PlusIcon } from "@/icons/plus";
 import { PlatformDialog } from "@/components/products/platforms/platform-dialog";
 import { PlatformsTableRow } from "@/components/products/platforms/platforms-table-row";
-import { dehydrate, QueryClient, useQuery, useQueryClient } from "react-query";
+import { dehydrate, QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useDeletePlatforms } from "@/api/platforms";
 import { appFetch } from "@/utils/app-fetch";
 import { DataTable } from "@/components/data-table";
@@ -48,13 +48,13 @@ interface GetPlatforms {
 
 const getPlatforms =
   (query: Record<string, any>, config: Record<string, any> = {}) =>
-  () =>
-    appFetch<GetPlatforms>({
-      url: "/platforms/search",
-      query,
-      withAuth: true,
-      ...config,
-    });
+    () =>
+      appFetch<GetPlatforms>({
+        url: "/platforms/search",
+        query,
+        withAuth: true,
+        ...config,
+      });
 
 const Platforms: FC = () => {
   const { query } = useRouter();
@@ -62,12 +62,15 @@ const Platforms: FC = () => {
   const [keyword, keywordParam, handleKeywordChange, handleSearch] =
     useSearch();
   const [selected, setSelected] = useState<string[]>([]);
-  const { error, data } = useQuery(["platforms", query], getPlatforms(query));
+  const { error, data } = useQuery({
+    queryKey: ["platforms", query],
+    queryFn: getPlatforms(query)
+  });
   const [dialogOpen, handleOpenDialog, handleCloseDialog] = useDialog();
   const [addDialogOpen, handleOpenAddDialog, handleCloseAddDialog] =
     useDialog();
   const deletePlatforms = useDeletePlatforms(() =>
-    queryClient.invalidateQueries("platforms")
+    queryClient.invalidateQueries({ queryKey: ["platforms"] })
   );
 
   if (!data) return null;
@@ -111,7 +114,7 @@ const Platforms: FC = () => {
         title={`Delete multiple platforms`}
         content="Are you sure you want to permanently delete these platform?"
         onSubmit={handleDeleteArticles}
-        isLoading={deletePlatforms.isLoading}
+        isLoading={deletePlatforms.isPending}
       />
       {addDialogOpen && <PlatformDialog open onClose={handleCloseAddDialog} />}
       <Head>
@@ -191,9 +194,12 @@ export const getServerSideProps: GetServerSideProps = async ({
   const queryClient = new QueryClient();
 
   try {
-    await queryClient.fetchQuery(
-      ["platforms", query],
-      getPlatforms(query, { req, res })
+    await queryClient.fetchQuery({
+      queryKey: ["platforms", query],
+      queryFn: getPlatforms(query, { req, res })
+    }
+
+
     );
   } catch (error) {
     console.error(error);

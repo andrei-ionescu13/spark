@@ -1,6 +1,6 @@
 import type { FC } from 'react';
 import { Checkbox, colors, TableCell, Typography, useTheme } from '@mui/material';
-import { useQueryClient } from 'react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import type { ActionsItem } from '@/components/actions-menu';
 import { AlertDialog } from '@/components/alert-dialog';
 import { ActionsIconButton } from '@/components/icon-actions';
@@ -25,8 +25,8 @@ export const DiscountsTableRow: FC<DiscountsTableRow> = (props) => {
   const { discount, selected, onSelect } = props;
   const theme = useTheme()
   const queryClient = useQueryClient();
-  const deleteDiscount = useDeleteDiscount(() => queryClient.invalidateQueries('discounts'))
-  const deactivateDiscount = useDeactivateDiscount(() => queryClient.invalidateQueries('discounts'))
+  const deleteDiscount = useDeleteDiscount(() => queryClient.invalidateQueries({ queryKey: ['discounts'] }))
+  const deactivateDiscount = useDeactivateDiscount(() => queryClient.invalidateQueries({ queryKey: ['discounts'] }))
   const [deleteDialogOpen, handleOpenDeleteDialog, handleCloseDeleteDialog] = useDialog(false);
   const [deactivateDialogOpen, handleOpenDeactivateDialog, handleCloseDeactivateDialog] = useDialog(false);
   const status = getStatusFromInterval(discount.startDate, discount.endDate);
@@ -75,7 +75,7 @@ export const DiscountsTableRow: FC<DiscountsTableRow> = (props) => {
         title={`Delete discount`}
         content="Are you sure you want to delete this discount?"
         onSubmit={handleDeleteDiscount}
-        isLoading={deleteDiscount.isLoading}
+        isLoading={deleteDiscount.isPending}
       />
       <AlertDialog
         open={deactivateDialogOpen}
@@ -83,7 +83,7 @@ export const DiscountsTableRow: FC<DiscountsTableRow> = (props) => {
         title={`Deactivate discount`}
         content="Are you sure you want to deactivate this discount?"
         onSubmit={handleDeactivateDiscount}
-        isLoading={deactivateDiscount.isLoading}
+        isLoading={deactivateDiscount.isPending}
       />
       <DataTableRow selected={selected}>
         <TableCell padding="checkbox">
