@@ -1,5 +1,5 @@
-import { ArticleCategory } from "@/types/article-category";
-import { appFetch } from "@/utils/app-fetch";
+import { ArticleCategory } from "../app/types/article-category";
+import { appFetch } from "../app/utils/app-fetch";
 import { useMutation } from "@tanstack/react-query";
 
 export const useDeleteCategories = (onSuccess?: () => Promise<any>) =>

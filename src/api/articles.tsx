@@ -1,11 +1,11 @@
 import { useMutation } from "@tanstack/react-query";
-import { appFetch } from "@/utils/app-fetch";
 import type {
   ArticleGeneral,
   ArticleMeta,
   ArticleStatus,
   ArticleCategory,
-} from "@/types/articles";
+} from "../app/types/articles";
+import { appFetch } from "@/utils/app-fetch";
 
 export const useDeleteArticle = (onSuccess?: () => Promise<any>) =>
   useMutation<{}, Error, string>({

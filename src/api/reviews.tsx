@@ -1,4 +1,4 @@
-import { appFetch } from "@/utils/app-fetch";
+import { appFetch } from "../app/utils/app-fetch";
 import { useMutation } from "@tanstack/react-query";
 
 export const useDeleteReview = () =>

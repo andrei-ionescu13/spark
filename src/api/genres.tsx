@@ -1,5 +1,5 @@
-import { appFetch } from "@/utils/app-fetch";
-import type { Genre } from "@/types/genres";
+import { appFetch } from "../app/utils/app-fetch";
+import type { Genre } from "../app/types/genres";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 export const useListGenres = () => useQuery({

@@ -1,5 +1,5 @@
-import type { Translation } from "@/types/translations";
-import { appFetch } from "@/utils/app-fetch";
+import type { Translation } from "../app/types/translations";
+import { appFetch } from "../app/utils/app-fetch";
 import { useMutation } from "@tanstack/react-query";
 
 export const useCreateTranslationsLanguage = (onSuccess?: () => Promise<any>) =>

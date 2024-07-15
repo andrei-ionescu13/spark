@@ -1,6 +1,6 @@
-import { appFetch } from "@/utils/app-fetch";
+import { appFetch } from "../app/utils/app-fetch";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import type { Publisher } from "@/types/publishers";
+import type { Publisher } from "../app/types/publishers";
 
 export const useListPublishers = () => useQuery({
   queryKey: ['publishers'],

@@ -1,6 +1,6 @@
 import { FC, useState } from "react";
 import Head from "next/head";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import type { GetServerSideProps } from "next";
 import {
   Box,
@@ -15,9 +15,9 @@ import {
 } from "@mui/material";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { Eye } from "@/icons/eye";
-import { Button } from "@/components/button";
-import { TextInput } from "@/components/text-input";
+import { Eye } from "../src/app/icons/eye";
+import { Button } from "../src/app/components/button";
+import { TextInput } from "../src/app/components/text-input";
 
 const Register: FC = () => {
   const { push } = useRouter();

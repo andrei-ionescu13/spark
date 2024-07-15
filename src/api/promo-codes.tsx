@@ -1,6 +1,6 @@
-import { appFetch } from "@/utils/app-fetch";
+import { appFetch } from "../app/utils/app-fetch";
 import { useMutation } from "@tanstack/react-query";
-import type { PromoCode } from "@/types/promo-code";
+import type { PromoCode } from "../app/types/promo-code";
 
 export const useCreatePromoCode = () => useMutation<any, Error, Record<string, any>>({
   mutationFn: (values) => appFetch({

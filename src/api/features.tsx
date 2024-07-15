@@ -1,5 +1,5 @@
-import { Feature } from "@/types/feature";
-import { appFetch } from "@/utils/app-fetch";
+import { Feature } from "../app/types/feature";
+import { appFetch } from "../app/utils/app-fetch";
 import { useMutation } from "@tanstack/react-query";
 
 export const useCreateFeature = (onSuccess: any) =>

@@ -1,5 +1,5 @@
-import { ArticleTag } from "@/types/article-tag";
-import { appFetch } from "@/utils/app-fetch";
+import { ArticleTag } from "../app/types/article-tag";
+import { appFetch } from "../app/utils/app-fetch";
 import { useMutation } from "@tanstack/react-query";
 
 export const useCreateArticleTag = (onSuccess: any) =>

@@ -3,25 +3,25 @@
     "baseUrl": "src",
     "paths": {
       "@/components/*": [
-        "components/*"
+        "app/components/*"
       ],
       "@/contexts/*": [
-        "contexts/*"
+        "app/contexts/*"
       ],
       "@/hooks/*": [
-        "hooks/*"
+        "app/hooks/*"
       ],
       "@/types/*": [
-        "types/*"
+        "app/types/*"
       ],
       "@/utils/*": [
-        "utils/*"
+        "app/utils/*"
       ],
       "@/icons/*": [
-        "icons/*"
+        "app/icons/*"
       ],
       "@/constants": [
-        "constants"
+        "app/constants"
       ],
       "@/api/*": [
         "api/*"
@@ -30,7 +30,7 @@
         "pages/*"
       ]
     },
-    "target": "es5",
+    "target": "ES6",
     "lib": [
       "dom",
       "dom.iterable",
@@ -49,11 +49,17 @@
     "incremental": true,
     "noEmit": true,
     "noEmitOnError": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
-    "**/*.tsx"
+    "**/*.tsx",
+    ".next/types/**/*.ts"
   ],
   "exclude": [
     "node_modules"

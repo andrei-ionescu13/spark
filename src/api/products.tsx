@@ -1,5 +1,5 @@
-import { Product } from "@/types/products";
-import { appFetch } from "@/utils/app-fetch";
+import { Product } from "../app/types/products";
+import { appFetch } from "../app/utils/app-fetch";
 import { useMutation } from "@tanstack/react-query";
 
 export const useCreateProduct = () =>

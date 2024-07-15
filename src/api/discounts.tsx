@@ -1,6 +1,6 @@
-import { appFetch } from "@/utils/app-fetch";
+import { appFetch } from "../app/utils/app-fetch";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import type { Discount } from "@/types/discounts";
+import type { Discount } from "../app/types/discounts";
 
 export const useCreateDiscount = (onSuccess?: () => Promise<any>) => useMutation<Discount, Error, Record<string, any>>({
   mutationFn: (values) => appFetch({

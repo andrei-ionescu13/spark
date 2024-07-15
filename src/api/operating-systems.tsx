@@ -1,5 +1,5 @@
-import { OperatingSystem } from "@/types/operating-sistem";
-import { appFetch } from "@/utils/app-fetch";
+import { OperatingSystem } from "../app/types/operating-sistem";
+import { appFetch } from "../app/utils/app-fetch";
 import { useMutation } from "@tanstack/react-query";
 
 export const useCreateOperatingSystem = (onSuccess: any) =>

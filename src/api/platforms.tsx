@@ -1,6 +1,6 @@
-import { appFetch } from "@/utils/app-fetch";
+import { appFetch } from "../app/utils/app-fetch";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import type { Platform } from "@/types/platforms";
+import type { Platform } from "../app/types/platforms";
 
 export const useListPlatforms = () => useQuery({
   queryKey: ['platforms'],
