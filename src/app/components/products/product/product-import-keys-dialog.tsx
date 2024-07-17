@@ -1,3 +1,5 @@
+"use client"
+
 import { useRef } from "react";
 import type { FC, ChangeEvent } from "react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -7,7 +9,7 @@ import { AlertDialog } from "../../alert-dialog";
 import { Box, FormHelperText, Typography } from "@mui/material";
 import { useImportProductKeys } from "@/api/products";
 import { buildFormData } from "../../../utils/build-form-data";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { Button } from "../../button";
 
 interface ProductImportKeysDialogProps {
@@ -20,8 +22,7 @@ export const ProductImportKeysDialog: FC<ProductImportKeysDialogProps> = (
 ) => {
   const { open, onClose } = props;
   const inputRef = useRef<HTMLInputElement>(null);
-  const router = useRouter();
-  const { id } = router.query as { id: string };
+  const { id } = useParams<{ id: string }>();
   const queryClient = useQueryClient();
   const importProductKeys = useImportProductKeys(() =>
     queryClient.invalidateQueries({ queryKey: ["product-keys", id] })

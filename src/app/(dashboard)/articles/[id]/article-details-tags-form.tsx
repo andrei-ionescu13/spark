@@ -12,11 +12,11 @@ import {
   FormHelperText,
   Grid,
 } from "@mui/material";
-import { Button } from "../../button";
-import { useUpdateArticleMeta, useUpdateArticleTags } from "@/api/articles";
+import { useUpdateArticleTags } from "@/api/articles";
 import { Article } from "../../../types/articles";
-import { TextInput } from "../../text-input";
 import { listTags } from "@/api/article-tags";
+import { Button } from "@/components/button";
+import { TextInput } from "@/components/text-input";
 
 interface ArticleDetailsMetaFormProps {
   article: Article;

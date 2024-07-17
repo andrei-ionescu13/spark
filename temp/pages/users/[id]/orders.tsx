@@ -3,7 +3,7 @@ import Head from "next/head";
 import { useRouter } from "next/navigation";
 import type { GetServerSideProps } from "next";
 import { UserLayout } from "../../../../src/app/components/users/user-layout";
-import { OrdersTable } from "../../../../src/app/components/orders-table";
+import { OrdersTable } from "../../../../src/app/(dashboard)/orders/orders-table";
 import type { ParsedUrlQuery } from "querystring";
 import { appFetch } from "../../../../src/app/utils/app-fetch";
 import type { Order } from "../../../../src/app/types/orders";

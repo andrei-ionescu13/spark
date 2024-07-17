@@ -1,3 +1,5 @@
+"use client"
+
 import { useState } from "react";
 import type { FC } from "react";
 import {
@@ -18,20 +20,24 @@ import { ProductGeneralForm } from "./product-general-form";
 import { formatDate } from "../../../utils/format-date";
 import { MarkdownPreview } from "../../markdown-preview";
 import { Button } from "../../button";
+import { useGetCollectionQuery, useGetProduct } from "app/(dashboard)/products/api-calls-hooks";
 
 interface ProductGeneralProps {
   isEditDisabled?: boolean;
-  product: Product;
 }
 
 export const ProductGeneral: FC<ProductGeneralProps> = (props) => {
-  const { product, isEditDisabled = false } = props;
+  const { isEditDisabled = false } = props;
+  const { data: product } = useGetProduct();
+
   const [dialogOpen, handleOpenDialog, handleCloseDialog] = useDialog();
   const [openPreviewDialog, handleOpenPreviewDialog, handleClosePreviewDialog] =
     useDialog();
   const [previewSelected, setPreviewSelected] = useState<
     "minimumRequirements" | "recommendedRequirements" | "markdown" | undefined
   >();
+
+  if (!product) return null;
 
   return (
     <>

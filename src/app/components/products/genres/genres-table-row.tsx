@@ -16,7 +16,6 @@ interface UsersTableRowProps {
   genre: any;
   onSelect: () => void;
   selected: boolean;
-  shownLanguages: Language[];
 }
 
 export const GenresTableRow: FC<UsersTableRowProps> = (props) => {

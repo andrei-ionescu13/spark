@@ -1,3 +1,5 @@
+"use client"
+
 import type { FC } from 'react';
 import {
   Card,
@@ -21,13 +23,16 @@ import { useUpdateProductStatus } from '@/api/products';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import { Button } from '../../button';
+import { useGetCollectionQuery, useGetProduct } from 'app/(dashboard)/products/api-calls-hooks';
 
 interface ProductStatusProps {
-  product: Product;
 }
 
 export const ProductStatus: FC<ProductStatusProps> = (props) => {
-  const { product } = props;
+  const { data: product } = useGetProduct();
+
+  if (!product) return null;
+
   const theme = useTheme()
   const queryClient = useQueryClient();
   const updateProductStatus = useUpdateProductStatus(product._id);

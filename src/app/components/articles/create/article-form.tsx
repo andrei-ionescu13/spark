@@ -28,8 +28,8 @@ import { TextInput } from "../../text-input";
 import { ArticleCategory } from "../../../types/article-category";
 import { ArticleTag } from "../../../types/article-tag";
 import { useQuery } from "@tanstack/react-query";
-import { listArticleCategories } from "@/api/article-categories";
 import { listTags } from "@/api/article-tags";
+import { listArticleCategories } from "app/(dashboard)/articles/api-calls";
 
 interface Option {
   label: string;
@@ -53,7 +53,7 @@ export const ArticleForm: FC<ArticleFormProps> = (props) => {
 
   const { data: categories } = useQuery({
     queryKey: ["article-categories"],
-    queryFn: listArticleCategories()
+    queryFn: listArticleCategories
   })
   const { data: tags } = useQuery({
     queryKey: ["article-tags"],

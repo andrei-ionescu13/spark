@@ -1,16 +1,17 @@
+"use client"
+
 import { useState, useEffect } from 'react';
 import type { ChangeEvent, SyntheticEvent } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 
 const isString = (value: any): value is string => typeof value === 'string';
 
-export const useSearch = (): [string, string, (event: ChangeEvent<HTMLInputElement>) => void, (event: SyntheticEvent, extraQuery?: object) => void] => {
+export const useSearch = (): [string, (event: ChangeEvent<HTMLInputElement>) => void, (event: SyntheticEvent, extraQuery?: object) => void] => {
   const pathname = usePathname();
   const searchParams = useSearchParams()
   const { push } = useRouter();
-
   const [keyword, setKeyword] = useState<any>(isString(searchParams.get('keyword')) ? searchParams.get('keyword') : '');
-  const [keywordParam, setKeywordParam] = useState<any>(isString(searchParams.get('keyword')) ? searchParams.get('keyword') : '');
+  // const [keywordParam, setKeywordParam] = useState<any>(isString(searchParams.get('keyword')) ? searchParams.get('keyword') : '');
 
   const handleKeywordChange = (event: ChangeEvent<HTMLInputElement>): void => {
     setKeyword(event.target.value);
@@ -36,13 +37,13 @@ export const useSearch = (): [string, string, (event: ChangeEvent<HTMLInputEleme
 
     if (isString(keyword)) {
       setKeyword(keyword);
-      setKeywordParam(keyword);
+      // setKeywordParam(keyword);
       return;
     }
 
     setKeyword('');
-    setKeywordParam('');
+    // setKeywordParam('');
   }, [searchParams.get('keyword')]);
 
-  return [keyword, keywordParam, handleKeywordChange, handleSearch];
+  return [keyword, handleKeywordChange, handleSearch];
 }

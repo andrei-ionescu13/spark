@@ -1,3 +1,4 @@
+"use client"
 import { useState } from 'react';
 import type { FC } from 'react';
 import {
@@ -6,28 +7,31 @@ import {
   CardHeader,
   Divider
 } from '@mui/material';
-import { ArticleDetailsMetaForm } from './article-details-meta-form';
-import { InfoList } from '../../info-list';
-import { InfoListItem } from '../../info-list-item';
 import { Article } from '../../../types/articles';
-import { Button } from '../../button';
+import { InfoList } from '@/components/info-list';
+import { InfoListItem } from '@/components/info-list-item';
+import { Button } from '@/components/button';
+import { ArticleDetailsMetaForm } from './article-details-meta-form';
+import { useGetArticle } from '../api-calls-hooks';
 
 interface ArticleDetailsMetaProps {
-  article: Article;
   isEditDisabled?: boolean;
 }
 
 export const ArticleDetailsMeta: FC<ArticleDetailsMetaProps> = (props) => {
-  const { article, isEditDisabled } = props;
+  const { isEditDisabled } = props;
+  const { data: article } = useGetArticle();
   const [openDialog, setOpenDialog] = useState(false);
 
   const handleOpenDialog = (): void => {
     setOpenDialog(true);
-  }
+  };
 
   const handleCloseDialog = (): void => {
     setOpenDialog(false);
-  }
+  };
+
+  if (!article) return null;
 
   return (
     <>

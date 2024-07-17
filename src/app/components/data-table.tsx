@@ -9,16 +9,37 @@ import {
   FormControlLabel,
   Switch,
   styled,
+  TableBody,
+  Checkbox,
+  Link,
+  TableCell,
+  Skeleton,
+  IconButton,
 } from "@mui/material";
 import { usePage } from "../hooks/usePage";
 import { useLimit } from "../hooks/usePerPage";
 import SimpleBar from "simplebar-react";
 import "simplebar/dist/simplebar.min.css";
+import { TableDataError } from "./table-data-error";
+import { TableNoData } from "./table-no-data";
+import { DataTableRow } from "./data-table-row";
+import { formatDate } from "@/utils/format-date";
+import { ActionsIconButton } from "./icon-actions";
+import { Label } from "./label";
+import { DotsVertical } from "@/icons/dots-vertical";
 
 interface DataTableProps {
   children: ReactNode;
   count: number;
   removeSimplebar?: boolean;
+  hasError: boolean;
+  hasNoData: boolean;
+  onRefetchData: any;
+  headCellsCount: number;
+  headSlot: ReactNode;
+  isLoading?: boolean;
+  hasActions?: boolean;
+  customCellsCount?: number;
 }
 
 const DataTableRoot = styled(TableContainer)(() => ({
@@ -27,8 +48,17 @@ const DataTableRoot = styled(TableContainer)(() => ({
   },
 }));
 
+const TextSkeleton = () => <Skeleton variant="text" width={'80px'} />
+
 export const DataTable: FC<DataTableProps> = (props) => {
-  const { children, count, removeSimplebar = false } = props;
+  const { children, count, removeSimplebar = false, hasError,
+    hasNoData,
+    onRefetchData,
+    headCellsCount, headSlot,
+    isLoading = false,
+    hasActions = true,
+    customCellsCount
+  } = props;
   const [page, handlePageChange] = usePage();
   const [limit, handleLimitChange] = useLimit();
   const [dense, setDense] = useState(false);
@@ -37,16 +67,74 @@ export const DataTable: FC<DataTableProps> = (props) => {
     setDense(event.target.checked);
   };
 
+  const getContent = () => {
+    if (hasError) {
+      return (
+        <TableDataError
+          colSpan={headCellsCount}
+          onRefetch={onRefetchData}
+        />
+      )
+    }
+
+    if (hasNoData) {
+      return (
+        <TableNoData colSpan={headCellsCount} />
+      )
+    }
+
+    if (isLoading) {
+      return (
+        <TableBody>
+          {[...Array(limit).keys()].map((x) => (
+            <DataTableRow key={x}>
+              <TableCell padding="checkbox">
+                <Checkbox color="primary" disabled />
+              </TableCell>
+              {[...Array(customCellsCount).keys()].map((x) => (
+                <TableCell key={x}>
+                  <TextSkeleton />
+                </TableCell>
+              ))}
+
+              {hasActions && (
+                <TableCell align="right">
+                  <IconButton
+                    color="primary"
+                    disabled
+                  >
+                    <DotsVertical />
+                  </IconButton>
+                </TableCell>
+              )}
+            </DataTableRow>
+          ))}
+        </TableBody>
+      );
+    }
+
+    return children;
+
+  }
+
   return (
     <DataTableRoot>
       {removeSimplebar ? (
         <Box>
-          <Table size={dense ? "small" : "medium"}>{children}</Table>
+          <Table size={dense ? "small" : "medium"}>
+            <>
+              {headSlot}
+              {getContent()}
+            </>
+          </Table>
         </Box>
       ) : (
         <SimpleBar>
           <Box>
-            <Table size={dense ? "small" : "medium"}>{children}</Table>
+            <Table size={dense ? "small" : "medium"}>
+              {headSlot}
+              {getContent()}
+            </Table>
           </Box>
         </SimpleBar>
       )}

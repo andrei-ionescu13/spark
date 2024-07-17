@@ -1,3 +1,5 @@
+"use client"
+
 import { useEffect, useState } from "react";
 import type { ChangeEvent, FC, SyntheticEvent } from "react";
 import {
@@ -31,6 +33,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import type { Image } from "../../types/common";
 import { ToastCreatedMessage } from "../toast-created-message";
 import { TextInput } from "../text-input";
+import { useGetCollectionQuery } from "app/(dashboard)/products/api-calls-hooks";
 
 const isImage = (file: any): file is Image => !!file?.public_id;
 
@@ -53,12 +56,12 @@ const ToastSuccess = (id: string) => (
 );
 
 interface CollectionFormProps {
-  collection?: Collection;
-  mode?: "edit" | "create";
+  mode: "edit" | "create";
 }
 
 export const CollectionForm: FC<CollectionFormProps> = (props) => {
-  const { collection, mode = "create" } = props;
+  const { mode } = props;
+  const { data: collection } = useGetCollectionQuery();
   const [shouldSetEndDate, setShouldSetEndDate] = useState(
     !!collection?.endDate
   );

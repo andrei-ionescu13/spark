@@ -1,3 +1,4 @@
+"use client"
 import { ChangeEvent, FC, useState } from "react";
 import { Dropzone } from "../../dropzone";
 import type { CustomFile } from "../../dropzone";

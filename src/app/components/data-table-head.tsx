@@ -13,6 +13,7 @@ interface DataTableHeadProps {
   selectedLength?: number;
   itemsLength?: number;
   onSelectAll?: any;
+  isLoading?: boolean;
 }
 
 export const DataTableHead: FC<DataTableHeadProps> = (props) => {
@@ -22,7 +23,8 @@ export const DataTableHead: FC<DataTableHeadProps> = (props) => {
     headCells,
     selectedLength = 0,
     itemsLength = 0,
-    onSelectAll
+    onSelectAll,
+    isLoading = false
   } = props;
 
   return (
@@ -35,6 +37,7 @@ export const DataTableHead: FC<DataTableHeadProps> = (props) => {
               color="primary"
               indeterminate={selectedLength > 0 && selectedLength < itemsLength}
               onChange={onSelectAll}
+              disabled={isLoading || itemsLength === 0}
             />
           </TableCell>
         )}

@@ -1,6 +1,8 @@
+"use client"
+
 import type { FC, ReactNode } from 'react';
 import Head from 'next/head';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import {
   Box,
   Container,
@@ -23,45 +25,45 @@ import { useDeleteProduct } from '@/api/products';
 import { ProductImportKeysDialog } from './product/product-import-keys-dialog';
 import type { Product, ProductStatus } from '../../types/products';
 import { Label } from '../label';
+import { useGetCollectionQuery, useGetProduct } from 'app/(dashboard)/products/api-calls-hooks';
 
 interface Tab {
   label: string;
   href: string;
-  pathname: string;
 }
 
 interface ProductLayoutProps {
   children: ReactNode;
-  product: Product;
   isLoading?: boolean;
 }
 
 export const ProductLayout: FC<ProductLayoutProps> = (props) => {
-  const { isLoading = false, product, children } = props;
+  const { isLoading = false, children } = props;
+  const { data: product } = useGetProduct();
   const theme = useTheme();
-  const router = useRouter();
+  const pathname = usePathname();
   const [deleteDialogOpen, handleOpenDeleteDialog, handleCloseDeleteDialog] = useDialog(false);
   const [addKeyDialogOpen, handleOpenAddKeyDialog, handleCloseAddKeyDialog] = useDialog(false);
   const [importKeysDialogOpen, handleOpenImportKeysDialog, handleCloseImportKeysDialog] = useDialog(false);
   const deleteProduct = useDeleteProduct();
+
+  if (!product) return null;
+
   const { _id: id, title } = product;
 
   const tabs: Tab[] = [
     {
       label: 'General',
       href: `/products/${id}`,
-      pathname: '/products/[id]',
 
     },
     {
       label: 'Keys',
       href: `/products/${id}/keys`,
-      pathname: '/products/[id]/keys',
     },
     {
       label: 'Reviews',
       href: `/products/${id}/reviews`,
-      pathname: '/products/[id]/reviews',
     },
   ]
 
@@ -141,7 +143,7 @@ export const ProductLayout: FC<ProductLayoutProps> = (props) => {
               {product.status}
             </Label>
           </PageHeader>
-          <Tabs value={tabs.findIndex((tab) => tab.pathname === router.pathname)}>
+          <Tabs value={tabs.findIndex((tab) => tab.href === pathname)}>
             {tabs.map((tab) => (
               <Tab
                 underline="none"

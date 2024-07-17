@@ -34,89 +34,8 @@ import { Article } from "@/types/articles";
 import { appFetch } from "@/utils/app-fetch";
 import { ParsedUrlQuery } from "querystring";
 import { Plus as PlusIcon } from "@/icons/plus";
-import { DataCardTabs } from "./data-card-tabs";
-
-interface Tab {
-  label: string;
-  value: string;
-}
-
-const tabs: Tab[] = [
-  {
-    label: "All",
-    value: "all",
-  },
-  {
-    label: "News",
-    value: "news",
-  },
-  {
-    label: "Games",
-    value: "games",
-  },
-  {
-    label: "Reviews",
-    value: "reviews",
-  },
-];
-
-const headCells: HeadCell[] = [
-  {
-    id: "title",
-    label: "Title",
-  },
-  {
-    id: "slug",
-    label: "Slug",
-  },
-  {
-    id: "category",
-    label: "Category",
-  },
-  {
-    id: "createdAt",
-    label: "Created At",
-  },
-  {
-    id: "status",
-    label: "Status",
-  },
-];
-
-interface GetArticlesData {
-  articles: Article[];
-  count: number;
-}
-
-const getArticles =
-  (query: ParsedUrlQuery, config: Record<string, any> = {}) =>
-    () =>
-      appFetch<GetArticlesData>({
-        url: "/articles",
-        query,
-        withAuth: true,
-        ...config,
-      });
-
-const statusOptions = [
-  {
-    label: "All",
-    value: "all",
-  },
-  {
-    label: "Published",
-    value: "published",
-  },
-  {
-    label: "Draft",
-    value: "draft",
-  },
-  {
-    label: "Archived",
-    value: "archived",
-  },
-];
-
+import { ArticlesTable } from "./articles-table";
+import { searchArticles } from "./api-calls";
 
 export default async function Articles({ searchParams }: { searchParams: Record<string, string> }) {
   const queryClient = new QueryClient()
@@ -127,9 +46,8 @@ export default async function Articles({ searchParams }: { searchParams: Record<
 
   await queryClient.prefetchQuery({
     queryKey: ["articles", query],
-    queryFn: getArticles(query)
+    queryFn: searchArticles(query)
   });
-
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
@@ -147,7 +65,7 @@ export default async function Articles({ searchParams }: { searchParams: Record<
               icon: PlusIcon,
             }}
           />
-          <DataCardTabs />
+          <ArticlesTable />
         </Container>
       </Box>
     </HydrationBoundary>

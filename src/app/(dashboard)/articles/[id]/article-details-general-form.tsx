@@ -1,7 +1,8 @@
+"use client"
 import { useState } from "react";
 import type { FC } from "react";
 import { useFormik } from "formik";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import * as Yup from "yup";
 import {
   Dialog,
@@ -11,13 +12,13 @@ import {
   FormHelperText,
   Grid,
 } from "@mui/material";
-import { Dropzone } from "../../dropzone";
 import { Article } from "../../../types/articles";
-import { Button } from "../../button";
 import { useUpdateArticleGeneral } from "@/api/articles";
 import { buildFormData } from "../../../utils/build-form-data";
 import { isImage } from "../../../utils/type-checks";
-import { TextInput } from "../../text-input";
+import { Dropzone } from "@/components/dropzone";
+import { Button } from "@/components/button";
+import { TextInput } from "@/components/text-input";
 
 interface ArticleDetailsGeneralFormProps {
   article: Article;
@@ -28,7 +29,7 @@ interface ArticleDetailsGeneralFormProps {
 export const ArticleDetailsGeneralForm: FC<ArticleDetailsGeneralFormProps> = (
   props
 ) => {
-  const { open, article, onClose } = props;
+  const { article, open, onClose } = props;
   const queryClient = useQueryClient();
   const updateArticleDetails = useUpdateArticleGeneral(article._id);
   const [submitError, setSubmitError] = useState<string | null>(null);

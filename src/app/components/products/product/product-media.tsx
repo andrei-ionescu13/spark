@@ -1,3 +1,5 @@
+"use client"
+
 import type { FC } from 'react';
 import { Box, Card, CardContent, CardHeader, Divider, Grid } from '@mui/material';
 import { InfoListItem } from '../../info-list-item';
@@ -8,15 +10,18 @@ import { Link } from '../../link';
 import { ProductMediaForm } from './product-media-form';
 import Image from 'next/image';
 import { Button } from '../../button';
+import { useGetCollectionQuery, useGetProduct } from 'app/(dashboard)/products/api-calls-hooks';
 
 interface ProductMediaProps {
   isEditDisabled?: boolean;
-  product: Product;
 }
 
 export const ProductMedia: FC<ProductMediaProps> = (props) => {
-  const { product, isEditDisabled = false } = props;
+  const { isEditDisabled = false } = props;
   const [dialogOpen, handleOpenDialog, handleCloseDialog] = useDialog();
+  const { data: product } = useGetProduct();
+
+  if (!product) return null;
 
   return (
     <>

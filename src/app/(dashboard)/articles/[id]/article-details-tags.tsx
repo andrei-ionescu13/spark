@@ -1,3 +1,5 @@
+"use client"
+
 import type { FC } from "react";
 import { toast } from "react-toastify";
 import { useFormik } from "formik";
@@ -17,9 +19,6 @@ import {
   Select,
   useTheme,
 } from "@mui/material";
-import { Button } from "../../button";
-import { StatusSelect } from "../../status";
-import type { StatusOption } from "../../status";
 import {
   useUpdateArticleStatus,
   useUpdateArticleCategory,
@@ -29,15 +28,19 @@ import { ArticleCategory } from "../../../types/article-category";
 import { ArticleTag } from "../../../types/article-tag";
 import { useDialog } from "../../../hooks/useDialog";
 import { ArticleDetailsTagsForm } from "./article-details-tags-form";
+import { Button } from "@/components/button";
+import { useGetArticle } from "../api-calls-hooks";
 
 interface ArticleStatusTagProps {
-  article: Article;
   isEditDisabled?: boolean;
 }
 
 export const ArticleDetailsTags: FC<ArticleStatusTagProps> = (props) => {
-  const { article, isEditDisabled } = props;
+  const { isEditDisabled } = props;
+  const { data: article } = useGetArticle();
   const [dialogOpen, handleOpenDialog, handleCloseDialog] = useDialog();
+
+  if (!article) return null;
 
   return (
     <>

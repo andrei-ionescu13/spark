@@ -1,7 +1,9 @@
+"use client"
+
 import type { FC } from "react";
 import { toast } from "react-toastify";
 import { useFormik } from "formik";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import * as Yup from "yup";
 import {
   Card,
@@ -16,20 +18,18 @@ import {
   Select,
   useTheme,
 } from "@mui/material";
-import { Button } from "../../button";
-import { StatusSelect } from "../../status";
-import type { StatusOption } from "../../status";
 import {
   useUpdateArticleStatus,
   useUpdateArticleCategory,
 } from "@/api/articles";
 import { Article } from "../../../types/articles";
 import { ArticleCategory } from "../../../types/article-category";
+import { StatusOption, StatusSelect } from "@/components/status";
+import { Button } from "@/components/button";
+import { useGetArticle, useListArticleCategories } from "../api-calls-hooks";
 
 interface ArticleStatusTagProps {
-  article: Article;
   isEditDisabled?: boolean;
-  categories: ArticleCategory[];
 }
 
 interface Category {
@@ -38,9 +38,14 @@ interface Category {
 }
 
 export const ArticleStatusCategory: FC<ArticleStatusTagProps> = (props) => {
-  const { article, categories, isEditDisabled } = props;
+  const { isEditDisabled } = props;
+  const { data: article } = useGetArticle();
+  const { data: categories } = useListArticleCategories();
   const theme = useTheme();
   const queryClient = useQueryClient();
+
+  if (!article || !categories) return null;
+
   const updateArticleStatus = useUpdateArticleStatus(article._id);
   const updateArticleCategory = useUpdateArticleCategory(article._id);
 

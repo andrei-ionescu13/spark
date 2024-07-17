@@ -4,7 +4,7 @@ import { useDialog } from 'app/hooks/useDialog';
 import { Navbar } from 'app/layout/navbar';
 import { Sidebar } from 'app/layout/sidebar';
 
-export default function DashboardLayou({
+export default function DashboardLayout({
   children,
   admin
 }: Readonly<{

@@ -62,12 +62,3 @@ export const useUpdateArticleCategory = (
     onSuccess
   }
   );
-
-export const listArticleCategories =
-  (config: Record<string, any> = {}) =>
-    () =>
-      appFetch<ArticleCategory[]>({
-        url: "/article-categories",
-        withAuth: true,
-        ...config,
-      });

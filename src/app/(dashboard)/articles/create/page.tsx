@@ -3,10 +3,10 @@ import Head from "next/head";
 import type { GetServerSideProps } from "next";
 import { Box, Container } from "@mui/material";
 import { HydrationBoundary, QueryClient, dehydrate, useQuery } from "@tanstack/react-query";
-import { listArticleCategories } from "@/api/article-categories";
 import { listTags } from "@/api/article-tags";
 import { ArticleForm } from "@/components/articles/create/article-form";
 import { PageHeader } from "@/components/page-header";
+import { listArticleCategories } from "../api-calls";
 
 export default async function ArticleCreate() {
   const queryClient = new QueryClient()
@@ -14,7 +14,7 @@ export default async function ArticleCreate() {
   await Promise.resolve([
     queryClient.prefetchQuery({
       queryKey: ["article-categories"],
-      queryFn: listArticleCategories()
+      queryFn: listArticleCategories
     }),
     queryClient.prefetchQuery({
       queryKey: ["article-tags"],

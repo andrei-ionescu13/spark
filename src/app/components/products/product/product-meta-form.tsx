@@ -1,3 +1,5 @@
+"use client"
+
 import type { FC, SyntheticEvent } from "react";
 import {
   Autocomplete,

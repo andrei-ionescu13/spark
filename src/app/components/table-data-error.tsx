@@ -4,12 +4,12 @@ import { Button } from "./button";
 import { ArrowPath as ArrowPathIcon } from "../icons/arrow-path";
 
 interface DataErrorProps {
-  onReload: () => void;
+  onRefetch: () => void;
   colSpan: number;
 }
 
 export const TableDataError: FC<DataErrorProps> = (props) => {
-  const { onReload, colSpan } = props;
+  const { onRefetch: onReload, colSpan } = props;
 
   return (
     <tr>

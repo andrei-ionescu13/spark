@@ -12,10 +12,10 @@ import {
   FormHelperText,
   Grid,
 } from "@mui/material";
-import { Button } from "../../button";
 import { useUpdateArticleMeta } from "@/api/articles";
 import { Article } from "../../../types/articles";
-import { TextInput } from "../../text-input";
+import { TextInput } from "@/components/text-input";
+import { Button } from "@/components/button";
 
 interface Values {
   description: string;

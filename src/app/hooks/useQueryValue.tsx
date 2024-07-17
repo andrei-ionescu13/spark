@@ -22,7 +22,7 @@ export const useQueryValue = (key: string, defaultValue = '', hiddenValue: any =
     newValue === hiddenValue && newSearchParams.delete(key)
     newSearchParams.delete('page');
 
-    push(`${[pathname]}?${newSearchParams.toString()}`);
+    window.history.pushState(null, '', `?${newSearchParams.toString()}`);
   };
 
   return [value, handleValueChange];

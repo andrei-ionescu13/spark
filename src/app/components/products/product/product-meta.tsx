@@ -1,3 +1,4 @@
+"use client"
 import type { FC } from 'react';
 import { Card, CardContent, CardHeader, Divider } from '@mui/material';
 import { InfoListItem } from '../../info-list-item';
@@ -6,15 +7,18 @@ import type { Product } from '../../../types/products';
 import { ProductMetaForm } from './product-meta-form';
 import { useDialog } from '../../../hooks/useDialog';
 import { Button } from '../../button';
+import { useGetCollectionQuery, useGetProduct } from 'app/(dashboard)/products/api-calls-hooks';
 
 interface ProductMetaProps {
   isEditDisabled?: boolean;
-  product: Product;
 }
 
 export const ProductMeta: FC<ProductMetaProps> = (props) => {
-  const { product, isEditDisabled = false } = props;
+  const { isEditDisabled = false } = props;
+  const { data: product } = useGetProduct();
   const [dialogOpen, handleOpenDialog, handleCloseDialog] = useDialog();
+
+  if (!product) return null;
 
   return (
     <>

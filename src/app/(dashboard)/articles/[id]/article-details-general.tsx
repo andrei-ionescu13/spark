@@ -1,5 +1,6 @@
-import { useRef, useState } from "react";
-import type { FC } from "react";
+"use client"
+
+import { useState, type FC } from "react";
 import {
   Box,
   Card,
@@ -8,26 +9,26 @@ import {
   Divider,
   Grid,
 } from "@mui/material";
-import { ArticleDetailsGeneralForm } from "./article-details-general-form";
-import { InfoList } from "../../info-list";
-import { InfoListItem } from "../../info-list-item";
 import { formatDate } from "../../../utils/format-date";
-import { Article } from "../../../types/articles";
-import { Link } from "../../link";
 import Image from "next/image";
-import { Button } from "../../button";
+import { InfoList } from "@/components/info-list";
+import { InfoListItem } from "@/components/info-list-item";
+import Link from "@/components/link";
+import { Article } from "@/types/articles";
+import { Button } from "@/components/button";
+import { ArticleDetailsGeneralForm } from "./article-details-general-form";
+import { useGetArticle } from "../api-calls-hooks";
 
 interface ArticleDetailsGeneralProps {
-  article: Article;
   isEditDisabled?: boolean;
 }
 
 export const ArticleDetailsGeneral: FC<ArticleDetailsGeneralProps> = (
   props
 ) => {
-  const { article, isEditDisabled } = props;
+  const { isEditDisabled } = props;
+  const { data: article } = useGetArticle();
   const [openDialog, setOpenDialog] = useState(false);
-  const ref = useRef<HTMLElement>(null);
 
   const handleOpenDialog = (): void => {
     setOpenDialog(true);
@@ -36,6 +37,8 @@ export const ArticleDetailsGeneral: FC<ArticleDetailsGeneralProps> = (
   const handleCloseDialog = (): void => {
     setOpenDialog(false);
   };
+
+  if (!article) return null;
 
   return (
     <>
@@ -59,7 +62,6 @@ export const ArticleDetailsGeneral: FC<ArticleDetailsGeneralProps> = (
             <Grid item md={6} xs={12}>
               <InfoList>
                 <InfoListItem content={article._id} title="Id" />
-
                 <InfoListItem content={article.slug} title="Slug" />
                 <InfoListItem
                   content={article.description}
@@ -85,7 +87,7 @@ export const ArticleDetailsGeneral: FC<ArticleDetailsGeneralProps> = (
               <InfoList>
                 <InfoListItem content={article.markdown} title="Content" />
                 <InfoListItem title="Cover image">
-                  <Box ref={ref}>
+                  <Box>
                     <Link target="_blank" href={article.cover.url}>
                       <Image
                         src={article.cover.url}

@@ -40,7 +40,7 @@ export const getNewAccesToken = async (
   if (res) {
     res.redirect(307, "login");
   } else {
-    Router.push("/login");
+    // Router.push("/login");
   }
 
   throw new ApiError(respose.status, data.message);

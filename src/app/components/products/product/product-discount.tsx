@@ -11,13 +11,18 @@ import {
 } from "@mui/material";
 import { Discount } from "../../../types/discounts";
 import { formatDate } from "../../../utils/format-date";
+import { useGetProduct } from "app/(dashboard)/products/api-calls-hooks";
 
 interface ProductDiscountProps {
   discount: Discount;
 }
 
 export const ProductDiscount: FC<ProductDiscountProps> = (props) => {
-  const { discount } = props;
+  const { data: product } = useGetProduct();
+
+  if (!product?.discount) return null;
+
+  const { discount } = product;
   const { value, type, startDate, endDate } = discount;
   const summaryFields = [
     {

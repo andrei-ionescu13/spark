@@ -2,7 +2,6 @@ import type { FC } from "react";
 import { Box, Paper } from "@mui/material";
 
 interface TableNoDataProps {
-  onReload: () => void;
   colSpan: number;
 }
 
