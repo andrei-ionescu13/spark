@@ -1,9 +1,8 @@
-"use client"
+'use client';
 
-import { OrderLayout } from "@/components/orders/order-layout";
-import Head from "next/head";
-import { useGetOrder } from "../api-calls-hooks";
-
+import Head from 'next/head';
+import { useGetOrder } from '../api-calls-hooks';
+import { OrderLayout } from '../order-layout';
 
 export default function Order() {
   const { data: order } = useGetOrder();
@@ -13,9 +12,7 @@ export default function Order() {
       <Head>
         <title>Order</title>
       </Head>
-      <OrderLayout>
-        Data
-      </OrderLayout>
+      <OrderLayout>Data</OrderLayout>
     </>
   );
-};
+}

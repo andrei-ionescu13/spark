@@ -2,15 +2,22 @@ import { useDeleteDiscounts } from '@/api/discounts';
 import { AlertDialog } from '@/components/alert-dialog';
 import { DataTable } from '@/components/data-table';
 import { DataTableHead, HeadCell } from '@/components/data-table-head';
-import { DiscountsTableRow } from '@/components/discounts/discount-list/discounts-table-row';
 import { SearchInput } from '@/components/search-input';
 import { useDialog } from '@/hooks/useDialog';
 import { useQueryValue } from '@/hooks/useQueryValue';
 import { useSearch } from '@/hooks/useSearch';
 import { Discount } from '@/types/discounts';
-import { Card, Box, Button, TextField, MenuItem, TableBody } from '@mui/material';
+import {
+  Box,
+  Button,
+  Card,
+  MenuItem,
+  TableBody,
+  TextField,
+} from '@mui/material';
 import { useQueryClient } from '@tanstack/react-query';
-import { ChangeEvent, useState, type FC } from 'react'
+import { ChangeEvent, useState, type FC } from 'react';
+import { DiscountsTableRow } from './discounts-table-row';
 
 interface DiscountsTableProps {
   discounts?: Discount[];
@@ -22,60 +29,53 @@ interface DiscountsTableProps {
 
 const headCells: HeadCell[] = [
   {
-    id: "title",
-    label: "Title",
+    id: 'title',
+    label: 'Title',
   },
   {
-    id: "startDate",
-    label: "Start Date",
+    id: 'startDate',
+    label: 'Start Date',
   },
   {
-    id: "endDate",
-    label: "End Date",
+    id: 'endDate',
+    label: 'End Date',
   },
   {
-    id: "status",
-    label: "Status",
+    id: 'status',
+    label: 'Status',
     disableSort: true,
   },
 ];
 
 const statusOptions = [
   {
-    label: "All",
-    value: "all",
+    label: 'All',
+    value: 'all',
   },
   {
-    label: "Active",
-    value: "active",
+    label: 'Active',
+    value: 'active',
   },
   {
-    label: "Scheduled",
-    value: "scheduled",
+    label: 'Scheduled',
+    value: 'scheduled',
   },
   {
-    label: "Expired",
-    value: "expired",
+    label: 'Expired',
+    value: 'expired',
   },
 ];
 
 export const DiscountsTable: FC<DiscountsTableProps> = (props) => {
-  const {
-    discounts,
-    count,
-    isError,
-    isLoading,
-    refetch,
-  } = props;
+  const { discounts, count, isError, isLoading, refetch } = props;
   const queryClient = useQueryClient();
-  const [keyword, handleKeywordChange, handleSearch] =
-    useSearch();
+  const [keyword, handleKeywordChange, handleSearch] = useSearch();
   const [selected, setSelected] = useState<string[]>([]);
   const [dialogOpen, handleOpenDialog, handleCloseDialog] = useDialog();
   const deleteDiscounts = useDeleteDiscounts(() =>
-    queryClient.invalidateQueries({ queryKey: ["discounts"] })
+    queryClient.invalidateQueries({ queryKey: ['discounts'] })
   );
-  const [status, setStatus] = useQueryValue("status", "all", "all");
+  const [status, setStatus] = useQueryValue('status', 'all', 'all');
 
   const handleStatusChange = (event: ChangeEvent<HTMLInputElement>): void => {
     setStatus(event.target.value);
@@ -117,10 +117,10 @@ export const DiscountsTable: FC<DiscountsTableProps> = (props) => {
       <Card>
         <Box
           sx={{
-            display: "grid",
+            display: 'grid',
             gap: 2,
             gridTemplateColumns: {
-              sm: `${!!selected.length ? "auto" : ""} 1fr 240px`,
+              sm: `${!!selected.length ? 'auto' : ''} 1fr 240px`,
             },
             p: 2,
           }}
@@ -195,5 +195,5 @@ export const DiscountsTable: FC<DiscountsTableProps> = (props) => {
         title={`Delete ${selected.length} articles`}
       />
     </>
-  )
+  );
 };

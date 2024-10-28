@@ -1,12 +1,9 @@
-"use client"
+'use client';
 
-import type { FC } from "react";
-import Head from "next/head";
-import { getProduct, searchProductKeys } from "../../api-calls";
-import { dehydrate, HydrationBoundary, QueryClient, useQuery } from "@tanstack/react-query";
-import { ProductLayout } from "../product-layout";
-import { useGetProduct, useSearchProductKeys } from "../../api-calls-hooks";
-import { KeysTable } from "@/components/keys-table";
+import Head from 'next/head';
+import { useSearchProductKeys } from '../../api-calls-hooks';
+import { KeysTable } from '../../keys-table';
+import { ProductLayout } from '../product-layout';
 
 export default function ProductKeys() {
   const { data, refetch, isError, isLoading } = useSearchProductKeys();
@@ -28,4 +25,4 @@ export default function ProductKeys() {
       </ProductLayout>
     </>
   );
-};
+}

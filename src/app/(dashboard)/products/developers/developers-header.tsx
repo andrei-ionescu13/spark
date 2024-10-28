@@ -1,14 +1,12 @@
-"use client"
+'use client';
 
 import { PageHeader } from '@/components/page-header';
-import { DeveloperCreateDialog } from '@/components/products/developers/developer-create-dialog';
 import { useDialog } from '@/hooks/useDialog';
 import { Plus } from '@/icons/plus';
-import type { FC } from 'react'
+import type { FC } from 'react';
+import { DeveloperCreateDialog } from './developer-create-dialog';
 
-interface DevelopersHeaderProps {
-
-}
+interface DevelopersHeaderProps {}
 
 export const DevelopersHeader: FC<DevelopersHeaderProps> = (props) => {
   const [createDialogOpen, handleOpenCreateDialog, handleCloseCreateDialog] =
@@ -20,7 +18,7 @@ export const DevelopersHeader: FC<DevelopersHeaderProps> = (props) => {
         title="Developer"
         action={{
           onClick: handleOpenCreateDialog,
-          label: "Add",
+          label: 'Add',
           icon: Plus,
         }}
       />
@@ -28,5 +26,5 @@ export const DevelopersHeader: FC<DevelopersHeaderProps> = (props) => {
         <DeveloperCreateDialog open onClose={handleCloseCreateDialog} />
       )}
     </>
-  )
+  );
 };
