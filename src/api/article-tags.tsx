@@ -1,10 +1,10 @@
-import { ArticleTag } from "@/types/article-tag";
-import { appFetch } from "@/utils/app-fetch";
-import { useMutation } from "react-query";
+import { ArticleTag } from "../app/types/article-tag";
+import { appFetch } from "../app/utils/app-fetch";
+import { useMutation } from "@tanstack/react-query";
 
 export const useCreateArticleTag = (onSuccess: any) =>
-  useMutation<{ name: string }, Error, Record<string, unknown>>(
-    (values) =>
+  useMutation<{ name: string }, Error, Record<string, unknown>>({
+    mutationFn: (values) =>
       appFetch({
         url: "/article-tags",
         config: {
@@ -13,12 +13,13 @@ export const useCreateArticleTag = (onSuccess: any) =>
         },
         withAuth: true,
       }),
-    { onSuccess }
+    onSuccess
+  }
   );
 
 export const useDeleteArticleTag = (onSuccess?: () => Promise<any>) =>
-  useMutation<{}, Error, string>(
-    (tagId) =>
+  useMutation<{}, Error, string>({
+    mutationFn: (tagId) =>
       appFetch({
         url: `/article-tags/${tagId}`,
         config: {
@@ -26,15 +27,16 @@ export const useDeleteArticleTag = (onSuccess?: () => Promise<any>) =>
         },
         withAuth: true,
       }),
-    { onSuccess }
+    onSuccess
+  }
   );
 
 export const useUpdateArticleTag = (
   id: string,
   onSuccess: () => Promise<any>
 ) =>
-  useMutation<{ name: string }, Error, { name: string; slug: string }>(
-    (value) =>
+  useMutation<{ name: string }, Error, { name: string; slug: string }>({
+    mutationFn: (value) =>
       appFetch({
         withAuth: true,
         url: `/article-tags/${id}`,
@@ -43,21 +45,22 @@ export const useUpdateArticleTag = (
           method: "PUT",
         },
       }),
-    { onSuccess }
+    onSuccess
+  }
   );
 
 export const listTags =
   (config: Record<string, any> = {}) =>
-  () =>
-    appFetch<ArticleTag[]>({
-      url: "/article-tags",
-      withAuth: true,
-      ...config,
-    });
+    () =>
+      appFetch<ArticleTag[]>({
+        url: "/article-tags",
+        withAuth: true,
+        ...config,
+      });
 
 export const useDeleteArticleTags = (onSuccess?: () => Promise<any>) =>
-  useMutation<{}, Error, string[]>(
-    (articleTagIds) =>
+  useMutation<{}, Error, string[]>({
+    mutationFn: (articleTagIds) =>
       appFetch({
         url: `/article-tags`,
         config: {
@@ -66,5 +69,6 @@ export const useDeleteArticleTags = (onSuccess?: () => Promise<any>) =>
         },
         withAuth: true,
       }),
-    { onSuccess }
+    onSuccess
+  }
   );

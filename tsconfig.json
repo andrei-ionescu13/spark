@@ -3,34 +3,34 @@
     "baseUrl": "src",
     "paths": {
       "@/components/*": [
-        "components/*"
+        "app/components/*"
       ],
       "@/contexts/*": [
-        "contexts/*"
+        "app/contexts/*"
       ],
       "@/hooks/*": [
-        "hooks/*"
+        "app/hooks/*"
       ],
       "@/types/*": [
-        "types/*"
+        "app/types/*"
       ],
       "@/utils/*": [
-        "utils/*"
+        "app/utils/*"
       ],
       "@/icons/*": [
-        "icons/*"
+        "app/icons/*"
       ],
       "@/constants": [
-        "constants"
+        "app/constants"
       ],
       "@/api/*": [
         "api/*"
       ],
       "@/pages/*": [
         "pages/*"
-      ],
+      ]
     },
-    "target": "es5",
+    "target": "ES6",
     "lib": [
       "dom",
       "dom.iterable",
@@ -40,19 +40,26 @@
     "skipLibCheck": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "incremental": true
+    "incremental": true,
+    "noEmit": true,
+    "noEmitOnError": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
-    "**/*.tsx"
+    "**/*.tsx",
+    ".next/types/**/*.ts"
   ],
   "exclude": [
     "node_modules"

@@ -1,10 +1,10 @@
-import { OperatingSystem } from "@/types/operating-sistem";
-import { appFetch } from "@/utils/app-fetch";
-import { useMutation } from "react-query";
+import { OperatingSystem } from "../app/types/operating-sistem";
+import { appFetch } from "../app/utils/app-fetch";
+import { useMutation } from "@tanstack/react-query";
 
 export const useCreateOperatingSystem = (onSuccess: any) =>
-  useMutation<{ name: string }, Error, Record<string, unknown>>(
-    (values) =>
+  useMutation<{ name: string }, Error, Record<string, unknown>>({
+    mutationFn: (values) =>
       appFetch({
         url: "/operating-systems",
         config: {
@@ -13,12 +13,12 @@ export const useCreateOperatingSystem = (onSuccess: any) =>
         },
         withAuth: true,
       }),
-    { onSuccess }
-  );
+    onSuccess
+  });
 
 export const useDeleteOperatingSystem = (onSuccess?: () => Promise<any>) =>
-  useMutation<{}, Error, string>(
-    (operatingSystemId) =>
+  useMutation<{}, Error, string>({
+    mutationFn: (operatingSystemId) =>
       appFetch({
         url: `/operating-systems/${operatingSystemId}`,
         config: {
@@ -26,15 +26,15 @@ export const useDeleteOperatingSystem = (onSuccess?: () => Promise<any>) =>
         },
         withAuth: true,
       }),
-    { onSuccess }
-  );
+    onSuccess
+  });
 
 export const useUpdateOperatingSystem = (
   id: string,
   onSuccess: () => Promise<any>
 ) =>
-  useMutation<{ name: string }, Error, { name: string; slug: string }>(
-    (value) =>
+  useMutation<{ name: string }, Error, { name: string; slug: string }>({
+    mutationFn: (value) =>
       appFetch({
         withAuth: true,
         url: `/operating-systems/${id}`,
@@ -43,21 +43,22 @@ export const useUpdateOperatingSystem = (
           method: "PUT",
         },
       }),
-    { onSuccess }
+    onSuccess
+  }
   );
 
 export const listOperatingSystems =
   (config: Record<string, any> = {}) =>
-  () =>
-    appFetch<OperatingSystem[]>({
-      url: "/operating-systems",
-      withAuth: true,
-      ...config,
-    });
+    () =>
+      appFetch<OperatingSystem[]>({
+        url: "/operating-systems",
+        withAuth: true,
+        ...config,
+      });
 
 export const useDeleteOperatingSystems = (onSuccess?: () => Promise<any>) =>
-  useMutation<{}, Error, string[]>(
-    (operatingSystemIds) =>
+  useMutation<{}, Error, string[]>({
+    mutationFn: (operatingSystemIds) =>
       appFetch({
         url: `/operating-systems`,
         config: {
@@ -66,5 +67,5 @@ export const useDeleteOperatingSystems = (onSuccess?: () => Promise<any>) =>
         },
         withAuth: true,
       }),
-    { onSuccess }
-  );
+    onSuccess
+  });

@@ -1,10 +1,10 @@
-import { Feature } from "@/types/feature";
-import { appFetch } from "@/utils/app-fetch";
-import { useMutation } from "react-query";
+import { Feature } from "../app/types/feature";
+import { appFetch } from "../app/utils/app-fetch";
+import { useMutation } from "@tanstack/react-query";
 
 export const useCreateFeature = (onSuccess: any) =>
-  useMutation<{ name: string }, Error, Record<string, unknown>>(
-    (values) =>
+  useMutation<{ name: string }, Error, Record<string, unknown>>({
+    mutationFn: (values) =>
       appFetch({
         url: "/features",
         config: {
@@ -13,12 +13,12 @@ export const useCreateFeature = (onSuccess: any) =>
         },
         withAuth: true,
       }),
-    { onSuccess }
-  );
+    onSuccess
+  });
 
 export const useDeleteFeature = (onSuccess?: () => Promise<any>) =>
-  useMutation<{}, Error, string>(
-    (featureId) =>
+  useMutation<{}, Error, string>({
+    mutationFn: (featureId) =>
       appFetch({
         url: `/features/${featureId}`,
         config: {
@@ -26,12 +26,13 @@ export const useDeleteFeature = (onSuccess?: () => Promise<any>) =>
         },
         withAuth: true,
       }),
-    { onSuccess }
+    onSuccess
+  }
   );
 
 export const useUpdateFeature = (id: string, onSuccess: () => Promise<any>) =>
-  useMutation<{ name: string }, Error, { name: string; slug: string }>(
-    (value) =>
+  useMutation<{ name: string }, Error, { name: string; slug: string }>({
+    mutationFn: (value) =>
       appFetch({
         withAuth: true,
         url: `/features/${id}`,
@@ -40,21 +41,21 @@ export const useUpdateFeature = (id: string, onSuccess: () => Promise<any>) =>
           method: "PUT",
         },
       }),
-    { onSuccess }
-  );
+    onSuccess
+  });
 
 export const listFeatures =
   (config: Record<string, any> = {}) =>
-  () =>
-    appFetch<Feature[]>({
-      url: "/features",
-      withAuth: true,
-      ...config,
-    });
+    () =>
+      appFetch<Feature[]>({
+        url: "/features",
+        withAuth: true,
+        ...config,
+      });
 
 export const useDeleteFeatures = (onSuccess?: () => Promise<any>) =>
-  useMutation<{}, Error, string[]>(
-    (featureIds) =>
+  useMutation<{}, Error, string[]>({
+    mutationFn: (featureIds) =>
       appFetch({
         url: `/features`,
         config: {
@@ -63,5 +64,6 @@ export const useDeleteFeatures = (onSuccess?: () => Promise<any>) =>
         },
         withAuth: true,
       }),
-    { onSuccess }
+    onSuccess
+  }
   );
