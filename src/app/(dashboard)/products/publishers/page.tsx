@@ -1,17 +1,10 @@
-"use client"
+'use client';
 
-import { useState } from "react";
-import type { FC } from "react";
-import Head from "next/head";
-import { useRouter } from "next/navigation";
-import type { GetServerSideProps } from "next";
-import { Box, Card, Container, TableBody } from "@mui/material";
-import { dehydrate, HydrationBoundary, QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useDeletePublishers } from "@/api/publishers";
-import { searchPublishers } from "../api-calls";
-import { PublishersTable } from "./publishers-table";
-import { PublishersHeader } from "./publishers-header";
-import { useSearchPublishersQuery } from "../api-calls-hooks";
+import { Box, Container } from '@mui/material';
+import Head from 'next/head';
+import { useSearchPublishersQuery } from '../api-calls-hooks';
+import { PublishersHeader } from './publishers-header';
+import { PublishersTable } from './publishers-table';
 
 export default function Publishers() {
   const { data, refetch, isError, isLoading } = useSearchPublishersQuery();
@@ -36,4 +29,4 @@ export default function Publishers() {
       </Box>
     </>
   );
-};
+}

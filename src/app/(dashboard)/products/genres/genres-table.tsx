@@ -1,22 +1,18 @@
-"use client"
+'use client';
 
 import { useDeleteGenres } from '@/api/genres';
 import { AlertDialog } from '@/components/alert-dialog';
 import { DataTable } from '@/components/data-table';
-import { HeadCell, DataTableHead } from '@/components/data-table-head';
-import { GenresTableRow } from '@/components/products/genres/genres-table-row';
+import { DataTableHead, HeadCell } from '@/components/data-table-head';
 import { SearchInput } from '@/components/search-input';
 import { useDialog } from '@/hooks/useDialog';
 import { useSearch } from '@/hooks/useSearch';
-import { Card, Box, Button, TableBody } from '@mui/material';
-import { useQueryClient, useQuery } from '@tanstack/react-query';
-import { useState, type FC } from 'react'
-import { searchGenres } from '../api-calls';
-import { ParsedUrlQuery } from 'querystring';
-import { Language } from '@/types/translations';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useSearchDevelopersQuery, useSearchGenresQuery } from '../api-calls-hooks';
 import { Genre } from '@/types/genres';
+import { Box, Button, Card, TableBody } from '@mui/material';
+import { useQueryClient } from '@tanstack/react-query';
+import { useState, type FC } from 'react';
+import { useSearchGenresQuery } from '../api-calls-hooks';
+import { GenresTableRow } from './genres-table-row';
 
 interface GenresTableProps {
   genres?: Genre[];
@@ -28,29 +24,21 @@ interface GenresTableProps {
 
 const headCells: HeadCell[] = [
   {
-    id: "name",
-    label: "Name",
+    id: 'name',
+    label: 'Name',
   },
 ];
 
-
 export const GenresTable: FC<GenresTableProps> = (props) => {
-  const {
-    genres,
-    count,
-    isError,
-    isLoading,
-    refetch,
-  } = props;
+  const { genres, count, isError, isLoading, refetch } = props;
   const queryClient = useQueryClient();
-  const [keyword, handleKeywordChange, handleSearch] =
-    useSearch();
+  const [keyword, handleKeywordChange, handleSearch] = useSearch();
   const [selected, setSelected] = useState<string[]>([]);
   const { error, data: genresData } = useSearchGenresQuery();
   const [dialogOpen, handleOpenDialog, handleCloseDialog] = useDialog();
   useDialog();
   const deleteGenres = useDeleteGenres(() =>
-    queryClient.invalidateQueries({ queryKey: ["genres"] })
+    queryClient.invalidateQueries({ queryKey: ['genres'] })
   );
 
   const handleSelect = (id: string): void => {
@@ -89,10 +77,10 @@ export const GenresTable: FC<GenresTableProps> = (props) => {
       <Card>
         <Box
           sx={{
-            display: "grid",
+            display: 'grid',
             gap: 2,
             gridTemplateColumns: {
-              sm: `${!!selected.length ? "auto" : ""} 1fr`,
+              sm: `${!!selected.length ? 'auto' : ''} 1fr`,
             },
             p: 2,
           }}
@@ -154,5 +142,5 @@ export const GenresTable: FC<GenresTableProps> = (props) => {
         isLoading={deleteGenres.isPending}
       />
     </>
-  )
+  );
 };

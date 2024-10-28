@@ -8,14 +8,14 @@ import { DeveloperCreateDialog } from './developer-create-dialog';
 
 interface DevelopersHeaderProps {}
 
-export const DevelopersHeader: FC<DevelopersHeaderProps> = (props) => {
+export const DevelopersHeader: FC<DevelopersHeaderProps> = () => {
   const [createDialogOpen, handleOpenCreateDialog, handleCloseCreateDialog] =
     useDialog();
 
   return (
     <>
       <PageHeader
-        title="Developer"
+        title="Developers"
         action={{
           onClick: handleOpenCreateDialog,
           label: 'Add',
@@ -23,7 +23,10 @@ export const DevelopersHeader: FC<DevelopersHeaderProps> = (props) => {
         }}
       />
       {createDialogOpen && (
-        <DeveloperCreateDialog open onClose={handleCloseCreateDialog} />
+        <DeveloperCreateDialog
+          open
+          onClose={handleCloseCreateDialog}
+        />
       )}
     </>
   );

@@ -1,16 +1,14 @@
-"use client"
+'use client';
 
 import { PageHeader } from '@/components/page-header';
-import { OperatingSystemCreateDialog } from '@/components/products/operating-systems/operating-system-create-dialog';
 import { useDialog } from '@/hooks/useDialog';
 import { Plus } from '@/icons/plus';
-import type { FC } from 'react'
+import type { FC } from 'react';
+import { OperatingSystemCreateDialog } from './operating-system-create-dialog';
 
-interface OperatingSystemsHeaderProps {
+interface OperatingSystemsHeaderProps {}
 
-}
-
-export const OperatingSystemsHeader: FC<OperatingSystemsHeaderProps> = (props) => {
+export const OperatingSystemsHeader: FC<OperatingSystemsHeaderProps> = () => {
   const [createDialogOpen, handleOpenCreateDialog, handleCloseCreateDialog] =
     useDialog();
 
@@ -20,13 +18,16 @@ export const OperatingSystemsHeader: FC<OperatingSystemsHeaderProps> = (props) =
         title="Operating Systems"
         action={{
           onClick: handleOpenCreateDialog,
-          label: "Add",
+          label: 'Add',
           icon: Plus,
         }}
       />
       {createDialogOpen && (
-        <OperatingSystemCreateDialog open onClose={handleCloseCreateDialog} />
+        <OperatingSystemCreateDialog
+          open
+          onClose={handleCloseCreateDialog}
+        />
       )}
     </>
-  )
+  );
 };

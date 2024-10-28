@@ -1,29 +1,29 @@
-"use client"
-import { ChangeEvent, FC, useState } from "react";
-import { Dropzone } from "../../../components/dropzone";
-import type { CustomFile } from "../../../components/dropzone";
+'use client';
+import { useUpdateProductMedia } from '@/api/products';
 import {
   Box,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   FormHelperText,
   Grid,
   Typography,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-} from "@mui/material";
-import { FieldArray, FormikProvider, useFormik } from "formik";
-import * as Yup from "yup";
-import { ImagesDropzone } from "../../../components/images-dropzone";
-import { ProductImage } from "../product-image";
-import { Product } from "../../../types/products";
-import { FileWithPath } from "react-dropzone";
-import { useUpdateProductMedia } from "@/api/products";
-import { useQueryClient } from "@tanstack/react-query";
-import { buildFormData } from "../../../utils/build-form-data";
-import type { Image } from "../../../types/common";
-import { Button } from "../../../components/button";
-import { TextInput } from "../../../components/text-input";
+} from '@mui/material';
+import { useQueryClient } from '@tanstack/react-query';
+import { FieldArray, FormikProvider, useFormik } from 'formik';
+import { ChangeEvent, FC, useState } from 'react';
+import { FileWithPath } from 'react-dropzone';
+import * as Yup from 'yup';
+import { Button } from '../../../../components/button';
+import type { CustomFile } from '../../../../components/dropzone';
+import { ImagesDropzone } from '../../../../components/images-dropzone';
+import { TextInput } from '../../../../components/text-input';
+import type { Image } from '../../../../types/common';
+import { Product } from '../../../../types/products';
+import { buildFormData } from '../../../../utils/build-form-data';
+import { ProductImage } from '../../product-image';
+import { ProductCover } from './product-cover';
 
 interface ProductFormProps {
   product: Product;
@@ -39,22 +39,22 @@ interface InitialValues {
 }
 
 const isFile = (file: any): file is FileWithPath =>
-  typeof window !== "undefined" && file instanceof File;
+  typeof window !== 'undefined' && file instanceof File;
 const isImage = (file: any): file is Image => !!file?.public_id;
 
 export const ProductMediaForm: FC<ProductFormProps> = (props) => {
   const { open, product, onClose } = props;
   const queryClient = useQueryClient();
   const updateProductMedia = useUpdateProductMedia(product._id);
-  const [newVideo, setNewVideo] = useState("");
-  const [newVideoError, setNewVideoError] = useState("");
+  const [newVideo, setNewVideo] = useState('');
+  const [newVideoError, setNewVideoError] = useState('');
   const newVideoSchema = Yup.string().required();
   const [resolutionError, setResolutionError] = useState<string | undefined>(
     undefined
   );
 
   const handleNewVideoChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setNewVideoError("");
+    setNewVideoError('');
     setNewVideo(event.target.value);
   };
 
@@ -70,8 +70,8 @@ export const ProductMediaForm: FC<ProductFormProps> = (props) => {
     initialValues,
     validationSchema: Yup.object({
       cover: Yup.mixed()
-        .test("resolution", "wrong resolution", () => !resolutionError)
-        .required("Required"),
+        .test('resolution', 'wrong resolution', () => !resolutionError)
+        .required('Required'),
       images: Yup.array().of(Yup.mixed()).min(1).required(),
       selectedImages: Yup.array().of(Yup.mixed()).min(1).required(),
       videos: Yup.array().of(Yup.string().required()).min(1).required(),
@@ -85,7 +85,7 @@ export const ProductMediaForm: FC<ProductFormProps> = (props) => {
 
       updateProductMedia.mutate(formData, {
         onSuccess: (updatedProduct) => {
-          queryClient.setQueryData(["product", product._id], {
+          queryClient.setQueryData(['product', product._id], {
             ...product,
             ...updatedProduct,
           });
@@ -98,11 +98,11 @@ export const ProductMediaForm: FC<ProductFormProps> = (props) => {
   const handleSelectImage = (file: FileWithPath | Image): void => {
     if (
       formik.values.selectedImages.includes(
-        isFile(file) ? file.path || "" : file?.public_id
+        isFile(file) ? file.path || '' : file?.public_id
       )
     ) {
       formik.setFieldValue(
-        "selectedImages",
+        'selectedImages',
         formik.values.selectedImages.filter((item: string | Image) => {
           return isFile(file) ? item !== file.path : item !== file?.public_id;
         })
@@ -110,7 +110,7 @@ export const ProductMediaForm: FC<ProductFormProps> = (props) => {
       return;
     }
 
-    formik.setFieldValue("selectedImages", [
+    formik.setFieldValue('selectedImages', [
       ...formik.values.selectedImages,
       isFile(file) ? file.path : file?.public_id,
     ]);
@@ -118,7 +118,7 @@ export const ProductMediaForm: FC<ProductFormProps> = (props) => {
 
   const handleImageDelete = (file: FileWithPath | any) => {
     formik.setFieldValue(
-      "images",
+      'images',
       formik.values.images.filter((item: FileWithPath | any) =>
         isFile(file)
           ? item.path !== file.path
@@ -126,7 +126,7 @@ export const ProductMediaForm: FC<ProductFormProps> = (props) => {
       )
     );
     formik.setFieldValue(
-      "selectedImages",
+      'selectedImages',
       formik.values.selectedImages.filter((item) =>
         isFile(file) ? item !== file.path : item !== file?.public_id
       )
@@ -134,29 +134,32 @@ export const ProductMediaForm: FC<ProductFormProps> = (props) => {
   };
 
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog
+      open={open}
+      onClose={onClose}
+    >
       <DialogTitle>Update Media</DialogTitle>
-      <DialogContent sx={{ py: "24px !important" }}>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <Typography color="textPrimary" variant="subtitle2">
+      <DialogContent sx={{ py: '24px !important' }}>
+        <Grid
+          container
+          spacing={2}
+        >
+          <Grid
+            item
+            xs={12}
+          >
+            <Typography
+              color="textPrimary"
+              variant="subtitle2"
+            >
               Cover
             </Typography>
-
-            <Dropzone
-              resolution={{ width: 1920, height: 1080 }}
-              file={
-                isImage(formik.values.cover)
-                  ? formik.values.cover?.url
-                  : formik.values.cover
-              }
-              onDrop={(file: any) => {
-                formik.setFieldTouched("cover", true);
-                formik.setFieldValue("cover", file);
-              }}
-              onError={(error: string) => {
-                setResolutionError(error);
-                formik.setFieldError("cover", error);
+            <ProductCover
+              url={formik.values.cover.url}
+              alt=""
+              onFileSelect={(file: any) => {
+                formik.setFieldTouched('cover', true);
+                formik.setFieldValue('cover', file);
               }}
             />
             {!!formik.touched.cover && !!formik.errors.cover && (
@@ -165,8 +168,14 @@ export const ProductMediaForm: FC<ProductFormProps> = (props) => {
               </FormHelperText>
             )}
           </Grid>
-          <Grid item xs={12}>
-            <Typography color="textPrimary" variant="subtitle2">
+          <Grid
+            item
+            xs={12}
+          >
+            <Typography
+              color="textPrimary"
+              variant="subtitle2"
+            >
               Videos
             </Typography>
             <FormikProvider value={formik}>
@@ -174,7 +183,10 @@ export const ProductMediaForm: FC<ProductFormProps> = (props) => {
                 name="videos"
                 render={(arrayHelpers) => (
                   <>
-                    <Grid container spacing={2}>
+                    <Grid
+                      container
+                      spacing={2}
+                    >
                       {formik.values.videos.map(
                         (video: string, index: number) => (
                           <Grid
@@ -182,10 +194,10 @@ export const ProductMediaForm: FC<ProductFormProps> = (props) => {
                             xs={12}
                             key={index}
                             sx={{
-                              display: "grid",
-                              alignItems: "center",
-                              gridTemplateColumns: "1fr auto",
-                              gridAutoFlow: "column",
+                              display: 'grid',
+                              alignItems: 'center',
+                              gridTemplateColumns: '1fr auto',
+                              gridAutoFlow: 'column',
                               gap: 2,
                             }}
                           >
@@ -209,13 +221,16 @@ export const ProductMediaForm: FC<ProductFormProps> = (props) => {
                           </Grid>
                         )
                       )}
-                      <Grid item xs={12}>
+                      <Grid
+                        item
+                        xs={12}
+                      >
                         <Box
                           sx={{
-                            display: "grid",
-                            alignItems: "center",
-                            gridTemplateColumns: "1fr auto",
-                            gridAutoFlow: "column",
+                            display: 'grid',
+                            alignItems: 'center',
+                            gridTemplateColumns: '1fr auto',
+                            gridAutoFlow: 'column',
                             gap: 2,
                           }}
                         >
@@ -234,7 +249,7 @@ export const ProductMediaForm: FC<ProductFormProps> = (props) => {
                               try {
                                 await newVideoSchema.validate(newVideo);
                                 arrayHelpers.push(newVideo);
-                                setNewVideo("");
+                                setNewVideo('');
                               } catch (error) {
                                 setNewVideoError((error as Error).message);
                               }
@@ -252,17 +267,23 @@ export const ProductMediaForm: FC<ProductFormProps> = (props) => {
                           <FormHelperText error>{newVideoError}</FormHelperText>
                         )}
                       </Grid>
-                      <Grid item xs={12}>
-                        <Typography color="textPrimary" variant="subtitle2">
+                      <Grid
+                        item
+                        xs={12}
+                      >
+                        <Typography
+                          color="textPrimary"
+                          variant="subtitle2"
+                        >
                           Images
                         </Typography>
                         <ImagesDropzone
                           onDrop={(files: FileWithPath[]) => {
-                            formik.setFieldValue("images", [
+                            formik.setFieldValue('images', [
                               ...formik.values.images,
                               ...files,
                             ]);
-                            formik.setFieldValue("selectedImages", [
+                            formik.setFieldValue('selectedImages', [
                               ...formik.values.selectedImages,
                               ...files.map((file) => file.path),
                             ]);
@@ -272,8 +293,8 @@ export const ProductMediaForm: FC<ProductFormProps> = (props) => {
                           <Box
                             sx={{
                               mt: 5,
-                              display: "grid",
-                              gridTemplateColumns: "repeat(3, 1fr)",
+                              display: 'grid',
+                              gridTemplateColumns: 'repeat(3, 1fr)',
                               gap: 2,
                             }}
                           >
@@ -286,7 +307,7 @@ export const ProductMediaForm: FC<ProductFormProps> = (props) => {
                                 }
                                 key={
                                   isFile(item)
-                                    ? item.path || ""
+                                    ? item.path || ''
                                     : item?.public_id
                                 }
                                 onDelete={() => {
@@ -294,7 +315,7 @@ export const ProductMediaForm: FC<ProductFormProps> = (props) => {
                                 }}
                                 selected={formik.values.selectedImages.includes(
                                   isFile(item)
-                                    ? item.path || ""
+                                    ? item.path || ''
                                     : item?.public_id
                                 )}
                                 onSelect={() => {
@@ -326,7 +347,12 @@ export const ProductMediaForm: FC<ProductFormProps> = (props) => {
         </Grid>
       </DialogContent>
       <DialogActions>
-        <Button color="inherit" onClick={onClose} size="large" sx={{ mr: 1 }}>
+        <Button
+          color="inherit"
+          onClick={onClose}
+          size="large"
+          sx={{ mr: 1 }}
+        >
           Cancel
         </Button>
         <Button

@@ -1,14 +1,12 @@
-"use client"
+'use client';
 
 import { PageHeader } from '@/components/page-header';
-import { PublisherDialog } from '@/components/products/publishers/publisher-dialog';
 import { useDialog } from '@/hooks/useDialog';
 import { Plus } from '@/icons/plus';
-import type { FC } from 'react'
+import type { FC } from 'react';
+import { PublisherDialog } from './publisher-dialog';
 
-interface PublishersHeaderProps {
-
-}
+interface PublishersHeaderProps {}
 
 export const PublishersHeader: FC<PublishersHeaderProps> = (props) => {
   const [addDialogOpen, handleOpenAddDialog, handleCloseAddDialog] =
@@ -19,13 +17,17 @@ export const PublishersHeader: FC<PublishersHeaderProps> = (props) => {
       <PageHeader
         title="Publishers"
         action={{
-          label: "Add publisher",
+          label: 'Add publisher',
           icon: Plus,
           onClick: handleOpenAddDialog,
         }}
       />
-      {addDialogOpen && <PublisherDialog open onClose={handleCloseAddDialog} />}
-
+      {addDialogOpen && (
+        <PublisherDialog
+          open
+          onClose={handleCloseAddDialog}
+        />
+      )}
     </>
-  )
+  );
 };

@@ -1,18 +1,17 @@
-"use client"
+'use client';
 
 import { useDeletePublishers } from '@/api/publishers';
 import { AlertDialog } from '@/components/alert-dialog';
 import { DataTable } from '@/components/data-table';
-import { HeadCell, DataTableHead } from '@/components/data-table-head';
-import { PublishersTableRow } from '@/components/products/publishers/publishers-table-row';
+import { DataTableHead, HeadCell } from '@/components/data-table-head';
 import { SearchInput } from '@/components/search-input';
 import { useDialog } from '@/hooks/useDialog';
 import { useSearch } from '@/hooks/useSearch';
-import { Card, Box, Button, TableBody } from '@mui/material';
-import { useQueryClient } from '@tanstack/react-query';
-import { useState, type FC } from 'react'
-import { useSearchDevelopersQuery, useSearchPublishersQuery } from '../api-calls-hooks';
 import { Publisher } from '@/types/publishers';
+import { Box, Button, Card, TableBody } from '@mui/material';
+import { useQueryClient } from '@tanstack/react-query';
+import { useState, type FC } from 'react';
+import { PublishersTableRow } from './publishers-table-row';
 
 interface PublishersTableProps {
   publishers?: Publisher[];
@@ -24,22 +23,20 @@ interface PublishersTableProps {
 
 const headCells: HeadCell[] = [
   {
-    id: "name",
-    label: "Name",
+    id: 'name',
+    label: 'Name',
   },
 ];
 
 export const PublishersTable: FC<PublishersTableProps> = (props) => {
   const { publishers, count, isError, isLoading, refetch } = props;
   const queryClient = useQueryClient();
-  const [keyword, handleKeywordChange, handleSearch] =
-    useSearch();
+  const [keyword, handleKeywordChange, handleSearch] = useSearch();
   const [selected, setSelected] = useState<string[]>([]);
   const [dialogOpen, handleOpenDialog, handleCloseDialog] = useDialog();
   const deletePublishers = useDeletePublishers(() =>
-    queryClient.invalidateQueries({ queryKey: ["publishers"] })
+    queryClient.invalidateQueries({ queryKey: ['publishers'] })
   );
-
 
   const handleSelect = (id: string): void => {
     setSelected((prevSelected) => {
@@ -74,14 +71,13 @@ export const PublishersTable: FC<PublishersTableProps> = (props) => {
 
   return (
     <>
-
       <Card>
         <Box
           sx={{
-            display: "grid",
+            display: 'grid',
             gap: 2,
             gridTemplateColumns: {
-              sm: `${!!selected.length ? "auto" : ""} 1fr`,
+              sm: `${!!selected.length ? 'auto' : ''} 1fr`,
             },
             p: 2,
           }}
@@ -143,5 +139,5 @@ export const PublishersTable: FC<PublishersTableProps> = (props) => {
         isLoading={deletePublishers.isPending}
       />
     </>
-  )
+  );
 };

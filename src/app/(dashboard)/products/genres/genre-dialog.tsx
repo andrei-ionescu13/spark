@@ -1,51 +1,50 @@
-import type { FC } from "react";
+import { useCreateGenre, useUpdateGenre } from '@/api/genres';
+import { Button } from '@/components/button';
+import { TextInput } from '@/components/text-input';
 import {
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   Grid,
-  TextField,
-} from "@mui/material";
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import { useQueryClient } from "@tanstack/react-query";
-import { useCreateGenre, useUpdateGenre } from "@/api/genres";
-import { Button } from "../../button";
-import { TextInput } from "../../text-input";
-import { Genre } from "../../../types/genres";
+} from '@mui/material';
+import { useQueryClient } from '@tanstack/react-query';
+import { useFormik } from 'formik';
+import type { FC } from 'react';
+import * as Yup from 'yup';
+import { Genre } from '../../../types/genres';
 
 interface GenreDialogProps {
   open: boolean;
   onClose: any;
-  mode?: "create" | "edit";
+  mode?: 'create' | 'edit';
   genre?: Genre;
 }
 
 export const GenreDialog: FC<GenreDialogProps> = (props) => {
-  const { open, onClose, genre, mode = "create" } = props;
+  const { open, onClose, genre, mode = 'create' } = props;
   const queryClient = useQueryClient();
   const createGenre = useCreateGenre(() =>
-    queryClient.invalidateQueries({ queryKey: ["genres"] })
+    queryClient.invalidateQueries({ queryKey: ['genres'] })
   );
   const updateGenre = useUpdateGenre(() =>
-    queryClient.invalidateQueries({ queryKey: ["genres"] })
+    queryClient.invalidateQueries({ queryKey: ['genres'] })
   );
 
   const formik = useFormik({
     initialValues: {
-      name: genre?.name || "",
-      slug: genre?.slug || "",
+      name: genre?.name || '',
+      slug: genre?.slug || '',
     },
     validationSchema: Yup.object({
       name: Yup.string().max(255).required(),
       slug: Yup.string().max(255),
     }),
     onSubmit: (values) => {
-      if (mode === "create") {
+      if (mode === 'create') {
         createGenre.mutate(values, {
           onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["genres"] });
+            queryClient.invalidateQueries({ queryKey: ['genres'] });
             onClose();
           },
         });
@@ -58,7 +57,7 @@ export const GenreDialog: FC<GenreDialogProps> = (props) => {
           { id: genre._id, body: values },
           {
             onSuccess: () => {
-              queryClient.invalidateQueries({ queryKey: ["genres"] });
+              queryClient.invalidateQueries({ queryKey: ['genres'] });
               onClose();
             },
           }
@@ -68,11 +67,22 @@ export const GenreDialog: FC<GenreDialogProps> = (props) => {
   });
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>{mode === "create" ? "Add" : "Update"} genre</DialogTitle>
-      <DialogContent sx={{ py: "24px !important" }}>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth="sm"
+      fullWidth
+    >
+      <DialogTitle>{mode === 'create' ? 'Add' : 'Update'} genre</DialogTitle>
+      <DialogContent sx={{ py: '24px !important' }}>
+        <Grid
+          container
+          spacing={2}
+        >
+          <Grid
+            item
+            xs={12}
+          >
             <TextInput
               size="small"
               error={!!formik.touched.name && !!formik.errors.name}
@@ -86,7 +96,10 @@ export const GenreDialog: FC<GenreDialogProps> = (props) => {
               value={formik.values.name}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid
+            item
+            xs={12}
+          >
             <TextInput
               info="If a slug is not provided, one will be generated"
               size="small"
@@ -104,7 +117,11 @@ export const GenreDialog: FC<GenreDialogProps> = (props) => {
         </Grid>
       </DialogContent>
       <DialogActions>
-        <Button variant="text" color="secondary" onClick={onClose}>
+        <Button
+          variant="text"
+          color="secondary"
+          onClick={onClose}
+        >
           Cancel
         </Button>
         <Button
@@ -115,7 +132,7 @@ export const GenreDialog: FC<GenreDialogProps> = (props) => {
           }}
           variant="contained"
         >
-          {mode === "create" ? "Add" : "Update"}
+          {mode === 'create' ? 'Add' : 'Update'}
         </Button>
       </DialogActions>
     </Dialog>

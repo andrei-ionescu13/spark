@@ -1,29 +1,26 @@
-"use client"
+'use client';
 
-import type { FC } from 'react';
+import { useUpdateProductStatus } from '@/api/products';
 import {
+  Box,
   Card,
   CardContent,
   CardHeader,
   Divider,
   FormControl,
   FormHelperText,
-  MenuItem,
-  Select,
   colors,
   useTheme,
-  Box
 } from '@mui/material';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
-import type { Product } from '../../../types/products';
-import { StatusSelect } from '../../../components/status';
-import type { StatusOption } from '../../../components/status';
-import { useUpdateProductStatus } from '@/api/products';
 import { useQueryClient } from '@tanstack/react-query';
+import { useFormik } from 'formik';
+import type { FC } from 'react';
 import { toast } from 'react-toastify';
+import * as Yup from 'yup';
 import { Button } from '../../../components/button';
-import { useGetCollectionQuery, useGetProduct } from 'app/(dashboard)/products/api-calls-hooks';
+import type { StatusOption } from '../../../components/status';
+import { StatusSelect } from '../../../components/status';
+import type { Product } from '../../../types/products';
 
 interface ProductStatusProps {
   product: Product;
@@ -31,7 +28,7 @@ interface ProductStatusProps {
 
 export const ProductStatus: FC<ProductStatusProps> = (props) => {
   const { product } = props;
-  const theme = useTheme()
+  const theme = useTheme();
   const queryClient = useQueryClient();
   const updateProductStatus = useUpdateProductStatus(product._id);
 
@@ -39,40 +36,42 @@ export const ProductStatus: FC<ProductStatusProps> = (props) => {
     {
       label: 'Published',
       value: 'published',
-      color: theme.palette.success.main
+      color: theme.palette.success.main,
     },
     {
       label: 'Draft',
       value: 'draft',
-      color: colors.grey[500]
+      color: colors.grey[500],
     },
     {
       label: 'Archived',
       value: 'archived',
-      color: theme.palette.error.main
-    }
+      color: theme.palette.error.main,
+    },
   ];
 
   const formik = useFormik({
     initialValues: {
-      status: product.status
+      status: product.status,
     },
     validationSchema: Yup.object({
-      status: Yup.string().oneOf(statusOptions.map((status) => status.value)).required('Required'),
+      status: Yup.string()
+        .oneOf(statusOptions.map((status) => status.value))
+        .required('Required'),
     }),
-    onSubmit: values => {
+    onSubmit: (values) => {
       updateProductStatus.mutate(values, {
         onSuccess: (status) => {
           queryClient.setQueryData(['product', product._id], {
             ...product,
-            status
-          })
-          toast.success('Product updated')
+            status,
+          });
+          toast.success('Product updated');
         },
         onError: (error) => {
-          toast.error(error.message)
-        }
-      })
+          toast.error(error.message);
+        },
+      });
     },
   });
 
@@ -80,38 +79,42 @@ export const ProductStatus: FC<ProductStatusProps> = (props) => {
 
   return (
     <Card>
-      <CardHeader title='Status' />
+      <CardHeader title="Status" />
       <Divider />
       <CardContent>
         <Box
           sx={{
             display: 'grid',
             gridTemplateColumns: '9fr 3fr',
-            gap: 1
+            gap: 1,
           }}
         >
           <FormControl
             error={!!formik.touched.status && !!formik.errors.status}
             fullWidth
-            size='small'
+            size="small"
           >
             <StatusSelect
-              id='status'
-              name='status'
+              id="status"
+              name="status"
               onBlur={formik.handleBlur}
               onChange={formik.handleChange}
               value={formik.values.status}
               options={statusOptions}
             />
-            {!!formik.touched.status && !!formik.errors.status && <FormHelperText>{formik.errors.status}</FormHelperText>}
+            {!!formik.touched.status && !!formik.errors.status && (
+              <FormHelperText>{formik.errors.status}</FormHelperText>
+            )}
           </FormControl>
           <Button
             fullWidth
-            color='primary'
-            variant='contained'
+            color="primary"
+            variant="contained"
             disabled={isDisabled}
             isLoading={updateProductStatus.isPending}
-            onClick={() => { formik.handleSubmit(); }}
+            onClick={() => {
+              formik.handleSubmit();
+            }}
           >
             Update
           </Button>

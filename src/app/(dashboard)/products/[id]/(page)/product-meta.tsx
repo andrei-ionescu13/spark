@@ -1,13 +1,12 @@
-"use client"
-import type { FC } from 'react';
+'use client';
 import { Card, CardContent, CardHeader, Divider } from '@mui/material';
-import { InfoListItem } from '../../../components/info-list-item';
-import { InfoList } from '../../../components/info-list';
-import type { Product } from '../../../types/products';
+import type { FC } from 'react';
+import { Button } from '../../../../components/button';
+import { InfoList } from '../../../../components/info-list';
+import { InfoListItem } from '../../../../components/info-list-item';
+import { useDialog } from '../../../../hooks/useDialog';
+import type { Product } from '../../../../types/products';
 import { ProductMetaForm } from './product-meta-form';
-import { useDialog } from '../../../hooks/useDialog';
-import { Button } from '../../../components/button';
-import { useGetCollectionQuery, useGetProduct } from 'app/(dashboard)/products/api-calls-hooks';
 
 interface ProductMetaProps {
   product: Product;
@@ -58,5 +57,5 @@ export const ProductMeta: FC<ProductMetaProps> = (props) => {
         product={product}
       />
     </>
-  )
-}
+  );
+};

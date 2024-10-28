@@ -1,16 +1,22 @@
-"use client"
+'use client';
 
-import type { FC } from 'react';
-import { Box, Card, CardContent, CardHeader, Divider, Grid } from '@mui/material';
-import { InfoListItem } from '../../../components/info-list-item';
-import { InfoList } from '../../../components/info-list';
-import { useDialog } from '../../../hooks/useDialog';
-import type { Product } from '../../../types/products';
-import { Link } from '../../../components/link';
-import { ProductMediaForm } from './product-media-form';
+import {
+  Box,
+  Card,
+  CardContent,
+  CardHeader,
+  Divider,
+  Grid,
+} from '@mui/material';
 import Image from 'next/image';
-import { Button } from '../../../components/button';
-import { useGetCollectionQuery, useGetProduct } from 'app/(dashboard)/products/api-calls-hooks';
+import type { FC } from 'react';
+import { Button } from '../../../../components/button';
+import { InfoList } from '../../../../components/info-list';
+import { InfoListItem } from '../../../../components/info-list-item';
+import { Link } from '../../../../components/link';
+import { useDialog } from '../../../../hooks/useDialog';
+import type { Product } from '../../../../types/products';
+import { ProductMediaForm } from './product-media-form';
 
 interface ProductMediaProps {
   product: Product;
@@ -23,11 +29,13 @@ export const ProductMedia: FC<ProductMediaProps> = (props) => {
 
   return (
     <>
-      {dialogOpen && <ProductMediaForm
-        product={product}
-        onClose={handleCloseDialog}
-        open
-      />}
+      {dialogOpen && (
+        <ProductMediaForm
+          product={product}
+          onClose={handleCloseDialog}
+          open
+        />
+      )}
       <Card>
         <CardHeader
           action={
@@ -81,7 +89,7 @@ export const ProductMedia: FC<ProductMediaProps> = (props) => {
                           component: Link,
                           href: video,
                           target: '_blank',
-                          underline: 'hover'
+                          underline: 'hover',
                         }}
                       />
                     ))}

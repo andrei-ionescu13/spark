@@ -1,6 +1,6 @@
-"use client"
+'use client';
 
-import type { FC, SyntheticEvent } from "react";
+import { useUpdateProductMeta } from '@/api/products';
 import {
   Autocomplete,
   Dialog,
@@ -8,14 +8,14 @@ import {
   DialogContent,
   DialogTitle,
   Grid,
-} from "@mui/material";
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import type { Product } from "../../../types/products";
-import { useUpdateProductMeta } from "@/api/products";
-import { useQueryClient } from "@tanstack/react-query";
-import { Button } from "../../../components/button";
-import { TextInput } from "../../../components/text-input";
+} from '@mui/material';
+import { useQueryClient } from '@tanstack/react-query';
+import { useFormik } from 'formik';
+import type { FC, SyntheticEvent } from 'react';
+import * as Yup from 'yup';
+import { Button } from '../../../../components/button';
+import { TextInput } from '../../../../components/text-input';
+import type { Product } from '../../../../types/products';
 
 interface ProductMetaFormProps {
   product: Product;
@@ -23,7 +23,7 @@ interface ProductMetaFormProps {
   onClose: any;
 }
 
-const metaKeywordOptions = ["Games", "News", "mopneydas"];
+const metaKeywordOptions = ['Games', 'News', 'mopneydas'];
 
 export const ProductMetaForm: FC<ProductMetaFormProps> = (props) => {
   const { open, product, onClose } = props;
@@ -38,17 +38,17 @@ export const ProductMetaForm: FC<ProductMetaFormProps> = (props) => {
     },
     validationSchema: Yup.object({
       metaDescription: Yup.string()
-        .max(512, "Must be 512 characters or less")
-        .required("Required"),
-      metaKeywords: Yup.array().min(1, "Required").required("Required"),
+        .max(512, 'Must be 512 characters or less')
+        .required('Required'),
+      metaKeywords: Yup.array().min(1, 'Required').required('Required'),
       metaTitle: Yup.string()
-        .max(100, "Must be 100 characters or less")
-        .required("Required"),
+        .max(100, 'Must be 100 characters or less')
+        .required('Required'),
     }),
     onSubmit: (values) => {
       updateProductMeta.mutate(values, {
         onSuccess: (data) => {
-          queryClient.setQueryData(["product", product._id], {
+          queryClient.setQueryData(['product', product._id], {
             ...product,
             ...data,
           });
@@ -59,11 +59,20 @@ export const ProductMetaForm: FC<ProductMetaFormProps> = (props) => {
   });
 
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog
+      open={open}
+      onClose={onClose}
+    >
       <DialogTitle>Update Meta Details</DialogTitle>
-      <DialogContent sx={{ py: "24px !important" }}>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
+      <DialogContent sx={{ py: '24px !important' }}>
+        <Grid
+          container
+          spacing={2}
+        >
+          <Grid
+            item
+            xs={12}
+          >
             <TextInput
               size="small"
               error={!!formik.touched.metaTitle && !!formik.errors.metaTitle}
@@ -77,7 +86,10 @@ export const ProductMetaForm: FC<ProductMetaFormProps> = (props) => {
               value={formik.values.metaTitle}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid
+            item
+            xs={12}
+          >
             <TextInput
               size="small"
               error={
@@ -98,7 +110,10 @@ export const ProductMetaForm: FC<ProductMetaFormProps> = (props) => {
               value={formik.values.metaDescription}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid
+            item
+            xs={12}
+          >
             <Autocomplete
               value={formik.values.metaKeywords}
               freeSolo
@@ -107,7 +122,7 @@ export const ProductMetaForm: FC<ProductMetaFormProps> = (props) => {
               id="metaKeywords"
               multiple
               onChange={(event: SyntheticEvent, newValue: string[]) => {
-                formik.setFieldValue("metaKeywords", newValue);
+                formik.setFieldValue('metaKeywords', newValue);
               }}
               options={metaKeywordOptions}
               renderInput={(params) => (
@@ -131,7 +146,11 @@ export const ProductMetaForm: FC<ProductMetaFormProps> = (props) => {
         </Grid>
       </DialogContent>
       <DialogActions>
-        <Button variant="text" color="secondary" onClick={onClose}>
+        <Button
+          variant="text"
+          color="secondary"
+          onClick={onClose}
+        >
           Cancel
         </Button>
         <Button

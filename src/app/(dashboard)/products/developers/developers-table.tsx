@@ -1,16 +1,15 @@
-"use client"
+'use client';
 
-import { useState, type FC } from 'react'
-import { useSearchDevelopersQuery } from '../api-calls-hooks';
 import { useDeleteDevelopers } from '@/api/developers';
 import { AlertDialog } from '@/components/alert-dialog';
 import { DataTable } from '@/components/data-table';
 import { DataTableHead, HeadCell } from '@/components/data-table-head';
-import { DevelopersTableRow } from 'app/(dashboard)/products/developers/developer-table-row';
 import { SearchInput } from '@/components/search-input';
 import { useSearch } from '@/hooks/useSearch';
-import { Card, Box, Button, TableBody } from '@mui/material';
 import { Developer } from '@/types/developer';
+import { Box, Button, Card, TableBody } from '@mui/material';
+import { useState, type FC } from 'react';
+import { DevelopersTableRow } from './developers-table-row';
 
 interface DevelopersTableProps {
   developers?: Developer[];
@@ -22,26 +21,19 @@ interface DevelopersTableProps {
 
 const headCells: HeadCell[] = [
   {
-    id: "name",
-    label: "Name",
+    id: 'name',
+    label: 'Name',
   },
   {
-    id: "slug",
-    label: "Slug",
+    id: 'slug',
+    label: 'Slug',
   },
 ];
 
 export const DevelopersTable: FC<DevelopersTableProps> = (props) => {
-  const {
-    developers,
-    count,
-    isError,
-    isLoading,
-    refetch,
-  } = props;
+  const { developers, count, isError, isLoading, refetch } = props;
   const [selected, setSelected] = useState<string[]>([]);
-  const [keyword, handleKeywordChange, handleSearch] =
-    useSearch();
+  const [keyword, handleKeywordChange, handleSearch] = useSearch();
   const [dialogOpen, setDialogOpen] = useState(false);
   const deleteCategories = useDeleteDevelopers(refetch);
 
@@ -59,7 +51,7 @@ export const DevelopersTable: FC<DevelopersTableProps> = (props) => {
         setSelected([]);
         handleCloseDialog();
       },
-      onError: (error) => { },
+      onError: (error) => {},
     });
   };
 
@@ -90,10 +82,10 @@ export const DevelopersTable: FC<DevelopersTableProps> = (props) => {
       <Card>
         <Box
           sx={{
-            display: "grid",
+            display: 'grid',
             gap: 2,
             gridTemplateColumns: {
-              sm: `${!!selected.length ? "auto" : ""} 1fr`,
+              sm: `${!!selected.length ? 'auto' : ''} 1fr`,
             },
             p: 2,
           }}
@@ -156,5 +148,5 @@ export const DevelopersTable: FC<DevelopersTableProps> = (props) => {
         title={`Delete ${selected.length} developers`}
       />
     </>
-  )
+  );
 };
