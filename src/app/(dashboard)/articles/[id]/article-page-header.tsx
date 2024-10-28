@@ -16,8 +16,10 @@ import { toast } from 'react-toastify';
 import { useTheme } from '@mui/material';
 import { Label } from '@/components/label';
 import { useGetArticle } from '../api-calls-hooks';
+import { ArticleDuplicateDialog } from '../article-duplicate-dialog';
 
 interface ArticlePageHeaderProps {
+  article: Article;
 }
 
 const ToastSuccess = (id: string) => (
@@ -36,8 +38,8 @@ const ToastSuccess = (id: string) => (
   </Box>
 );
 
-export const ArticlePageHeader: FC<ArticlePageHeaderProps> = () => {
-  const { data: article } = useGetArticle();
+export const ArticlePageHeader: FC<ArticlePageHeaderProps> = (props) => {
+  const { article } = props;
   const theme = useTheme();
   const [openDeleteDialog, handleOpenDeleteDialog, handleCloseDeleteDialog] =
     useDialog();
@@ -82,7 +84,7 @@ export const ArticlePageHeader: FC<ArticlePageHeaderProps> = () => {
   const handleDeleteArticle = () => {
     deleteArticle.mutate(article._id, {
       onSuccess: () => {
-        // router.push("/articles");
+        router.push("/articles");
       },
     });
   };
@@ -106,13 +108,10 @@ export const ArticlePageHeader: FC<ArticlePageHeaderProps> = () => {
       >
         <Label color={mappedColors['draft']}>{article.status}</Label>
       </PageHeader>
-      <AlertDialog
-        open={openDeleteDialog}
-        onClose={handleCloseDeleteDialog}
-        title="Delete article"
-        content="Are you sure you want to delete this article?"
-        onSubmit={handleDeleteArticle}
-        isLoading={deleteArticle.isPending}
+      <ArticleDuplicateDialog
+        open={openDuplicateDialog}
+        onClose={handleCloseDuplicateDialog}
+        articleId={article._id}
       />
       <AlertDialog
         open={openDuplicateDialog}

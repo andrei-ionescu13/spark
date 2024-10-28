@@ -1,7 +1,9 @@
+"use client"
+
 import { useState } from "react";
 import type { FC, ChangeEvent } from "react";
 import { Box, Card, TableBody, MenuItem, TextField } from "@mui/material";
-import { RaviewTableRow } from "./reviews/review-list/review-table-row";
+import { RaviewsTableRow } from "./reviews-table-row";
 import { AlertDialog } from "./alert-dialog";
 import { SearchInput } from "./search-input";
 import { useSearch } from "../hooks/useSearch";
@@ -68,24 +70,28 @@ const statusOptions = [
 ];
 
 interface ReviewsTableProps {
-  reviews: Review[];
-  count: number;
+  reviews?: Review[];
+  count?: number;
+  isError: boolean;
+  isLoading: boolean;
+  refetch: any;
   showProduct?: boolean;
   showUser?: boolean;
-  refetch: any;
 }
 
 const ReviewsTable: FC<ReviewsTableProps> = (props) => {
   const {
-    reviews,
-    count,
     showProduct = true,
     showUser = true,
+    reviews,
+    count,
     refetch,
+    isLoading,
+    isError
   } = props;
   const [status, setStatus] = useQueryValue("status", "all", "all");
   const [selected, setSelected] = useState<string[]>([]);
-  const [keyword, keywordParam, handleKeywordChange, handleSearch] =
+  const [keyword, handleKeywordChange, handleSearch] =
     useSearch();
   const [dialogOpen, setDialogOpen] = useState(false);
   const deleteReviews = useDeleteReviews();
@@ -124,6 +130,8 @@ const ReviewsTable: FC<ReviewsTableProps> = (props) => {
   };
 
   const handleSelectAll = (): void => {
+    if (!reviews) return;
+
     setSelected((prevSelected) => {
       if (prevSelected.length === reviews.length) {
         return [];
@@ -132,6 +140,8 @@ const ReviewsTable: FC<ReviewsTableProps> = (props) => {
       return reviews.map((review) => review._id);
     });
   };
+
+  const headCells = getHeadCells(showProduct, showUser);
 
   return (
     <>
@@ -176,16 +186,26 @@ const ReviewsTable: FC<ReviewsTableProps> = (props) => {
             ))}
           </TextField>
         </Box>
-        <DataTable count={count}>
-          <DataTableHead
-            headCells={getHeadCells(showProduct, showUser)}
-            selectedLength={selected.length}
-            itemsLength={reviews.length}
-            onSelectAll={handleSelectAll}
-          />
+        <DataTable
+          isLoading={isLoading}
+          count={count}
+          hasError={isError}
+          hasNoData={count === 0}
+          headCellsCount={headCells.length}
+          onRefetchData={refetch}
+          headSlot={
+            <DataTableHead
+              isLoading={isLoading}
+              headCells={headCells}
+              selectedLength={selected.length}
+              itemsLength={reviews?.length}
+              onSelectAll={handleSelectAll}
+            />
+          }
+        >
           <TableBody>
-            {reviews.map((review) => (
-              <RaviewTableRow
+            {reviews?.map((review) => (
+              <RaviewsTableRow
                 refetch={refetch}
                 review={review}
                 key={review._id}

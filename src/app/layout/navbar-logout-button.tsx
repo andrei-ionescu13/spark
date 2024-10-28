@@ -1,3 +1,4 @@
+"use client"
 import type { FC } from 'react';
 import { Button } from '../components/button'
 import { useRouter } from 'next/navigation';

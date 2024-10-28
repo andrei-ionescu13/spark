@@ -2,7 +2,6 @@
 
 import { useDeleteCollections } from '@/api/collections';
 import { AlertDialog } from '@/components/alert-dialog';
-import { CollectionsTableRow } from '@/components/collections/list/collections-table.row';
 import { DataTable } from '@/components/data-table';
 import { DataTableHead, HeadCell } from '@/components/data-table-head';
 import { SearchInput } from '@/components/search-input';
@@ -14,9 +13,15 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { ChangeEvent, useState, type FC } from 'react'
 import { searchCollections } from '../api-calls';
 import { useSearchCollectionsQuery } from '../api-calls-hooks';
+import { Collection } from '@/types/collection';
+import { CollectionsTableRow } from './collections-table.row';
 
 interface CollectionsTableProps {
-
+  collections?: Collection[];
+  count?: number;
+  isError: boolean;
+  isLoading: boolean;
+  refetch: any;
 }
 
 const headCells: HeadCell[] = [
@@ -64,21 +69,23 @@ const statusOptions = [
 ];
 
 
-export const CollectionsTable: FC<CollectionsTableProps> = () => {
+export const CollectionsTable: FC<CollectionsTableProps> = (props) => {
+  const {
+    collections,
+    count,
+    isError,
+    isLoading,
+    refetch
+  } = props
   const queryClient = useQueryClient();
   const [keyword, handleKeywordChange, handleSearch] =
     useSearch();
   const [selected, setSelected] = useState<string[]>([]);
   const [dialogOpen, handleOpenDialog, handleCloseDialog] = useDialog();
-  const { error, data } = useSearchCollectionsQuery();
   const [status, setStatus] = useQueryValue("status", "all", "all");
   const deleteCollections = useDeleteCollections(() =>
     queryClient.invalidateQueries({ queryKey: ["collections"] })
   );
-
-  if (!data) return null;
-
-  const { collections, count } = data;
 
   const handleStatusChange = (event: ChangeEvent<HTMLInputElement>): void => {
     setStatus(event.target.value);
@@ -105,6 +112,8 @@ export const CollectionsTable: FC<CollectionsTableProps> = () => {
   };
 
   const handleSelectAll = (): void => {
+    if (!collections) return;
+
     setSelected((prevSelected) => {
       if (prevSelected.length === collections?.length) {
         return [];
@@ -158,13 +167,23 @@ export const CollectionsTable: FC<CollectionsTableProps> = () => {
             ))}
           </TextField>
         </Box>
-        <DataTable count={count}>
-          <DataTableHead
-            headCells={headCells}
-            selectedLength={selected.length}
-            itemsLength={collections.length}
-            onSelectAll={handleSelectAll}
-          />
+        <DataTable
+          isLoading={isLoading}
+          count={count}
+          hasError={isError}
+          hasNoData={count === 0}
+          headCellsCount={headCells.length}
+          onRefetchData={refetch}
+          headSlot={
+            <DataTableHead
+              isLoading={isLoading}
+              headCells={headCells}
+              selectedLength={selected.length}
+              itemsLength={collections?.length}
+              onSelectAll={handleSelectAll}
+            />
+          }
+        >
           <TableBody>
             {collections?.map((collection) => (
               <CollectionsTableRow

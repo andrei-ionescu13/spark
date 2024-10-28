@@ -3,7 +3,7 @@ import {
   Box,
   Container,
 } from "@mui/material";
-import { ProductCreateForm } from "./product-create-form";
+import { ProductForm } from "./product-form-form";
 import { PageHeader } from "@/components/page-header";
 
 export default async function ProductCreate() {
@@ -15,7 +15,7 @@ export default async function ProductCreate() {
       <Box sx={{ py: 3 }}>
         <Container maxWidth="md">
           <PageHeader title="Create Product" />
-          <ProductCreateForm />
+          <ProductForm />
         </Container>
       </Box>
     </>

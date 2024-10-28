@@ -1,6 +1,7 @@
+"use client";
 import { useState } from "react";
 import type { FC } from "react";
-import { usePathname } from 'next/navigation';
+import { usePathname } from "next/navigation";
 import {
   Avatar,
   Box,
@@ -21,6 +22,7 @@ import { SidebarCollapse } from "./sidebar-collapse";
 import { SidebarItem } from "./sidebar-item";
 import SimpleBar from "simplebar-react";
 import "simplebar/dist/simplebar.min.css";
+import { useLayout } from "app/(dashboard)/layout-context";
 
 export interface Item {
   title: string;
@@ -31,12 +33,11 @@ export interface Item {
 
 interface SidebarProps {
   admin?: any;
-  open: boolean;
-  onClose: () => void;
 }
 
 export const Sidebar: FC<SidebarProps> = (props) => {
-  const { admin, open, onClose } = props;
+  const { admin } = props;
+  const { sidebarOpen, handleSidebarClose } = useLayout();
   const pathname = usePathname();
 
   const items: Item[] = [
@@ -173,9 +174,8 @@ export const Sidebar: FC<SidebarProps> = (props) => {
   ];
 
   const [itemOpen, setitemOpen] = useState(
-    items.find((item) =>
-      item?.subitems?.some((item) => pathname === item.href)
-    )?.title
+    items.find((item) => item?.subitems?.some((item) => pathname === item.href))
+      ?.title
   );
 
   const handleClick = (title: string | undefined) => {
@@ -291,7 +291,7 @@ export const Sidebar: FC<SidebarProps> = (props) => {
           },
         }}
         variant="permanent"
-        onClose={onClose}
+        onClose={handleSidebarClose}
       >
         {getContent()}
       </Drawer>
@@ -314,8 +314,8 @@ export const Sidebar: FC<SidebarProps> = (props) => {
           },
         }}
         variant="temporary"
-        open={open}
-        onClose={onClose}
+        open={sidebarOpen}
+        onClose={handleSidebarClose}
       >
         {getContent()}
       </Drawer>

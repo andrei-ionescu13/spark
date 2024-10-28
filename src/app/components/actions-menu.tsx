@@ -5,16 +5,15 @@ import { Link } from "./link";
 
 export interface ActionsItem extends MenuItemProps {
   color?:
-    | "inherit"
-    | "primary"
-    | "secondary"
-    | "success"
-    | "error"
-    | "info"
-    | "warning";
+  | "inherit"
+  | "primary"
+  | "secondary"
+  | "success"
+  | "error"
+  | "info"
+  | "warning";
   href?: string;
   icon: ElementType;
-  isLink?: boolean;
   label: string;
   onClick?: () => void;
 }

@@ -4,7 +4,6 @@ import { useDeletePlatforms } from '@/api/platforms';
 import { AlertDialog } from '@/components/alert-dialog';
 import { DataTable } from '@/components/data-table';
 import { HeadCell, DataTableHead } from '@/components/data-table-head';
-import { PlatformsTableRow } from '@/components/products/platforms/platforms-table-row';
 import { SearchInput } from '@/components/search-input';
 import { useDialog } from '@/hooks/useDialog';
 import { useSearch } from '@/hooks/useSearch';
@@ -13,8 +12,15 @@ import { useQueryClient, useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
 import { useState, type FC } from 'react'
 import { useSearchPlatformsQuery } from '../api-calls-hooks';
+import { Platform } from '@/types/platforms';
+import { PlatformsTableRow } from './platforms-table-row';
 
 interface PlatformsTableProps {
+  platforms?: Platform[];
+  count?: number;
+  isError: boolean;
+  isLoading: boolean;
+  refetch: any;
 }
 
 const headCells: HeadCell[] = [
@@ -25,20 +31,22 @@ const headCells: HeadCell[] = [
 ];
 
 export const PlatformsTable: FC<PlatformsTableProps> = (props) => {
+  const {
+    platforms,
+    count,
+    isError,
+    isLoading,
+    refetch,
+  } = props;
   const queryClient = useQueryClient();
   const [keyword, handleKeywordChange, handleSearch] =
     useSearch();
   const [selected, setSelected] = useState<string[]>([]);
-  const { error, data } = useSearchPlatformsQuery();
   const [dialogOpen, handleOpenDialog, handleCloseDialog] = useDialog();
 
   const deletePlatforms = useDeletePlatforms(() =>
     queryClient.invalidateQueries({ queryKey: ["platforms"] })
   );
-
-  if (!data) return null;
-
-  const { platforms, count } = data;
 
   const handleSelect = (id: string): void => {
     setSelected((prevSelected) => {
@@ -51,6 +59,8 @@ export const PlatformsTable: FC<PlatformsTableProps> = (props) => {
   };
 
   const handleSelectAll = (): void => {
+    if (!platforms) return;
+
     setSelected((prevSelected) => {
       if (prevSelected.length === platforms?.length) {
         return [];
@@ -99,15 +109,25 @@ export const PlatformsTable: FC<PlatformsTableProps> = (props) => {
             />
           </form>
         </Box>
-        <DataTable count={count}>
-          <DataTableHead
-            headCells={headCells}
-            selectedLength={selected.length}
-            itemsLength={platforms.length}
-            onSelectAll={handleSelectAll}
-          />
+        <DataTable
+          isLoading={isLoading}
+          count={count}
+          hasError={isError}
+          hasNoData={count === 0}
+          headCellsCount={headCells.length}
+          onRefetchData={refetch}
+          headSlot={
+            <DataTableHead
+              isLoading={isLoading}
+              headCells={headCells}
+              selectedLength={selected.length}
+              itemsLength={platforms?.length}
+              onSelectAll={handleSelectAll}
+            />
+          }
+        >
           <TableBody>
-            {platforms.map((platform) => (
+            {platforms?.map((platform) => (
               <PlatformsTableRow
                 platform={platform}
                 key={platform._id}

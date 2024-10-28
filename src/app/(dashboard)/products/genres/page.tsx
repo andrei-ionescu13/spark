@@ -1,3 +1,5 @@
+"use client"
+
 import { useState } from "react";
 import type { FC } from "react";
 import Head from "next/head";
@@ -10,31 +12,29 @@ import type { ParsedUrlQuery } from "querystring";
 import { GenresHeader } from "./genres-header";
 import { searchGenres } from "../api-calls";
 import { GenresTable } from "./genres-table";
+import { useSearchGenresQuery } from "../api-calls-hooks";
 
-export default async function Genres({ searchParams }) {
-  const queryClient = new QueryClient();
-  const query: any = {};
-
-  for (const [key, value] of Object.entries(searchParams)) {
-    query[key] = value;
-  }
-
-  await queryClient.prefetchQuery({
-    queryKey: ["genres", query],
-    queryFn: searchGenres(query)
-  });
+export default function Genres() {
+  const { data, refetch, isError, isLoading } = useSearchGenresQuery();
+  const { genres, count } = data || {};
 
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
+    <>
       <Head>
         <title>Genres</title>
       </Head>
       <Box sx={{ py: 3 }}>
         <Container maxWidth={false}>
           <GenresHeader />
-          <GenresTable />
+          <GenresTable
+            genres={genres}
+            count={count}
+            isError={isError}
+            isLoading={isLoading}
+            refetch={refetch}
+          />
         </Container>
       </Box>
-    </HydrationBoundary>
+    </>
   );
 };

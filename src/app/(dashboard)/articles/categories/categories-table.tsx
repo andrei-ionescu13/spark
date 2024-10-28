@@ -1,120 +1,101 @@
-"use client";
-import { useDeleteCategories } from '@/api/article-categories';
-import { AlertDialog } from '@/components/alert-dialog';
-import { CategoryTableRow } from '@/components/articles/categories/category-table-row';
-import { DataTable } from '@/components/data-table';
-import { DataTableHead, HeadCell } from '@/components/data-table-head';
-import { SearchInput } from '@/components/search-input';
-import { useDialog } from '@/hooks/useDialog';
-import { useSearch } from '@/hooks/useSearch';
-import { ArticleCategory } from '@/types/article-category';
-import { appFetch } from '@/utils/app-fetch';
-import { Card, Box, Button, TableBody } from '@mui/material';
-import { useQuery } from '@tanstack/react-query';
-import { useSearchParams } from 'next/navigation';
-import { ParsedUrlQuery } from 'querystring';
+'use client'
+import { useDeleteCategories } from '@/api/article-categories'
+import { AlertDialog } from '@/components/alert-dialog'
+import { DataTable } from '@/components/data-table'
+import { DataTableHead, HeadCell } from '@/components/data-table-head'
+import { SearchInput } from '@/components/search-input'
+import { useDialog } from '@/hooks/useDialog'
+import { useSearch } from '@/hooks/useSearch'
+import { ArticleCategory } from '@/types/article-category'
+import { appFetch } from '@/utils/app-fetch'
+import { Card, Box, Button, TableBody } from '@mui/material'
+import { useQuery } from '@tanstack/react-query'
+import { useSearchParams } from 'next/navigation'
+import { ParsedUrlQuery } from 'querystring'
 import { useState, type FC } from 'react'
+import { useListArticleCategories } from '../api-calls-hooks'
+import { CategoriesTableRow } from './categories-table-row'
 
 interface CategoriesTableProps {
-}
-
-
-interface GetCategoriesData {
-  categories: ArticleCategory[];
-  count: number;
+  categories?: ArticleCategory[]
+  count?: number
+  isError: boolean
+  isLoading: boolean
+  refetch: any
 }
 
 const headCells: HeadCell[] = [
   {
-    id: "name",
-    label: "Name",
+    id: 'name',
+    label: 'Name',
   },
   {
-    id: "slug",
-    label: "Slug",
+    id: 'slug',
+    label: 'Slug',
   },
-];
-
-
-const searchCategories =
-  (query: ParsedUrlQuery, config: Record<string, any> = {}) =>
-    () =>
-      appFetch<GetCategoriesData>({
-        url: "/article-categories/search",
-        query,
-        withAuth: true,
-        ...config,
-      });
+]
 
 export const CategoriesTable: FC<CategoriesTableProps> = (props) => {
-  const query: any = {};
-  const searchParams = useSearchParams();
+  const { categories, count, isError, isLoading, refetch } = props
+  const query: any = {}
+  const searchParams = useSearchParams()
   for (const [key, value] of searchParams.entries()) {
-    query[key] = value;
+    query[key] = value
   }
-  const [selected, setSelected] = useState<string[]>([]);
-  const [keyword, keywordParam, handleKeywordChange, handleSearch] =
-    useSearch();
-  const { data, refetch } = useQuery({
-    queryKey: ["article-categories", query],
-    queryFn: searchCategories(query)
-  });
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const deleteCategories = useDeleteCategories(refetch);
-  const [createDialogOpen, handleOpenCreateDialog, handleCloseCreateDialog] =
-    useDialog();
-
-  if (!data) return null;
-
-  const { categories, count } = data;
+  const [selected, setSelected] = useState<string[]>([])
+  const [keyword, handleKeywordChange, handleSearch] = useSearch()
+  const [dialogOpen, setDialogOpen] = useState(false)
+  const deleteCategories = useDeleteCategories(refetch)
 
   const handleOpenDialog = (): void => {
-    setDialogOpen(true);
-  };
+    setDialogOpen(true)
+  }
 
   const handleCloseDialog = (): void => {
-    setDialogOpen(false);
-  };
+    setDialogOpen(false)
+  }
 
   const handleDeleteCategories = (): void => {
     deleteCategories.mutate(selected, {
       onSuccess: () => {
-        setSelected([]);
-        handleCloseDialog();
+        setSelected([])
+        handleCloseDialog()
       },
-      onError: (error) => { },
-    });
-  };
+      onError: (error) => {},
+    })
+  }
 
   const handleSelect = (id: string): void => {
     setSelected((prevSelected) => {
       if (prevSelected.includes(id)) {
-        return prevSelected.filter((_id) => _id !== id);
+        return prevSelected.filter((_id) => _id !== id)
       }
 
-      return [...prevSelected, id];
-    });
-  };
+      return [...prevSelected, id]
+    })
+  }
 
   const handleSelectAll = (): void => {
+    if (!categories) return
+
     setSelected((prevSelected) => {
       if (prevSelected.length === categories.length) {
-        return [];
+        return []
       }
 
-      return categories.map((article) => article._id);
-    });
-  };
+      return categories.map((article) => article._id)
+    })
+  }
 
   return (
     <>
       <Card>
         <Box
           sx={{
-            display: "grid",
+            display: 'grid',
             gap: 2,
             gridTemplateColumns: {
-              sm: `${!!selected.length ? "auto" : ""} 1fr`,
+              sm: `${!!selected.length ? 'auto' : ''} 1fr`,
             },
             p: 2,
           }}
@@ -136,20 +117,30 @@ export const CategoriesTable: FC<CategoriesTableProps> = (props) => {
             />
           </form>
         </Box>
-        <DataTable count={count}>
-          <DataTableHead
-            headCells={headCells}
-            selectedLength={selected.length}
-            itemsLength={categories.length}
-            onSelectAll={handleSelectAll}
-          />
+        <DataTable
+          count={count}
+          hasError={isError}
+          hasNoData={count === 0}
+          headCellsCount={headCells.length}
+          onRefetchData={refetch}
+          isLoading={isLoading}
+          headSlot={
+            <DataTableHead
+              isLoading={isLoading}
+              headCells={headCells}
+              selectedLength={selected.length}
+              itemsLength={categories?.length}
+              onSelectAll={handleSelectAll}
+            />
+          }
+        >
           <TableBody>
-            {categories.map((article) => (
-              <CategoryTableRow
+            {categories?.map((article) => (
+              <CategoriesTableRow
                 articleCategory={article}
                 key={article._id}
                 onSelect={() => {
-                  handleSelect(article._id);
+                  handleSelect(article._id)
                 }}
                 selected={selected.includes(article._id)}
               />
@@ -167,4 +158,4 @@ export const CategoriesTable: FC<CategoriesTableProps> = (props) => {
       />
     </>
   )
-};
+}

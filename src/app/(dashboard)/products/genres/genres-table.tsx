@@ -11,14 +11,19 @@ import { useSearch } from '@/hooks/useSearch';
 import { Card, Box, Button, TableBody } from '@mui/material';
 import { useQueryClient, useQuery } from '@tanstack/react-query';
 import { useState, type FC } from 'react'
-import { listLanguages, searchGenres } from '../api-calls';
+import { searchGenres } from '../api-calls';
 import { ParsedUrlQuery } from 'querystring';
 import { Language } from '@/types/translations';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useSearchDevelopersQuery, useSearchGenresQuery } from '../api-calls-hooks';
+import { Genre } from '@/types/genres';
 
 interface GenresTableProps {
-
+  genres?: Genre[];
+  count?: number;
+  isError: boolean;
+  isLoading: boolean;
+  refetch: any;
 }
 
 const headCells: HeadCell[] = [
@@ -30,13 +35,13 @@ const headCells: HeadCell[] = [
 
 
 export const GenresTable: FC<GenresTableProps> = (props) => {
-  const searchParams = useSearchParams();
-  const query: any = {};
-
-  for (const [key, value] of Object.entries(searchParams)) {
-    query[key] = value;
-  }
-
+  const {
+    genres,
+    count,
+    isError,
+    isLoading,
+    refetch,
+  } = props;
   const queryClient = useQueryClient();
   const [keyword, handleKeywordChange, handleSearch] =
     useSearch();
@@ -47,10 +52,6 @@ export const GenresTable: FC<GenresTableProps> = (props) => {
   const deleteGenres = useDeleteGenres(() =>
     queryClient.invalidateQueries({ queryKey: ["genres"] })
   );
-
-  if (!genresData) return null;
-
-  const { genres, count } = genresData;
 
   const handleSelect = (id: string): void => {
     setSelected((prevSelected) => {
@@ -63,6 +64,8 @@ export const GenresTable: FC<GenresTableProps> = (props) => {
   };
 
   const handleSelectAll = (): void => {
+    if (!genres) return;
+
     setSelected((prevSelected) => {
       if (prevSelected.length === genres?.length) {
         return [];
@@ -111,15 +114,25 @@ export const GenresTable: FC<GenresTableProps> = (props) => {
             />
           </form>
         </Box>
-        <DataTable count={count}>
-          <DataTableHead
-            headCells={headCells}
-            selectedLength={selected.length}
-            itemsLength={genres.length}
-            onSelectAll={handleSelectAll}
-          />
+        <DataTable
+          isLoading={isLoading}
+          count={count}
+          hasError={isError}
+          hasNoData={count === 0}
+          headCellsCount={headCells.length}
+          onRefetchData={refetch}
+          headSlot={
+            <DataTableHead
+              isLoading={isLoading}
+              headCells={headCells}
+              selectedLength={selected.length}
+              itemsLength={genres?.length}
+              onSelectAll={handleSelectAll}
+            />
+          }
+        >
           <TableBody>
-            {genres.map((genre) => (
+            {genres?.map((genre) => (
               <GenresTableRow
                 genre={genre}
                 key={genre._id}

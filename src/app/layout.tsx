@@ -1,22 +1,22 @@
-"use client"
-import type { FC, ReactNode } from 'react';
-import { usePathname } from 'next/navigation';
-import { Box } from '@mui/material';
-import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
-import { useDialog } from 'app/hooks/useDialog';
 import Providers from 'app/providers';
-import { Navbar } from './layout/navbar';
-import { Sidebar } from './layout/sidebar';
+import { cookies } from 'next/headers'
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cookieStore = cookies()
+  const theme = cookieStore.get('theme')?.value
+  const preset = cookieStore.get('preset')?.value
+
   return (
     <html lang="en">
       <body>
-        <Providers>
+        <Providers
+          theme={theme}
+          preset={preset}
+        >
           {children}
         </Providers>
       </body>

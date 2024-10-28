@@ -1,7 +1,7 @@
 "use client"
 
 import { PageHeader } from '@/components/page-header';
-import { FeatureCreateDialog } from '@/components/products/features/feature-create-dialog';
+import { FeatureCreateDialog } from 'app/(dashboard)/products/features/feature-create-dialog';
 import { useDialog } from '@/hooks/useDialog';
 import { Plus } from '@/icons/plus';
 import type { FC } from 'react'

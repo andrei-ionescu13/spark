@@ -12,9 +12,14 @@ import { Card, Box, Button, TableBody } from '@mui/material';
 import { useQueryClient } from '@tanstack/react-query';
 import { useState, type FC } from 'react'
 import { useSearchDevelopersQuery, useSearchPublishersQuery } from '../api-calls-hooks';
+import { Publisher } from '@/types/publishers';
 
 interface PublishersTableProps {
-
+  publishers?: Publisher[];
+  count?: number;
+  isError: boolean;
+  isLoading: boolean;
+  refetch: any;
 }
 
 const headCells: HeadCell[] = [
@@ -25,19 +30,16 @@ const headCells: HeadCell[] = [
 ];
 
 export const PublishersTable: FC<PublishersTableProps> = (props) => {
+  const { publishers, count, isError, isLoading, refetch } = props;
   const queryClient = useQueryClient();
   const [keyword, handleKeywordChange, handleSearch] =
     useSearch();
-  const { data } = useSearchPublishersQuery();
   const [selected, setSelected] = useState<string[]>([]);
   const [dialogOpen, handleOpenDialog, handleCloseDialog] = useDialog();
   const deletePublishers = useDeletePublishers(() =>
     queryClient.invalidateQueries({ queryKey: ["publishers"] })
   );
 
-  if (!data) return null;
-
-  const { publishers, count } = data;
 
   const handleSelect = (id: string): void => {
     setSelected((prevSelected) => {
@@ -50,6 +52,8 @@ export const PublishersTable: FC<PublishersTableProps> = (props) => {
   };
 
   const handleSelectAll = (): void => {
+    if (!publishers) return;
+
     setSelected((prevSelected) => {
       if (prevSelected.length === publishers?.length) {
         return [];
@@ -99,15 +103,25 @@ export const PublishersTable: FC<PublishersTableProps> = (props) => {
             />
           </form>
         </Box>
-        <DataTable count={count}>
-          <DataTableHead
-            headCells={headCells}
-            selectedLength={selected.length}
-            itemsLength={publishers.length}
-            onSelectAll={handleSelectAll}
-          />
+        <DataTable
+          isLoading={isLoading}
+          count={count}
+          hasError={isError}
+          hasNoData={count === 0}
+          headCellsCount={headCells.length}
+          onRefetchData={refetch}
+          headSlot={
+            <DataTableHead
+              isLoading={isLoading}
+              headCells={headCells}
+              selectedLength={selected.length}
+              itemsLength={publishers?.length}
+              onSelectAll={handleSelectAll}
+            />
+          }
+        >
           <TableBody>
-            {publishers.map((publisher) => (
+            {publishers?.map((publisher) => (
               <PublishersTableRow
                 publisher={publisher}
                 key={publisher._id}

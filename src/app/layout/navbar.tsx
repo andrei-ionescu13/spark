@@ -1,15 +1,16 @@
+"use client"
+
 import type { FC } from "react";
 import { AppBar, Box, IconButton, Toolbar } from "@mui/material";
 import { NavbarLanguageMenu } from "./navbar-language-menu";
 import { NavbarLogoutButton } from "./navbar-logout-button";
 import { Burger as BurgerIcon } from "../icons/burger";
+import { useLayout } from "app/(dashboard)/layout-context";
+import { NavbarSidebarButton } from "./navbar-sidebar-button";
 
-interface NavbarProps {
-  onSidebarOpen: () => void;
-}
+interface NavbarProps { }
 
-export const Navbar: FC<NavbarProps> = (props) => {
-  const { onSidebarOpen } = props;
+export const Navbar: FC<NavbarProps> = () => {
 
   return (
     <AppBar
@@ -34,17 +35,7 @@ export const Navbar: FC<NavbarProps> = (props) => {
           },
         }}
       >
-        <IconButton
-          onClick={onSidebarOpen}
-          sx={{
-            display: {
-              sx: "inline-flex",
-              lg: "none",
-            },
-          }}
-        >
-          <BurgerIcon />
-        </IconButton>
+        <NavbarSidebarButton />
         <Box sx={{ flexGrow: 1 }} />
         <Box
           sx={{

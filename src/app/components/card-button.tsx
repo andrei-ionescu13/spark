@@ -1,3 +1,4 @@
+"use client"
 import type { FC } from "react";
 import { ButtonBase, styled } from "@mui/material";
 import type { ButtonBaseProps } from "@mui/material";

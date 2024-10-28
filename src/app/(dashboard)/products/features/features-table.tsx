@@ -6,14 +6,19 @@ import { useDeleteFeatures } from '@/api/features';
 import { AlertDialog } from '@/components/alert-dialog';
 import { DataTable } from '@/components/data-table';
 import { HeadCell, DataTableHead } from '@/components/data-table-head';
-import { FeatureTableRow } from '@/components/products/features/feature-table-row';
+import { FeaturesTableRow } from 'app/(dashboard)/products/features/feature-table-row';
 import { SearchInput } from '@/components/search-input';
 import { useSearch } from '@/hooks/useSearch';
 import { Card, Box, TableBody } from '@mui/material';
 import { Button } from '@/components/button';
+import { Feature } from '@/types/feature';
 
 interface FeaturesTableProps {
-
+  features?: Feature[];
+  count?: number;
+  isError: boolean;
+  isLoading: boolean;
+  refetch: any;
 }
 
 const headCells: HeadCell[] = [
@@ -28,18 +33,18 @@ const headCells: HeadCell[] = [
 ];
 
 export const FeaturesTable: FC<FeaturesTableProps> = (props) => {
+  const {
+    features,
+    count,
+    isError,
+    isLoading,
+    refetch,
+  } = props;
   const [selected, setSelected] = useState<string[]>([]);
   const [keyword, handleKeywordChange, handleSearch] =
     useSearch();
-  const { data, refetch } = useSearchFeaturesQuery();
   const [dialogOpen, setDialogOpen] = useState(false);
   const deleteCategories = useDeleteFeatures(refetch);
-
-
-  if (!data) return null;
-
-  const { features, count } = data;
-
   const handleOpenDialog = (): void => {
     setDialogOpen(true);
   };
@@ -109,16 +114,26 @@ export const FeaturesTable: FC<FeaturesTableProps> = (props) => {
             />
           </form>
         </Box>
-        <DataTable count={count}>
-          <DataTableHead
-            headCells={headCells}
-            selectedLength={selected.length}
-            itemsLength={features.length}
-            onSelectAll={handleSelectAll}
-          />
+        <DataTable
+          isLoading={isLoading}
+          count={count}
+          hasError={isError}
+          hasNoData={count === 0}
+          headCellsCount={headCells.length}
+          onRefetchData={refetch}
+          headSlot={
+            <DataTableHead
+              isLoading={isLoading}
+              headCells={headCells}
+              selectedLength={selected.length}
+              itemsLength={features?.length}
+              onSelectAll={handleSelectAll}
+            />
+          }
+        >
           <TableBody>
-            {features.map((feature) => (
-              <FeatureTableRow
+            {features?.map((feature) => (
+              <FeaturesTableRow
                 feature={feature}
                 key={feature._id}
                 onSelect={() => {

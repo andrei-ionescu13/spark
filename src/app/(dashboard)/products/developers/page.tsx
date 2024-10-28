@@ -1,3 +1,5 @@
+"use client"
+
 import { useState } from "react";
 import type { FC, SyntheticEvent, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
@@ -20,23 +22,15 @@ import {
   TextField,
 } from "@mui/material";
 import { dehydrate, QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
-import { searchDevelopers } from "../api-calls";
 import { DevelopersHeader } from "./developers-header";
-import { DevelopersTable } from "./Developers-table";
+import { useSearchDevelopersQuery } from "../api-calls-hooks";
+import { DevelopersTable } from "./developers-table";
 
 
-export default async function Developers({ searchParams }) {
-  const queryClient = new QueryClient();
-  const query: any = {};
+export default function Developers() {
+  const { data, refetch, isError, isLoading } = useSearchDevelopersQuery();
+  const { developers, count } = data || {};
 
-  for (const [key, value] of Object.entries(searchParams)) {
-    query[key] = value;
-  }
-
-  await queryClient.prefetchQuery({
-    queryKey: ["developers", query],
-    queryFn: searchDevelopers(query)
-  });
   return (
     <>
 
@@ -46,7 +40,13 @@ export default async function Developers({ searchParams }) {
       <Box sx={{ py: 3 }}>
         <Container maxWidth={false}>
           <DevelopersHeader />
-          <DevelopersTable />
+          <DevelopersTable
+            developers={developers}
+            count={count}
+            isError={isError}
+            isLoading={isLoading}
+            refetch={refetch}
+          />
         </Container>
       </Box>
 

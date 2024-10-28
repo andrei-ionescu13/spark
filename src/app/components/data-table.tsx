@@ -30,16 +30,14 @@ import { DotsVertical } from "@/icons/dots-vertical";
 
 interface DataTableProps {
   children: ReactNode;
-  count: number;
+  count?: number;
   removeSimplebar?: boolean;
   hasError: boolean;
   hasNoData: boolean;
   onRefetchData: any;
   headCellsCount: number;
   headSlot: ReactNode;
-  isLoading?: boolean;
-  hasActions?: boolean;
-  customCellsCount?: number;
+  isLoading: boolean;
 }
 
 const DataTableRoot = styled(TableContainer)(() => ({
@@ -54,10 +52,9 @@ export const DataTable: FC<DataTableProps> = (props) => {
   const { children, count, removeSimplebar = false, hasError,
     hasNoData,
     onRefetchData,
-    headCellsCount, headSlot,
+    headCellsCount,
+    headSlot,
     isLoading = false,
-    hasActions = true,
-    customCellsCount
   } = props;
   const [page, handlePageChange] = usePage();
   const [limit, handleLimitChange] = useLimit();
@@ -71,7 +68,7 @@ export const DataTable: FC<DataTableProps> = (props) => {
     if (hasError) {
       return (
         <TableDataError
-          colSpan={headCellsCount}
+          colSpan={headCellsCount + 2}
           onRefetch={onRefetchData}
         />
       )
@@ -79,7 +76,7 @@ export const DataTable: FC<DataTableProps> = (props) => {
 
     if (hasNoData) {
       return (
-        <TableNoData colSpan={headCellsCount} />
+        <TableNoData colSpan={headCellsCount + 2} />
       )
     }
 
@@ -91,22 +88,19 @@ export const DataTable: FC<DataTableProps> = (props) => {
               <TableCell padding="checkbox">
                 <Checkbox color="primary" disabled />
               </TableCell>
-              {[...Array(customCellsCount).keys()].map((x) => (
+              {[...Array(headCellsCount).keys()].map((x) => (
                 <TableCell key={x}>
                   <TextSkeleton />
                 </TableCell>
               ))}
-
-              {hasActions && (
-                <TableCell align="right">
-                  <IconButton
-                    color="primary"
-                    disabled
-                  >
-                    <DotsVertical />
-                  </IconButton>
-                </TableCell>
-              )}
+              <TableCell align="right">
+                <IconButton
+                  color="primary"
+                  disabled
+                >
+                  <DotsVertical />
+                </IconButton>
+              </TableCell>
             </DataTableRow>
           ))}
         </TableBody>
@@ -153,7 +147,7 @@ export const DataTable: FC<DataTableProps> = (props) => {
         <Box sx={{ flexGrow: 1 }} />
         <TablePagination
           component="div"
-          count={count}
+          count={count || 0}
           onPageChange={handlePageChange}
           page={page}
           onRowsPerPageChange={handleLimitChange}

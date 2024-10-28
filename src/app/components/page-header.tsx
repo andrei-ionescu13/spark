@@ -10,20 +10,18 @@ export interface ActionI {
   color?: "inherit" | "primary" | "secondary" | "success" | "error" | "info" | "warning";
   href?: string;
   icon?: ElementType;
-  isLink?: boolean;
   label: string;
   onClick?: () => void;
 }
 
 interface PageHeaderProps {
-  title: string;
+  title?: string;
   backHref?: string;
   backLabel?: string;
   action?: ActionsItem;
   actions?: ActionsItem[];
-  isActionsLoading?: boolean;
-  isTitleLoading?: boolean;
   children?: ReactNode;
+  isLoading?: boolean;
 }
 
 interface ActionProps {
@@ -35,7 +33,7 @@ const Action: FC<ActionProps> = (props) => {
   const { action, isLoading } = props;
   const Icon = action?.icon;
 
-  if (action?.isLink) {
+  if (action?.href) {
     return (
       <Button
         color={action.color || 'primary'}
@@ -64,14 +62,14 @@ const Action: FC<ActionProps> = (props) => {
 
 export const PageHeader: FC<PageHeaderProps> = (props) => {
   const {
+    isLoading,
     title,
     backHref,
     backLabel,
     action,
     actions,
-    isActionsLoading = false,
-    isTitleLoading = false,
-    children } = props;
+    children
+  } = props;
 
   return (
     <Box sx={{ mb: 4 }}  >
@@ -97,11 +95,11 @@ export const PageHeader: FC<PageHeaderProps> = (props) => {
           color="textPrimary"
           variant="h4"
         >
-          {isTitleLoading ? <Skeleton variant="text" width={250} /> : title}
+          {(isLoading && !title) ? <Skeleton variant="text" width={250} /> : title}
         </Typography>
         <Box sx={{ flexGrow: 1 }} />
-        {!!action && <Action action={action} isLoading={isActionsLoading} />}
-        {!!actions?.length && <ActionsButton items={actions} isLoading={isActionsLoading} />}
+        {!!action && <Action action={action} isLoading={isLoading} />}
+        {!!actions?.length && <ActionsButton items={actions} isLoading={isLoading} />}
       </Box>
       {!!children && (
         <Box sx={{ mt: 2 }}>

@@ -1,3 +1,4 @@
+"use client"
 import { createContext, useContext, useState } from "react";
 import type { FC, ReactNode } from "react";
 import { deleteCookie, setCookie } from "cookies-next";
@@ -34,15 +35,14 @@ const SettingsContext = createContext<SettingsContextI>({
 });
 
 export const SettingsProvider: FC<SettingsProviderProps> = (props) => {
-  const { children } = props;
-  const initialSettings: Settings = {
-    theme: defaultSettings.theme,
-    preset: defaultSettings.preset,
-  };
-  const [settings, setSettings] = useState<Settings>(initialSettings);
+  const { children, theme, preset } = props;
+  const [settings, setSettings] = useState<Settings>({
+    preset: preset || defaultSettings.preset,
+    theme: theme || defaultSettings.theme
+  });
 
   const restoreDefaultSettings = (): void => {
-    setSettings(initialSettings);
+    setSettings(defaultSettings);
     deleteCookie("theme");
     deleteCookie("preset");
   };

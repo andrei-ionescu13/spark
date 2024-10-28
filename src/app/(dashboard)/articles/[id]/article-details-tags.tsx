@@ -32,15 +32,13 @@ import { Button } from "@/components/button";
 import { useGetArticle } from "../api-calls-hooks";
 
 interface ArticleStatusTagProps {
+  article: Article;
   isEditDisabled?: boolean;
 }
 
 export const ArticleDetailsTags: FC<ArticleStatusTagProps> = (props) => {
-  const { isEditDisabled } = props;
-  const { data: article } = useGetArticle();
+  const { article, isEditDisabled } = props;
   const [dialogOpen, handleOpenDialog, handleCloseDialog] = useDialog();
-
-  if (!article) return null;
 
   return (
     <>

@@ -1,4 +1,5 @@
-import type { FC } from "react";
+"use client"
+
 import Head from "next/head";
 import type { GetServerSideProps } from "next";
 import { Box, Container, useTheme, colors } from "@mui/material";
@@ -10,29 +11,28 @@ import {
 } from "@/api/collections";
 import { getCollection } from "../../api-calls";
 import { CollectionHeader } from "./collection-header";
-import { CollectionForm } from "@/components/collections/collection-form";
+import { CollectionForm } from "../collection-form";
+import { useGetCollectionQuery } from "../../api-calls-hooks";
 
-export default async function Collection({ params }) {
-  const { id } = params;
-  const queryClient = new QueryClient()
-
-  await queryClient.prefetchQuery({
-    queryKey: ["collection", id],
-    queryFn: getCollection(id)
-  });
-
+export default function Collection() {
+  const { data: collection } = useGetCollectionQuery();
 
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
+    <>
       <Head>
         <title>Collection</title>
       </Head>
       <Box sx={{ py: 3 }}>
         <Container maxWidth="lg">
           <CollectionHeader />
-          <CollectionForm mode="edit" />
+          {collection && (
+            <CollectionForm
+              mode="edit"
+              collection={collection}
+            />
+          )}
         </Container>
       </Box>
-    </HydrationBoundary>
+    </>
   );
 };

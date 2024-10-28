@@ -1,3 +1,5 @@
+"use client"
+
 import { useState } from "react";
 import type { FC, SyntheticEvent, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
@@ -25,48 +27,30 @@ import { FeaturesHeader } from "./features-header";
 import { FeaturesTable } from "./features-table";
 import { Feature } from "@/types/feature";
 import { appFetch } from "@/utils/app-fetch";
+import { useSearchFeaturesQuery } from "../api-calls-hooks";
 
-
-interface GetFeatureData {
-  features: Feature[];
-  count: number;
-}
-
-const searchFeature =
-  (query: ParsedUrlQuery, config: Record<string, any> = {}) =>
-    () =>
-      appFetch<GetFeatureData>({
-        url: "/features/search",
-        query,
-        withAuth: true,
-        ...config,
-      });
-
-export default async function Features({ searchParams }) {
-  const queryClient = new QueryClient();
-  const query: any = {};
-
-  for (const [key, value] of Object.entries(searchParams)) {
-    query[key] = value;
-  }
-
-  await queryClient.prefetchQuery({
-    queryKey: ["features", query],
-    queryFn: searchFeature(query)
-  });
+export default function Features() {
+  const { data, refetch, isError, isLoading } = useSearchFeaturesQuery();
+  const { features, count } = data || {};
 
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
+    <>
       <Head>
-        <title>Article features</title>
+        <title>Features</title>
       </Head>
       <Box sx={{ py: 3 }}>
         <Container maxWidth={false}>
           <FeaturesHeader />
-          <FeaturesTable />
+          <FeaturesTable
+            features={features}
+            count={count}
+            isError={isError}
+            isLoading={isLoading}
+            refetch={refetch}
+          />
         </Container>
       </Box>
-    </HydrationBoundary>
+    </>
   );
 };
 

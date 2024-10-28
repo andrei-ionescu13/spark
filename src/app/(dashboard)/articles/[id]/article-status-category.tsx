@@ -26,9 +26,11 @@ import { Article } from "../../../types/articles";
 import { ArticleCategory } from "../../../types/article-category";
 import { StatusOption, StatusSelect } from "@/components/status";
 import { Button } from "@/components/button";
-import { useGetArticle, useListArticleCategories } from "../api-calls-hooks";
+import { useGetArticle, useListArticleTags } from "../api-calls-hooks";
 
 interface ArticleStatusTagProps {
+  article: Article;
+  categories: ArticleCategory[];
   isEditDisabled?: boolean;
 }
 
@@ -38,9 +40,7 @@ interface Category {
 }
 
 export const ArticleStatusCategory: FC<ArticleStatusTagProps> = (props) => {
-  const { isEditDisabled } = props;
-  const { data: article } = useGetArticle();
-  const { data: categories } = useListArticleCategories();
+  const { article, categories, isEditDisabled } = props;
   const theme = useTheme();
   const queryClient = useQueryClient();
 

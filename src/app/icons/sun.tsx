@@ -1,3 +1,4 @@
+"use client"
 import { createSvgIcon } from '@mui/material';
 
 export const Sun = createSvgIcon(

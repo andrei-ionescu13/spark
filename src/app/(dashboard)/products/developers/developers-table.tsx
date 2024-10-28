@@ -6,13 +6,18 @@ import { useDeleteDevelopers } from '@/api/developers';
 import { AlertDialog } from '@/components/alert-dialog';
 import { DataTable } from '@/components/data-table';
 import { DataTableHead, HeadCell } from '@/components/data-table-head';
-import { DeveloperTableRow } from '@/components/products/developers/developer-table-row';
+import { DevelopersTableRow } from 'app/(dashboard)/products/developers/developer-table-row';
 import { SearchInput } from '@/components/search-input';
 import { useSearch } from '@/hooks/useSearch';
 import { Card, Box, Button, TableBody } from '@mui/material';
+import { Developer } from '@/types/developer';
 
 interface DevelopersTableProps {
-
+  developers?: Developer[];
+  count?: number;
+  isError: boolean;
+  isLoading: boolean;
+  refetch: any;
 }
 
 const headCells: HeadCell[] = [
@@ -27,17 +32,18 @@ const headCells: HeadCell[] = [
 ];
 
 export const DevelopersTable: FC<DevelopersTableProps> = (props) => {
+  const {
+    developers,
+    count,
+    isError,
+    isLoading,
+    refetch,
+  } = props;
   const [selected, setSelected] = useState<string[]>([]);
   const [keyword, handleKeywordChange, handleSearch] =
     useSearch();
-  const { data, refetch } = useSearchDevelopersQuery();
   const [dialogOpen, setDialogOpen] = useState(false);
   const deleteCategories = useDeleteDevelopers(refetch);
-
-
-  if (!data) return null;
-
-  const { developers, count } = data;
 
   const handleOpenDialog = (): void => {
     setDialogOpen(true);
@@ -68,6 +74,8 @@ export const DevelopersTable: FC<DevelopersTableProps> = (props) => {
   };
 
   const handleSelectAll = (): void => {
+    if (!developers) return;
+
     setSelected((prevSelected) => {
       if (prevSelected.length === developers.length) {
         return [];
@@ -108,16 +116,26 @@ export const DevelopersTable: FC<DevelopersTableProps> = (props) => {
             />
           </form>
         </Box>
-        <DataTable count={count}>
-          <DataTableHead
-            headCells={headCells}
-            selectedLength={selected.length}
-            itemsLength={developers.length}
-            onSelectAll={handleSelectAll}
-          />
+        <DataTable
+          isLoading={isLoading}
+          count={count}
+          hasError={isError}
+          hasNoData={count === 0}
+          headCellsCount={headCells.length}
+          onRefetchData={refetch}
+          headSlot={
+            <DataTableHead
+              isLoading={isLoading}
+              headCells={headCells}
+              selectedLength={selected.length}
+              itemsLength={developers?.length}
+              onSelectAll={handleSelectAll}
+            />
+          }
+        >
           <TableBody>
-            {developers.map((developer) => (
-              <DeveloperTableRow
+            {developers?.map((developer) => (
+              <DevelopersTableRow
                 developer={developer}
                 key={developer._id}
                 onSelect={() => {

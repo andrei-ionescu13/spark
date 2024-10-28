@@ -42,7 +42,6 @@ export const useSearchProductKeys = () => {
   });
 }
 
-
 export const useSearchProductReviews = () => {
   const query: any = {};
   const { id } = useParams<{ id: string }>();

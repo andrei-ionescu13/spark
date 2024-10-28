@@ -1,3 +1,5 @@
+"use client"
+
 import { useState } from "react";
 import type { FC, ChangeEvent } from "react";
 import Head from "next/head";
@@ -18,31 +20,29 @@ import { dehydrate, HydrationBoundary, QueryClient, useQuery, useQueryClient } f
 import { searchPlatforms } from "../api-calls";
 import { PlatformsHeader } from "./platforms-header";
 import { PlatformsTable } from "./platforms-table";
+import { useSearchPlatformsQuery } from "../api-calls-hooks";
 
-export default async function Platforms({ searchParams }) {
-  const queryClient = new QueryClient();
-  const query: any = {};
-
-  for (const [key, value] of Object.entries(searchParams)) {
-    query[key] = value;
-  }
-
-  await queryClient.prefetchQuery({
-    queryKey: ["platforms", query],
-    queryFn: searchPlatforms(query)
-  });
+export default function Platforms() {
+  const { data, refetch, isError, isLoading } = useSearchPlatformsQuery();
+  const { platforms, count } = data || {};
 
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
+    <>
       <Head>
         <title>Platforms</title>
       </Head>
       <Box sx={{ py: 3 }}>
         <Container maxWidth={false}>
           <PlatformsHeader />
-          <PlatformsTable />
+          <PlatformsTable
+            platforms={platforms}
+            count={count}
+            isError={isError}
+            isLoading={isLoading}
+            refetch={refetch}
+          />
         </Container>
       </Box>
-    </HydrationBoundary>
+    </>
   );
 };

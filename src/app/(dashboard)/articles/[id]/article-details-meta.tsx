@@ -15,12 +15,12 @@ import { ArticleDetailsMetaForm } from './article-details-meta-form';
 import { useGetArticle } from '../api-calls-hooks';
 
 interface ArticleDetailsMetaProps {
+  article: Article;
   isEditDisabled?: boolean;
 }
 
 export const ArticleDetailsMeta: FC<ArticleDetailsMetaProps> = (props) => {
-  const { isEditDisabled } = props;
-  const { data: article } = useGetArticle();
+  const { article, isEditDisabled } = props;
   const [openDialog, setOpenDialog] = useState(false);
 
   const handleOpenDialog = (): void => {
@@ -30,8 +30,6 @@ export const ArticleDetailsMeta: FC<ArticleDetailsMetaProps> = (props) => {
   const handleCloseDialog = (): void => {
     setOpenDialog(false);
   };
-
-  if (!article) return null;
 
   return (
     <>

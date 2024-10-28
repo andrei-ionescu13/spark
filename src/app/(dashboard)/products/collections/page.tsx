@@ -1,5 +1,5 @@
-import { useState } from "react";
-import type { FC, ChangeEvent } from "react";
+"use client"
+
 import Head from "next/head";
 import { useRouter } from "next/navigation";
 import {
@@ -17,24 +17,14 @@ import { searchCollections } from "../api-calls";
 import { CollectionsTable } from "./collections-table";
 import { Plus } from "@/icons/plus";
 import { PageHeader } from "@/components/page-header";
+import { useSearchCollectionsQuery } from "../api-calls-hooks";
 
-
-
-export default async function Collections({ searchParams }: { searchParams: Record<string, string> }) {
-  const queryClient = new QueryClient()
-  const query: any = {};
-
-  for (const [key, value] of Object.entries(searchParams)) {
-    query[key] = value;
-  }
-
-  await queryClient.prefetchQuery({
-    queryKey: ["collections", query],
-    queryFn: searchCollections(query)
-  })
+export default function Collections() {
+  const { data, refetch, isError, isLoading } = useSearchCollectionsQuery();
+  const { collections, count } = data || {};
 
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
+    <>
       <Head>
         <title>Collections</title>
       </Head>
@@ -44,14 +34,19 @@ export default async function Collections({ searchParams }: { searchParams: Reco
             title="Collections"
             action={{
               href: "/products/collections/create",
-              isLink: true,
               label: "Create",
               icon: Plus,
             }}
           />
-          <CollectionsTable />
+          <CollectionsTable
+            collections={collections}
+            count={count}
+            isError={isError}
+            isLoading={isLoading}
+            refetch={refetch}
+          />
         </Container>
       </Box>
-    </HydrationBoundary>
+    </>
   );
 };

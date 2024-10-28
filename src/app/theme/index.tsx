@@ -470,6 +470,16 @@ export const createCustomTheme = (
         components: {
           MuiCssBaseline: {
             styleOverrides: {
+              '.apexcharts-tooltip': {
+                background: '#252b37 !important',
+                border: '1px solid #252b37 !important',
+                color: '#edf6f9 !important',
+              },
+              '.apexcharts-tooltip-title': {
+                background: '#252b37 !important',
+                color: '#edf6f9 !important',
+                borderBottom: '1px solid #252b37 !important',
+              },
               "#nprogress": {
                 ".bar": {
                   background: `${colors[preset].main} !important`,

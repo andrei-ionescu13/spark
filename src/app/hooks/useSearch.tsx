@@ -1,49 +1,51 @@
-"use client"
+'use client';
 
-import { useState, useEffect } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import type { ChangeEvent, SyntheticEvent } from 'react';
-import { useRouter, usePathname, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 const isString = (value: any): value is string => typeof value === 'string';
 
-export const useSearch = (): [string, (event: ChangeEvent<HTMLInputElement>) => void, (event: SyntheticEvent, extraQuery?: object) => void] => {
+export const useSearch = (): [
+  string,
+  (event: ChangeEvent<HTMLInputElement>) => void,
+  (event: SyntheticEvent, extraQuery?: object) => void,
+] => {
   const pathname = usePathname();
-  const searchParams = useSearchParams()
+  const searchParams = useSearchParams();
+  const keywordSearchParam = searchParams.get('keyword');
   const { push } = useRouter();
-  const [keyword, setKeyword] = useState<any>(isString(searchParams.get('keyword')) ? searchParams.get('keyword') : '');
-  // const [keywordParam, setKeywordParam] = useState<any>(isString(searchParams.get('keyword')) ? searchParams.get('keyword') : '');
+  const [keyword, setKeyword] = useState<string>(
+    isString(keywordSearchParam) ? keywordSearchParam : ''
+  );
 
   const handleKeywordChange = (event: ChangeEvent<HTMLInputElement>): void => {
     setKeyword(event.target.value);
-  }
+  };
 
-  const handleSearch = (event: SyntheticEvent, extraQuery: object = {}): void => {
+  const handleSearch = (event: SyntheticEvent): void => {
     event.preventDefault();
     const newSearchParams = new URLSearchParams(searchParams.toString());
 
     if (!!keyword) {
-      newSearchParams.set('keyword', keyword)
+      newSearchParams.set('keyword', keyword);
     } else {
-      newSearchParams.delete('keyword')
+      newSearchParams.delete('keyword');
     }
 
     newSearchParams.delete('page');
 
     push(`${[pathname]}?${newSearchParams.toString()}`);
-  }
+  };
 
   useEffect(() => {
-    const keyword = searchParams.get('keyword');
-
-    if (isString(keyword)) {
-      setKeyword(keyword);
-      // setKeywordParam(keyword);
+    if (isString(keywordSearchParam)) {
+      setKeyword(keywordSearchParam);
       return;
     }
 
     setKeyword('');
-    // setKeywordParam('');
-  }, [searchParams.get('keyword')]);
+  }, [keywordSearchParam]);
 
   return [keyword, handleKeywordChange, handleSearch];
-}
+};

@@ -5,7 +5,7 @@ import { EyeOff } from '@/icons/eye-off';
 import { Trash } from '@/icons/trash';
 import type { FC } from 'react'
 import { useGetCollectionQuery } from '../../api-calls-hooks';
-import { colors, useTheme } from '@mui/material';
+import { colors, Skeleton, useTheme } from '@mui/material';
 import { useDeleteCollection, useDeactivateCollection } from '@/api/collections';
 import { AlertDialog } from '@/components/alert-dialog';
 import { PageHeader } from '@/components/page-header';
@@ -15,6 +15,7 @@ import { id } from 'date-fns/locale';
 import { useQueryClient } from '@tanstack/react-query';
 import { Label } from '@/components/label';
 import { useRouter } from 'next/navigation';
+import { Collection } from '@/types/collection';
 
 interface CollectionsHeaderProps {
 
@@ -24,7 +25,7 @@ export const CollectionHeader: FC<CollectionsHeaderProps> = () => {
   const queryClient = useQueryClient();
   const theme = useTheme();
   const router = useRouter();
-  const { data: collection } = useGetCollectionQuery();
+  const { data: collection, isLoading } = useGetCollectionQuery();
   const [deleteDialogOpen, handleOpenDeleteDialog, handleCloseDeleteDialog] =
     useDialog(false);
   const [
@@ -34,9 +35,8 @@ export const CollectionHeader: FC<CollectionsHeaderProps> = () => {
   ] = useDialog(false);
   const deleteCollection = useDeleteCollection();
   const deactivateCollection = useDeactivateCollection();
-  if (!collection) return null;
 
-  const status = getStatusFromInterval(
+  const status = collection && getStatusFromInterval(
     collection.startDate,
     collection?.endDate
   );
@@ -61,7 +61,7 @@ export const CollectionHeader: FC<CollectionsHeaderProps> = () => {
     },
   ];
 
-  const handleDeletePromoCode = (): void => {
+  const handleDeletePromoCode = (collection: Collection): void => {
     deleteCollection.mutate(collection._id, {
       onSuccess: () => {
         router.push("/products/collections");
@@ -69,7 +69,7 @@ export const CollectionHeader: FC<CollectionsHeaderProps> = () => {
     });
   };
 
-  const handleDeactivatePromoCode = (): void => {
+  const handleDeactivatePromoCode = (collection: Collection): void => {
     deactivateCollection.mutate(collection._id, {
       onSuccess: () => {
         queryClient.invalidateQueries({
@@ -86,26 +86,32 @@ export const CollectionHeader: FC<CollectionsHeaderProps> = () => {
         actions={actionItems}
         backHref="/products/collections"
         backLabel="Collections"
-        title="Collection"
+        title={collection && `Collection ${collection.title}`}
+        isLoading={isLoading}
       >
-        <Label color={mappedColors[status]}>{status}</Label>
+        {status && <Label color={mappedColors[status]}>{status}</Label>}
+        {isLoading && (<Skeleton variant="rounded" width={80} height={21} />)}
       </PageHeader>
-      <AlertDialog
-        open={deleteDialogOpen}
-        onClose={handleCloseDeleteDialog}
-        title={`Delete collection`}
-        content="Are you sure you want to delete this collection?"
-        onSubmit={handleDeletePromoCode}
-        isLoading={deleteCollection.isPending}
-      />
-      <AlertDialog
-        open={deactivateDialogOpen}
-        onClose={handleCloseDeactivateDialog}
-        title={`Deactivate collection`}
-        content="Are you sure you want to deactivate this collection?"
-        onSubmit={handleDeactivatePromoCode}
-        isLoading={deactivateCollection.isPending}
-      />
+      {collection && (
+        <>
+          <AlertDialog
+            open={deleteDialogOpen}
+            onClose={handleCloseDeleteDialog}
+            title={`Delete collection`}
+            content="Are you sure you want to delete this collection?"
+            onSubmit={() => { handleDeletePromoCode(collection) }}
+            isLoading={deleteCollection.isPending}
+          />
+          <AlertDialog
+            open={deactivateDialogOpen}
+            onClose={handleCloseDeactivateDialog}
+            title={`Deactivate collection`}
+            content="Are you sure you want to deactivate this collection?"
+            onSubmit={() => { handleDeactivatePromoCode(collection) }}
+            isLoading={deactivateCollection.isPending}
+          />
+        </>
+      )}
     </>
 
   )

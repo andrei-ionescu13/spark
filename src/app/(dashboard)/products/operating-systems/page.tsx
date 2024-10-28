@@ -1,3 +1,5 @@
+"use client"
+
 import { useState } from "react";
 import type { FC, SyntheticEvent, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
@@ -23,31 +25,29 @@ import { dehydrate, HydrationBoundary, QueryClient, useQuery, useQueryClient } f
 import { OperatingSystemsTable } from "./operating-systems-table";
 import { searchOperatingSystems } from "../api-calls";
 import { OperatingSystemsHeader } from "./operating-systems-header";
+import { useSearchOperatingSystemsQuery } from "../api-calls-hooks";
 
-export default async function OperatingSystems({ searchParams }) {
-  const queryClient = new QueryClient();
-  const query: any = {};
-
-  for (const [key, value] of Object.entries(searchParams)) {
-    query[key] = value;
-  }
-
-  await queryClient.prefetchQuery({
-    queryKey: ["operatingSystems", query],
-    queryFn: searchOperatingSystems(query)
-  })
+export default function OperatingSystems() {
+  const { data, refetch, isError, isLoading } = useSearchOperatingSystemsQuery();
+  const { operatingSystems, count } = data || {};
 
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
+    <>
       <Head>
         <title>Operating Systems</title>
       </Head>
       <Box sx={{ py: 3 }}>
         <Container maxWidth={false}>
           <OperatingSystemsHeader />
-          <OperatingSystemsTable />
+          <OperatingSystemsTable
+            operatingSystems={operatingSystems}
+            count={count}
+            isError={isError}
+            isLoading={isLoading}
+            refetch={refetch}
+          />
         </Container>
       </Box>
-    </HydrationBoundary>
+    </>
   );
 };

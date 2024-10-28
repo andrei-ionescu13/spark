@@ -1,37 +1,31 @@
+"use client"
+
 import type { FC } from "react";
 import Head from "next/head";
 import { getProduct, searchProductKeys } from "../../api-calls";
 import { dehydrate, HydrationBoundary, QueryClient, useQuery } from "@tanstack/react-query";
-import { ProductLayout } from "@/components/products/product-layout";
-import { ProductKeysTable } from "./product-keys-table";
+import { ProductLayout } from "../product-layout";
+import { useGetProduct, useSearchProductKeys } from "../../api-calls-hooks";
+import { KeysTable } from "@/components/keys-table";
 
-export default async function ProductKeys({ params, searchParams }) {
-  const queryClient = new QueryClient()
-  const query: any = {};
-
-  for (const [key, value] of Object.entries(searchParams)) {
-    query[key] = value;
-  }
-  const { id } = params;
-
-  await queryClient.prefetchQuery({
-    queryKey: ["product-keys", id, query],
-    queryFn: searchProductKeys(id, query)
-  });
-  await queryClient.prefetchQuery({
-    queryKey: ["product", id],
-    queryFn: getProduct(id)
-  });
-
+export default function ProductKeys() {
+  const { data, refetch, isError, isLoading } = useSearchProductKeys();
+  const { keys, count } = data || {};
 
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
+    <>
       <Head>
         <title>Keys</title>
       </Head>
       <ProductLayout>
-        <ProductKeysTable />
+        <KeysTable
+          keys={keys}
+          count={count}
+          isError={isError}
+          isLoading={isLoading}
+          refetch={refetch}
+        />
       </ProductLayout>
-    </HydrationBoundary>
+    </>
   );
 };

@@ -20,14 +20,14 @@ import { ArticleDetailsGeneralForm } from "./article-details-general-form";
 import { useGetArticle } from "../api-calls-hooks";
 
 interface ArticleDetailsGeneralProps {
+  article: Article;
   isEditDisabled?: boolean;
 }
 
 export const ArticleDetailsGeneral: FC<ArticleDetailsGeneralProps> = (
   props
 ) => {
-  const { isEditDisabled } = props;
-  const { data: article } = useGetArticle();
+  const { article, isEditDisabled } = props;
   const [openDialog, setOpenDialog] = useState(false);
 
   const handleOpenDialog = (): void => {

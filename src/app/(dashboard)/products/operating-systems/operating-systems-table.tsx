@@ -6,13 +6,18 @@ import { useDeleteOperatingSystems } from '@/api/operating-systems';
 import { AlertDialog } from '@/components/alert-dialog';
 import { DataTable } from '@/components/data-table';
 import { HeadCell, DataTableHead } from '@/components/data-table-head';
-import { OperatingSystemTableRow } from '@/components/products/operating-systems/operating-system-table-row';
+import { OperatingSystemTableRow } from 'app/(dashboard)/products/operating-systems/operating-system-table-row';
 import { SearchInput } from '@/components/search-input';
 import { useSearch } from '@/hooks/useSearch';
 import { Card, Box, Button, TableBody } from '@mui/material';
+import { OperatingSystem } from '@/types/operating-sistem';
 
 interface OperatingSystemsTableProps {
-
+  operatingSystems?: OperatingSystem[];
+  count?: number;
+  isError: boolean;
+  isLoading: boolean;
+  refetch: any;
 }
 
 const headCells: HeadCell[] = [
@@ -28,17 +33,18 @@ const headCells: HeadCell[] = [
 
 
 export const OperatingSystemsTable: FC<OperatingSystemsTableProps> = (props) => {
+  const {
+    operatingSystems,
+    count,
+    isError,
+    isLoading,
+    refetch,
+  } = props;
   const [selected, setSelected] = useState<string[]>([]);
   const [keyword, handleKeywordChange, handleSearch] =
     useSearch();
-  const { data, refetch } = useSearchOperatingSystemsQuery();
   const [dialogOpen, setDialogOpen] = useState(false);
   const deleteCategories = useDeleteOperatingSystems(refetch);
-
-
-  if (!data) return null;
-
-  const { operatingSystems, count } = data;
 
   const handleOpenDialog = (): void => {
     setDialogOpen(true);
@@ -110,15 +116,25 @@ export const OperatingSystemsTable: FC<OperatingSystemsTableProps> = (props) => 
             />
           </form>
         </Box>
-        <DataTable count={count}>
-          <DataTableHead
-            headCells={headCells}
-            selectedLength={selected.length}
-            itemsLength={operatingSystems.length}
-            onSelectAll={handleSelectAll}
-          />
+        <DataTable
+          isLoading={isLoading}
+          count={count}
+          hasError={isError}
+          hasNoData={count === 0}
+          headCellsCount={headCells.length}
+          onRefetchData={refetch}
+          headSlot={
+            <DataTableHead
+              isLoading={isLoading}
+              headCells={headCells}
+              selectedLength={selected.length}
+              itemsLength={operatingSystems?.length}
+              onSelectAll={handleSelectAll}
+            />
+          }
+        >
           <TableBody>
-            {operatingSystems.map((operatingSystem) => (
+            {operatingSystems?.map((operatingSystem) => (
               <OperatingSystemTableRow
                 operatingSystem={operatingSystem}
                 key={operatingSystem._id}

@@ -2,9 +2,9 @@
 
 import type { FC } from 'react'
 import { PageHeader } from '@/components/page-header';
-import { PlatformDialog } from '@/components/products/platforms/platform-dialog';
 import { Plus } from '@/icons/plus';
 import { useDialog } from '@/hooks/useDialog';
+import { PlatformDialog } from './platform-dialog';
 
 interface PlatformsHeaderProps {
 

@@ -1,72 +1,39 @@
-import jwtDecode from "jwt-decode";
-import { getCookies, setCookie } from "cookies-next";
-import type { IncomingMessage, ServerResponse } from "http";
+import jwtDecode from 'jwt-decode'
+import { cookies, headers } from 'next/headers'
 
-export const getNewAccesToken = async (
-  req: IncomingMessage,
-  res?: any
-): Promise<any> => {
-  const headers = {
-    ...(!!req.headers.cookie && { Cookie: req.headers.cookie }),
-  };
+const parseCookies = (rawCookies: string | null) => {
+  const pairs = rawCookies?.split(';')
+  const setCookies: any = {}
 
-  const respose = await fetch(
-    `${process.env.NEXT_PUBLIC_API_PATH}/access-token`,
-    {
-      headers,
+  if (pairs) {
+    for (var i = 0; i < pairs.length; i++) {
+      var nameValue = pairs[i].split('=')
+      setCookies[nameValue[0].trim()] = nameValue[1]
     }
-  );
-
-  if (respose.ok) {
-    const data = await respose.json();
-    return data;
   }
 
-  return null;
-};
-
-interface Decoded {
-  adminId: string;
-  iat: number;
-  exp: number;
+  return setCookies
 }
 
-export const getSession = async (
-  req: IncomingMessage,
-  res: ServerResponse
-): Promise<Decoded | null> => {
-  const { accessToken, refreshToken } = getCookies({ req, res });
+interface Decoded {
+  adminId: string
+  iat: number
+  exp: number
+}
 
-  if (!accessToken && !refreshToken) {
-    return null;
-  }
+export const getSession = async (): Promise<Decoded | null> => {
+  const cookieStore = cookies()
+  const setCookies: any = parseCookies(headers().get('set-cookie'))
+  const accessToken =
+    cookieStore.get('accessToken')?.value || setCookies?.accessToken
 
-  if (!!accessToken) {
-    const decoded: Decoded = jwtDecode(accessToken);
+  if (accessToken) {
+    const decoded: Decoded = jwtDecode(accessToken)
 
     if (decoded.exp > Date.now() / 1000) {
-      return jwtDecode(accessToken);
+      return jwtDecode(accessToken)
     }
   }
-  if (
-    !!refreshToken &&
-    (jwtDecode(refreshToken) as Decoded).exp > Date.now() / 1000
-  ) {
-    const newAccesToken = await getNewAccesToken(req, res);
 
-    if (!newAccesToken) {
-      return null;
-    }
-
-    setCookie("accessToken", newAccesToken, {
-      req,
-      res,
-      maxAge: 60 * 6 * 24,
-      httpOnly: true,
-    });
-
-    return jwtDecode(newAccesToken);
-  }
-
-  return null;
-};
+  return null
+}

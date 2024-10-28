@@ -2,7 +2,7 @@ import type { FC } from "react";
 import Head from "next/head";
 import { Box, Container } from "@mui/material";
 import { PageHeader } from "@/components/page-header";
-import { CollectionForm } from "@/components/collections/collection-form";
+import { CollectionForm } from "../collection-form";
 
 const CollectionCreate: FC = () => {
   return (
@@ -17,7 +17,7 @@ const CollectionCreate: FC = () => {
             backLabel="Collections"
             title="Create collection"
           />
-          {/* <CollectionForm mode="create" /> */}
+          <CollectionForm mode="create" />
         </Container>
       </Box>
     </>

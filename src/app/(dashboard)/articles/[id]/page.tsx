@@ -1,3 +1,5 @@
+"use client"
+
 import type { FC } from "react";
 import Head from "next/head";
 import type { GetServerSideProps } from "next";
@@ -27,40 +29,28 @@ import { ArticleDetailsTags } from "./article-details-tags";
 import { ArticleStatusCategory } from "./article-status-category";
 import { ArticlePageHeader } from "./article-page-header";
 import { getArticle } from "../api-calls";
+import { useGetArticle, useListArticleTags } from "../api-calls-hooks";
 
-export default async function Article({ params }) {
-  const { id } = params;
-  const queryClient = new QueryClient()
+export default function Article() {
+  const { data: article } = useGetArticle();
+  const { data: categories } = useListArticleTags();
 
-  const article = await queryClient.fetchQuery({
-    queryKey: ["articles", id],
-    queryFn: getArticle(id)
-  });
-
-  await queryClient.prefetchQuery({
-    queryKey: ["article-categories"],
-    queryFn: () =>
-      appFetch<ArticleCategory[]>({
-        url: "/article-categories",
-        withAuth: true,
-      })
-  });
-
+  if (!article || !categories) return null;
 
   const isEditDisabled = article?.status === "archived";
 
-
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
+    <>
       <Head>
         <title>Article</title>
       </Head>
       <Box sx={{ py: 3 }}>
         <Container maxWidth="lg">
-          <ArticlePageHeader />
+          <ArticlePageHeader article={article} />
           <Grid container spacing={2}>
             <Grid item md={8} xs={12}>
               <ArticleDetailsGeneral
+                article={article}
                 isEditDisabled={isEditDisabled}
               />
             </Grid>
@@ -74,16 +64,20 @@ export default async function Article({ params }) {
             >
               <Grid item xs={12}>
                 <ArticleStatusCategory
+                  article={article}
+                  categories={categories}
                   isEditDisabled={isEditDisabled}
                 />
               </Grid>
               <Grid item xs={12}>
                 <ArticleDetailsTags
+                  article={article}
                   isEditDisabled={isEditDisabled}
                 />
               </Grid>
               <Grid item xs={12}>
                 <ArticleDetailsMeta
+                  article={article}
                   isEditDisabled={isEditDisabled}
                 />
               </Grid>
@@ -91,6 +85,6 @@ export default async function Article({ params }) {
           </Grid>
         </Container>
       </Box>
-    </HydrationBoundary>
+    </>
   );
 };

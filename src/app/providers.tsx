@@ -1,3 +1,5 @@
+"use client"
+
 import { CssBaseline, ThemeProvider } from '@mui/material'
 import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
@@ -14,6 +16,7 @@ import { SettingsProvider, useSettings } from './contexts/settings-context';
 import { createCustomTheme } from './theme';
 import { StyledComponentsRegistry } from './styled-components-registry';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import "react-toastify/dist/ReactToastify.css";
 
 
 function makeQueryClient() {
@@ -23,6 +26,7 @@ function makeQueryClient() {
         // With SSR, we usually want to set some default staleTime
         // above 0 to avoid refetching immediately on the client
         staleTime: 60 * 1000,
+        gcTime: 0
       },
     },
   })
@@ -46,6 +50,8 @@ function getQueryClient() {
 
 interface ProvidersProps {
   children: ReactNode;
+  theme?: string;
+  preset?: string;
 }
 
 const ProvidersWithSettings: FC<ProvidersProps> = (props) => {
@@ -66,7 +72,7 @@ const ProvidersWithSettings: FC<ProvidersProps> = (props) => {
 }
 
 const Providers: FC<ProvidersProps> = (props) => {
-  const { children } = props;
+  const { children, theme, preset } = props;
   const queryClient = getQueryClient()
 
   return (
@@ -74,7 +80,10 @@ const Providers: FC<ProvidersProps> = (props) => {
       <AppRouterCacheProvider>
         <QueryClientProvider client={queryClient}>
           <ReactQueryDevtools initialIsOpen={false} />
-          <SettingsProvider>
+          <SettingsProvider
+            theme={theme}
+            preset={preset}
+          >
             <ProvidersWithSettings>
               <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <ThemeDrawer />
