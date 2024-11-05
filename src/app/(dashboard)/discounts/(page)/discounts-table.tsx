@@ -31,19 +31,23 @@ const headCells: HeadCell[] = [
   {
     id: 'title',
     label: 'Title',
+    width: '32%',
   },
   {
     id: 'startDate',
     label: 'Start Date',
+    width: '20%',
   },
   {
     id: 'endDate',
     label: 'End Date',
+    width: '20%',
   },
   {
     id: 'status',
     label: 'Status',
     disableSort: true,
+    width: '20%',
   },
 ];
 
@@ -149,7 +153,10 @@ export const DiscountsTable: FC<DiscountsTableProps> = (props) => {
             value={status}
           >
             {statusOptions.map((status) => (
-              <MenuItem key={status.value} value={status.value}>
+              <MenuItem
+                key={status.value}
+                value={status.value}
+              >
                 {status.label}
               </MenuItem>
             ))}

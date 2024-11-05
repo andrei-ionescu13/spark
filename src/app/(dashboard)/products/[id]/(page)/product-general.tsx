@@ -19,16 +19,15 @@ import { useDialog } from '../../../../hooks/useDialog';
 import { Eye as EyeIcon } from '../../../../icons/eye';
 import type { Product } from '../../../../types/products';
 import { formatDate } from '../../../../utils/format-date';
-import { ProductGeneralForm } from '../product-general-form';
 
 interface ProductGeneralProps {
   product: Product;
   isEditDisabled?: boolean;
+  onEdit: () => void;
 }
 
 export const ProductGeneral: FC<ProductGeneralProps> = (props) => {
-  const { product, isEditDisabled = false } = props;
-  const [dialogOpen, handleOpenDialog, handleCloseDialog] = useDialog();
+  const { product, isEditDisabled = false, onEdit } = props;
   const [openPreviewDialog, handleOpenPreviewDialog, handleClosePreviewDialog] =
     useDialog();
   const [previewSelected, setPreviewSelected] = useState<
@@ -39,20 +38,13 @@ export const ProductGeneral: FC<ProductGeneralProps> = (props) => {
 
   return (
     <>
-      {dialogOpen && (
-        <ProductGeneralForm
-          onClose={handleCloseDialog}
-          open
-          product={product}
-        />
-      )}
       <Card>
         <CardHeader
           action={
             <Button
               variant="text"
               color="secondary"
-              onClick={handleOpenDialog}
+              onClick={onEdit}
               disabled={isEditDisabled}
             >
               Edit

@@ -1,24 +1,26 @@
-import { isServer } from '@tanstack/react-query'
-import { ApiError } from './api-error'
-import { ReadonlyRequestCookies } from 'next/dist/server/web/spec-extension/adapters/request-cookies'
+import { isServer } from '@tanstack/react-query';
+import { ReadonlyRequestCookies } from 'next/dist/server/web/spec-extension/adapters/request-cookies';
+import { ApiError } from './api-error';
 
-const isClient = typeof window !== 'undefined'
+const isClient = typeof window !== 'undefined';
 
 const DEFAULT_HEADERS = {
   'Content-Type': 'application/json',
-}
+};
 
-const apiUrl = isClient ? `/api` : process.env.NEXT_PUBLIC_API_PATH
+const apiUrl = isClient ? `/api` : process.env.NEXT_PUBLIC_API_PATH;
 
 const buildQueryString = (query: Record<string, any>): string => {
-  const finalQuery: URLSearchParams = new URLSearchParams()
+  const finalQuery: URLSearchParams = new URLSearchParams();
 
   Object.keys(query).forEach((key) => {
-    finalQuery.append(key, query[key])
-  })
+    if (Array.isArray(query[key])) {
+      query[key].forEach((item) => finalQuery.append(key, item));
+    } else finalQuery.append(key, query[key]);
+  });
 
-  return finalQuery.toString()
-}
+  return finalQuery.toString();
+};
 
 export const getNewAccesToken = async (
   cookies?: any,
@@ -29,23 +31,23 @@ export const getNewAccesToken = async (
     headers: {
       ...(!!cookies && { Cookie: cookies }),
     },
-  })
-  const data = await respose.json()
+  });
+  const data = await respose.json();
 
   if (respose.ok) {
-    return data
+    return data;
   }
 
   if (res) {
-    res.redirect(307, 'login')
+    res.redirect(307, 'login');
   } else {
     // Router.push("/login");
   }
 
-  throw new ApiError(respose.status, data.message)
-}
+  throw new ApiError(respose.status, data.message);
+};
 
-type ReturnType<T> = T extends Blob ? Blob : T
+type ReturnType<T> = T extends Blob ? Blob : T;
 
 export const appFetch = async <T>({
   req,
@@ -57,21 +59,21 @@ export const appFetch = async <T>({
   withAuth = false,
   responseType = 'json',
 }: {
-  req?: any
-  res?: any
-  url: string
-  config?: RequestInit
-  noContentType?: boolean
-  query?: Record<string, any>
-  withAuth?: boolean
-  responseType?: string
+  req?: any;
+  res?: any;
+  url: string;
+  config?: RequestInit;
+  noContentType?: boolean;
+  query?: Record<string, any>;
+  withAuth?: boolean;
+  responseType?: string;
 }): Promise<ReturnType<T>> => {
-  const { headers = {}, ...restConfig } = config
-  let cookieStore: ReadonlyRequestCookies | undefined
+  const { headers = {}, ...restConfig } = config;
+  let cookieStore: ReadonlyRequestCookies | undefined;
 
   if (isServer) {
-    const { cookies } = await import('next/headers')
-    cookieStore = cookies()
+    const { cookies } = await import('next/headers');
+    cookieStore = cookies();
   }
 
   const request = () =>
@@ -85,67 +87,67 @@ export const appFetch = async <T>({
       }),
       ...restConfig,
       credentials: 'include',
-    })
+    });
 
   const handleSuccessResponse = async (response: any) => {
     if (responseType === 'json') {
-      let data: any = await response.text()
-      data = data ? JSON.parse(data) : {}
+      let data: any = await response.text();
+      data = data ? JSON.parse(data) : {};
 
-      return data
+      return data;
     }
 
     if (responseType === 'blob') {
-      const data = await response.blob()
-      return data as ReturnType<T>
+      const data = await response.blob();
+      return data as ReturnType<T>;
     }
-  }
+  };
 
   const appFetch = async () => {
-    const response = await request()
+    const response = await request();
 
     if (response.ok) {
-      return await handleSuccessResponse(response)
+      return await handleSuccessResponse(response);
     }
 
-    const data = await response.json()
-    throw new ApiError(response.status, data.message)
-  }
+    const data = await response.json();
+    throw new ApiError(response.status, data.message);
+  };
 
   const appAuthFetch = async () => {
-    let response = await request()
+    let response = await request();
     if (response.ok) {
-      return await handleSuccessResponse(response)
+      return await handleSuccessResponse(response);
     }
 
-    let data = await response.json()
+    let data = await response.json();
     if (response.status !== 401) {
-      throw new ApiError(response.status, data.message)
+      throw new ApiError(response.status, data.message);
     }
 
-    const newAccesToken = await getNewAccesToken(req?.headers.cookie, res)
+    const newAccesToken = await getNewAccesToken(req?.headers.cookie, res);
 
     if (cookieStore) {
       cookieStore.set('accessToken', newAccesToken, {
         maxAge: 60 * 6 * 24,
         httpOnly: true,
-      })
+      });
     }
 
-    response = await request()
+    response = await request();
 
     if (response.ok) {
-      return await handleSuccessResponse(response)
+      return await handleSuccessResponse(response);
     }
 
-    data = await response.json()
+    data = await response.json();
 
     if (response.status === 401) {
       // hasClient ? Router.push("/login") : res.push(307, "login");
     }
 
-    throw new ApiError(response.status, data.message)
-  }
+    throw new ApiError(response.status, data.message);
+  };
 
-  return withAuth ? appAuthFetch() : appFetch()
-}
+  return withAuth ? appAuthFetch() : appFetch();
+};

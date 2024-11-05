@@ -1,9 +1,16 @@
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  Divider,
+  Grid,
+  useTheme,
+} from '@mui/material';
 import type { FC } from 'react';
-import { Card, CardContent, CardHeader, Divider, Grid, List, useTheme } from '@mui/material';
+import { InfoList } from '../../../../components/info-list';
 import { InfoListItem } from '../../../../components/info-list-item';
 import { Label } from '../../../../components/label';
 import type { User } from '../../../../types/user';
-import { InfoList } from '../../../../components/info-list';
 import { formatDate } from '../../../../utils/format-date';
 
 interface UserDetailsProps {
@@ -12,12 +19,12 @@ interface UserDetailsProps {
 
 export const UserDetails: FC<UserDetailsProps> = (props) => {
   const { user } = props;
-  const theme = useTheme()
+  const theme = useTheme();
   const mappedColors = {
     active: theme.palette.success.main,
     inactive: theme.palette.warning.main,
     banned: theme.palette.error.main,
-  }
+  };
 
   return (
     <Card>
@@ -28,7 +35,7 @@ export const UserDetails: FC<UserDetailsProps> = (props) => {
           container
           spacing={{
             xs: 0,
-            sm: 2
+            sm: 2,
           }}
         >
           <Grid
@@ -46,9 +53,7 @@ export const UserDetails: FC<UserDetailsProps> = (props) => {
                 title="Status"
                 type="stacked"
               >
-                <Label color={mappedColors[user.status]}>
-                  {user.status}
-                </Label>
+                <Label color={mappedColors[user.status]}>{user.status}</Label>
               </InfoListItem>
               <InfoListItem
                 title="Created"
@@ -63,7 +68,7 @@ export const UserDetails: FC<UserDetailsProps> = (props) => {
             xs={12}
             sm={6}
           >
-            <InfoList >
+            <InfoList>
               <InfoListItem
                 title="Active orders"
                 content="0"

@@ -1,45 +1,45 @@
 // eslint-disable-next-line @next/next/no-server-import-in-page
-import { NextRequest, NextResponse } from 'next/server'
-import jwtDecode from 'jwt-decode'
-import { RequestCookies } from 'next/dist/compiled/@edge-runtime/cookies'
+import jwtDecode from 'jwt-decode';
+import { RequestCookies } from 'next/dist/compiled/@edge-runtime/cookies';
+import { NextRequest, NextResponse } from 'next/server';
 
-type Decoded = any
+type Decoded = any;
 
 export const getNewAccesToken = async (
   cookies: RequestCookies
 ): Promise<any> => {
   const headers = {
     Cookie: cookies.toString(),
-  }
+  };
 
   const respose = await fetch(
     `${process.env.NEXT_PUBLIC_API_PATH}/access-token`,
     {
       headers,
     }
-  )
+  );
 
   if (respose.ok) {
-    const data = await respose.json()
-    return data
+    const data = await respose.json();
+    return data;
   }
 
-  return null
-}
+  return null;
+};
 
 const checkSession = async (request: NextRequest, response: NextResponse) => {
-  const accessToken = request.cookies.get('accessToken')?.value
-  const refreshToken = request.cookies.get('refreshToken')?.value
+  const accessToken = request.cookies.get('accessToken')?.value;
+  const refreshToken = request.cookies.get('refreshToken')?.value;
 
   if (!accessToken && !refreshToken) {
-    return null
+    return null;
   }
 
   if (!!accessToken) {
-    const decoded: Decoded = jwtDecode(accessToken)
+    const decoded: Decoded = jwtDecode(accessToken);
 
     if (decoded.exp > Date.now() / 1000) {
-      return decoded
+      return decoded;
     }
   }
 
@@ -47,56 +47,58 @@ const checkSession = async (request: NextRequest, response: NextResponse) => {
     !!refreshToken &&
     (jwtDecode(refreshToken) as Decoded).exp > Date.now() / 1000
   ) {
-    const newAccesToken = await getNewAccesToken(request.cookies)
+    const newAccesToken = await getNewAccesToken(request.cookies);
 
     if (!newAccesToken) {
-      return null
+      return null;
     }
 
     response.cookies.set('accessToken', newAccesToken, {
       maxAge: 60 * 60 * 1000,
       httpOnly: true,
-    })
+    });
 
-    return null
+    const decoded: Decoded = jwtDecode(newAccesToken);
+    return decoded;
   }
-  return null
-}
 
-const guestGuardPaths = [/^\/login$/, /^\/register$/]
+  return null;
+};
+
+const guestGuardPaths = [/^\/login$/, /^\/register$/];
 
 const testAgainstRegexArray = (str: string, array: RegExp[]) => {
-  let isMatch = false
+  let isMatch = false;
 
   for (let index = 0; index < array.length; index++) {
     if (array[index].test(str)) {
-      isMatch = true
-      break
+      isMatch = true;
+      break;
     }
   }
 
-  return isMatch
-}
+  return isMatch;
+};
 
 export async function middleware(request: NextRequest) {
-  const response = NextResponse.next()
-  const session = await checkSession(request, response)
+  const response = NextResponse.next();
+  const session = await checkSession(request, response);
 
   if (
     session &&
     testAgainstRegexArray(request.nextUrl.pathname, guestGuardPaths)
   ) {
-    return NextResponse.redirect(new URL('/', request.url))
+    return NextResponse.redirect(new URL('/', request.url));
   }
 
   if (
     !session &&
     !testAgainstRegexArray(request.nextUrl.pathname, guestGuardPaths)
   ) {
-    return NextResponse.redirect(new URL('/login', request.url), 303)
+    return NextResponse.redirect(new URL('/login', request.url), 303);
   }
 
-  return response
+  return response;
 }
 
 export const config = {
@@ -110,4 +112,4 @@ export const config = {
      */
     '/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)',
   ],
-}
+};

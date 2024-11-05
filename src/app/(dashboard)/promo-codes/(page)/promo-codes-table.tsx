@@ -1,16 +1,23 @@
 import { useDeletePromoCodes } from '@/api/promo-codes';
 import { AlertDialog } from '@/components/alert-dialog';
 import { DataTable } from '@/components/data-table';
-import { HeadCell, DataTableHead } from '@/components/data-table-head';
-import { PromoCodeTableRow } from '@/components/promo-codes/promo-code-list/promo-code-table-row';
+import { DataTableHead, HeadCell } from '@/components/data-table-head';
 import { SearchInput } from '@/components/search-input';
 import { useDialog } from '@/hooks/useDialog';
 import { useQueryValue } from '@/hooks/useQueryValue';
 import { useSearch } from '@/hooks/useSearch';
 import { PromoCode } from '@/types/promo-code';
-import { Card, Box, Button, TextField, MenuItem, TableBody } from '@mui/material';
+import {
+  Box,
+  Button,
+  Card,
+  MenuItem,
+  TableBody,
+  TextField,
+} from '@mui/material';
 import { useQueryClient } from '@tanstack/react-query';
-import { ChangeEvent, useState, type FC } from 'react'
+import { ChangeEvent, useState, type FC } from 'react';
+import { PromoCodesTableRow } from './promo-codes-table-row';
 
 interface PromoCodesTableProps {
   promoCodes?: PromoCode[];
@@ -22,64 +29,59 @@ interface PromoCodesTableProps {
 
 const headCells: HeadCell[] = [
   {
-    id: "code",
-    label: "Code",
+    id: 'code',
+    label: 'Code',
+    width: '32%',
   },
   {
-    id: "startDate",
-    label: "Start Date",
+    id: 'startDate',
+    label: 'Start Date',
+    width: '20%',
   },
   {
-    id: "endDate",
-    label: "End Date",
+    id: 'endDate',
+    label: 'End Date',
+    width: '20%',
   },
   {
-    id: "status",
-    label: "Status",
+    id: 'status',
+    label: 'Status',
     disableSort: true,
+    width: '20%',
   },
 ];
 
 const statusOptions = [
   {
-    label: "All",
-    value: "all",
+    label: 'All',
+    value: 'all',
   },
   {
-    label: "Active",
-    value: "active",
+    label: 'Active',
+    value: 'active',
   },
   {
-    label: "Scheduled",
-    value: "scheduled",
+    label: 'Scheduled',
+    value: 'scheduled',
   },
   {
-    label: "Expired",
-    value: "expired",
+    label: 'Expired',
+    value: 'expired',
   },
 ];
 
 export const PromoCodesTable: FC<PromoCodesTableProps> = (props) => {
-  const {
-    promoCodes,
-    count,
-    isError,
-    isLoading,
-    refetch,
-  } = props;
-  const queryClient = useQueryClient()
-  const [keyword, handleKeywordChange, handleSearch] =
-    useSearch();
+  const { promoCodes, count, isError, isLoading, refetch } = props;
+  const queryClient = useQueryClient();
+  const [keyword, handleKeywordChange, handleSearch] = useSearch();
   const [selected, setSelected] = useState<string[]>([]);
-  const [statusSelected, setStatusSelected] = useState("");
+  const [statusSelected, setStatusSelected] = useState('');
   const [dialogOpen, handleOpenDialog, handleCloseDialog] = useDialog();
 
-
   const deletePromoCodes = useDeletePromoCodes(() =>
-    queryClient.invalidateQueries({ queryKey: ["promo-codes"] })
+    queryClient.invalidateQueries({ queryKey: ['promo-codes'] })
   );
-  const [status, setStatus] = useQueryValue("status", "all", "all");
-
+  const [status, setStatus] = useQueryValue('status', 'all', 'all');
 
   const handleStatusChange = (event: ChangeEvent<HTMLInputElement>): void => {
     setStatus(event.target.value);
@@ -116,16 +118,15 @@ export const PromoCodesTable: FC<PromoCodesTableProps> = (props) => {
     });
   };
 
-
   return (
     <>
       <Card>
         <Box
           sx={{
-            display: "grid",
+            display: 'grid',
             gap: 2,
             gridTemplateColumns: {
-              sm: `${!!selected.length ? "auto" : ""} 1fr 240px`,
+              sm: `${!!selected.length ? 'auto' : ''} 1fr 240px`,
             },
             p: 2,
           }}
@@ -154,7 +155,10 @@ export const PromoCodesTable: FC<PromoCodesTableProps> = (props) => {
             value={status}
           >
             {statusOptions.map((status) => (
-              <MenuItem key={status.value} value={status.value}>
+              <MenuItem
+                key={status.value}
+                value={status.value}
+              >
                 {status.label}
               </MenuItem>
             ))}
@@ -179,7 +183,7 @@ export const PromoCodesTable: FC<PromoCodesTableProps> = (props) => {
         >
           <TableBody>
             {promoCodes?.map((promoCode) => (
-              <PromoCodeTableRow
+              <PromoCodesTableRow
                 promoCode={promoCode}
                 key={promoCode._id}
                 onSelect={() => {
@@ -200,5 +204,5 @@ export const PromoCodesTable: FC<PromoCodesTableProps> = (props) => {
         title={`Delete ${selected.length} articles`}
       />
     </>
-  )
+  );
 };

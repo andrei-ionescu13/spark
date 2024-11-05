@@ -1,23 +1,18 @@
-import type { FC, ReactNode } from 'react';
-import Head from 'next/head';
-import { useParams, usePathname, useRouter } from 'next/navigation';
-import {
-  Box,
-  Container,
-  Divider,
-  Link,
-  Tab,
-  Tabs
-} from '@mui/material';
-import { ActionsItem } from '../actions-menu';
-import { AlertDialog } from '../alert-dialog';
-import { PageHeader } from '../page-header';
-import { useDialog } from '../../hooks/useDialog';
-import type { User } from '../../types/user';
-import { useGetUser } from 'app/(dashboard)/users/api-calls-hooks';
-import { Key } from '@/icons/key';
+'use client';
+
+import { ActionsItem } from '@/components/actions-menu';
+import { AlertDialog } from '@/components/alert-dialog';
+import Link from '@/components/link';
+import { PageHeader } from '@/components/page-header';
+import { useDialog } from '@/hooks/useDialog';
 import { Ban } from '@/icons/ban';
+import { Key } from '@/icons/key';
 import { Trash } from '@/icons/trash';
+import { Box, Container, Divider, Tab, Tabs } from '@mui/material';
+import { useGetUser } from 'app/(dashboard)/users/api-calls-hooks';
+import Head from 'next/head';
+import { useParams, usePathname } from 'next/navigation';
+import type { ReactNode } from 'react';
 
 interface Tab {
   label: string;
@@ -28,16 +23,18 @@ interface UserLayoutProps {
   children: ReactNode;
 }
 
-export const UserLayout: FC<UserLayoutProps> = (props) => {
-  const { id } = useParams<{ id: string }>()
+export default function UserLayout(props) {
+  const { id } = useParams<{ id: string }>();
   const { data: user, isLoading } = useGetUser();
   const { children } = props;
   const pathname = usePathname();
-  const [deleteDialogOpen, handleOpenDeleteDialog, handleCloseDeleteDialog] = useDialog(false);
-  const [banDialogOpen, handleOpenBanDialog, handleCloseBanDialog] = useDialog(false);
-  const [resetDialogOpen, handleOpenResetDialog, handleCloseResetDialog] = useDialog(false);
+  const [deleteDialogOpen, handleOpenDeleteDialog, handleCloseDeleteDialog] =
+    useDialog(false);
+  const [banDialogOpen, handleOpenBanDialog, handleCloseBanDialog] =
+    useDialog(false);
+  const [resetDialogOpen, handleOpenResetDialog, handleCloseResetDialog] =
+    useDialog(false);
   const { email } = user || {};
-
   const tabs: Tab[] = [
     {
       label: 'General',
@@ -51,7 +48,8 @@ export const UserLayout: FC<UserLayoutProps> = (props) => {
       label: 'Reviews',
       href: `/users/${id}/reviews`,
     },
-  ]
+  ];
+  console.log(tabs);
 
   const actionItems: ActionsItem[] = [
     {
@@ -68,9 +66,9 @@ export const UserLayout: FC<UserLayoutProps> = (props) => {
       label: 'Delete',
       icon: Trash,
       onClick: handleOpenDeleteDialog,
-      color: 'error'
-    }
-  ]
+      color: 'error',
+    },
+  ];
 
   return (
     <>
@@ -105,7 +103,7 @@ export const UserLayout: FC<UserLayoutProps> = (props) => {
       <Head>
         <title>User</title>
       </Head>
-      <Box sx={{ py: 3 }} >
+      <Box sx={{ py: 3 }}>
         <Container maxWidth="lg">
           <PageHeader
             title={email}
@@ -117,11 +115,11 @@ export const UserLayout: FC<UserLayoutProps> = (props) => {
           <Tabs value={tabs.findIndex((tab) => tab.href === pathname)}>
             {tabs.map((tab) => (
               <Tab
+                underline="none"
                 component={Link}
                 key={tab.label}
                 href={tab.href}
                 label={tab.label}
-                underline="none"
               />
             ))}
           </Tabs>
@@ -131,4 +129,4 @@ export const UserLayout: FC<UserLayoutProps> = (props) => {
       </Box>
     </>
   );
-};
+}

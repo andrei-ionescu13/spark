@@ -1,6 +1,6 @@
 import { useCreatePublisher, useUpdatePublisher } from '@/api/publishers';
 import { Button } from '@/components/button';
-import { Dropzone } from '@/components/dropzone';
+import { ImageDropzone } from '@/components/image-dropzone';
 import { TextInput } from '@/components/text-input';
 import {
   Dialog,
@@ -16,6 +16,7 @@ import { useFormik } from 'formik';
 import type { FC } from 'react';
 import * as Yup from 'yup';
 import { buildFormData } from '../../../utils/build-form-data';
+import { ImageUpdate } from '../[id]/(page)/product-cover';
 
 interface PublisherDialogProps {
   open: boolean;
@@ -126,10 +127,20 @@ export const PublisherDialog: FC<PublisherDialogProps> = (props) => {
             >
               Logo
             </Typography>
-            <Dropzone
-              file={formik.values.logo}
-              onDrop={(file: any) => formik.setFieldValue('logo', file)}
-            />
+            {mode === 'edit' ? (
+              <ImageUpdate
+                url={formik.values.logo}
+                alt=""
+                onFileSelect={(file: any) => {
+                  formik.setFieldValue('logo', file);
+                }}
+              />
+            ) : (
+              <ImageDropzone
+                file={formik.values.logo}
+                onDrop={(file: any) => formik.setFieldValue('logo', file)}
+              />
+            )}
             {!!formik.touched.logo && !!formik.errors.logo && (
               <FormHelperText error>
                 {formik.errors.logo as string}

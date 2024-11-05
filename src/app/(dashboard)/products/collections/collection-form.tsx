@@ -1,7 +1,6 @@
-"use client"
+'use client';
 
-import { useEffect, useState } from "react";
-import type { ChangeEvent, FC, SyntheticEvent } from "react";
+import { useCreateCollection, useUpdateCollection } from '@/api/collections';
 import {
   Autocomplete,
   Box,
@@ -14,34 +13,37 @@ import {
   ListItem,
   Switch,
   Typography,
-} from "@mui/material";
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import { Dropzone } from "../../../components/dropzone";
-import { Link } from "../../../components/link";
-import { toast } from "react-toastify";
-import { Button } from "../../../components/button";
-import { buildFormData } from "../../../utils/build-form-data";
-import { useDialog } from "../../../hooks/useDialog";
-import { FormInterval } from "../../../components/form-interval";
-import { AddProductsDialog } from "../../../components/add-products-dialog";
-import type { Product } from "../../../types/products";
-import { Trash as TrashIcon } from "../../../icons/trash";
-import { useCreateCollection, useUpdateCollection } from "@/api/collections";
-import type { Collection } from "../../../types/collection";
-import { useQueryClient } from "@tanstack/react-query";
-import type { Image } from "../../../types/common";
-import { ToastCreatedMessage } from "../../../components/toast-created-message";
-import { TextInput } from "../../../components/text-input";
-import { useGetCollectionQuery } from "app/(dashboard)/products/api-calls-hooks";
+} from '@mui/material';
+import { useQueryClient } from '@tanstack/react-query';
+import { useFormik } from 'formik';
+import type { ChangeEvent, FC, SyntheticEvent } from 'react';
+import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
+import * as Yup from 'yup';
+import { AddProductsDialog } from '../../../components/add-products-dialog';
+import { Button } from '../../../components/button';
+import { FormInterval } from '../../../components/form-interval';
+import { ImageDropzone } from '../../../components/image-dropzone';
+import { Link } from '../../../components/link';
+import { TextInput } from '../../../components/text-input';
+import { ToastCreatedMessage } from '../../../components/toast-created-message';
+import { useDialog } from '../../../hooks/useDialog';
+import { Trash as TrashIcon } from '../../../icons/trash';
+import type { Collection } from '../../../types/collection';
+import type { Image } from '../../../types/common';
+import type { Product } from '../../../types/products';
+import { buildFormData } from '../../../utils/build-form-data';
 
 const isImage = (file: any): file is Image => !!file?.public_id;
 
-const metaKeywordOptions = ["Games", "News"];
+const metaKeywordOptions = ['Games', 'News'];
 
 const ToastSuccess = (id: string) => (
   <Box>
-    <Typography variant="body1" color="textPrimary">
+    <Typography
+      variant="body1"
+      color="textPrimary"
+    >
       Article duplicated
     </Typography>
     <Link
@@ -57,7 +59,7 @@ const ToastSuccess = (id: string) => (
 
 interface CollectionFormProps {
   collection?: Collection;
-  mode: "edit" | "create";
+  mode: 'edit' | 'create';
 }
 
 export const CollectionForm: FC<CollectionFormProps> = (props) => {
@@ -67,7 +69,7 @@ export const CollectionForm: FC<CollectionFormProps> = (props) => {
   );
   const createCollection = useCreateCollection();
   const updateCollection = useUpdateCollection(() =>
-    queryClient.invalidateQueries({ queryKey: ["collection", collection?._id] })
+    queryClient.invalidateQueries({ queryKey: ['collection', collection?._id] })
   );
   const [dialogOpen, handleOpenDialog, handleCloseDialog] = useDialog();
   const queryClient = useQueryClient();
@@ -75,30 +77,30 @@ export const CollectionForm: FC<CollectionFormProps> = (props) => {
   const formik = useFormik({
     initialValues: {
       products: collection?.products || [],
-      description: collection?.description || "",
+      description: collection?.description || '',
       meta: {
-        description: collection?.meta?.description || "",
+        description: collection?.meta?.description || '',
         keywords: collection?.meta?.keywords || [],
-        title: collection?.meta?.title || "",
+        title: collection?.meta?.title || '',
       },
-      slug: collection?.slug || "",
-      title: collection?.title || "",
+      slug: collection?.slug || '',
+      title: collection?.title || '',
       cover: collection?.cover || undefined,
       startDate: collection?.startDate || null,
       endDate: collection?.endDate || null,
       isDeal: collection?.isDeal || false,
     },
     validationSchema: Yup.object({
-      products: Yup.array().min(1).required("Required"),
-      description: Yup.string().required("Required"),
+      products: Yup.array().min(1).required('Required'),
+      description: Yup.string().required('Required'),
       meta: Yup.object().shape({
-        description: Yup.string().required("Required"),
-        keywords: Yup.array().min(1, "Required").required("Required"),
-        title: Yup.string().required("Required"),
+        description: Yup.string().required('Required'),
+        keywords: Yup.array().min(1, 'Required').required('Required'),
+        title: Yup.string().required('Required'),
       }),
-      title: Yup.string().required("Required"),
-      slug: Yup.string().required("Required"),
-      cover: Yup.mixed().required("File is required"),
+      title: Yup.string().required('Required'),
+      slug: Yup.string().required('Required'),
+      cover: Yup.mixed().required('File is required'),
       startDate: Yup.date().required(),
       isDeal: Yup.boolean().required(),
       ...(shouldSetEndDate && { endDate: Yup.date().required() }),
@@ -106,9 +108,9 @@ export const CollectionForm: FC<CollectionFormProps> = (props) => {
     onSubmit: (values) => {
       const { endDate, ...formvalues } = values;
       const formData = buildFormData(formvalues);
-      formData.append("endDate", shouldSetEndDate && endDate ? endDate : "");
+      formData.append('endDate', shouldSetEndDate && endDate ? endDate : '');
 
-      if (mode === "create") {
+      if (mode === 'create') {
         createCollection.mutate(formData, {
           onSuccess: (data) => {
             toast.success(
@@ -137,7 +139,7 @@ export const CollectionForm: FC<CollectionFormProps> = (props) => {
 
   useEffect(() => {
     setShouldSetEndDate(!!collection?.endDate);
-    formik.setFieldValue("endDate", collection?.endDate);
+    formik.setFieldValue('endDate', collection?.endDate);
   }, [collection?.endDate]);
 
   return (
@@ -149,22 +151,46 @@ export const CollectionForm: FC<CollectionFormProps> = (props) => {
             handleCloseDialog();
           }}
           onAdd={(products: Product[]) => {
-            formik.setFieldValue("products", products);
+            formik.setFieldValue('products', products);
           }}
           selectedProducts={formik.values.products}
         />
       )}
-      <Grid container spacing={2}>
-        <Grid item md={8} xs={12} container spacing={2}>
-          <Grid item xs={12}>
+      <Grid
+        container
+        spacing={2}
+      >
+        <Grid
+          item
+          md={8}
+          xs={12}
+          container
+          spacing={2}
+        >
+          <Grid
+            item
+            xs={12}
+          >
             <Card sx={{ p: 2 }}>
-              <Grid container spacing={2}>
-                <Grid item xs={12}>
-                  <Typography color="textPrimary" variant="subtitle1">
+              <Grid
+                container
+                spacing={2}
+              >
+                <Grid
+                  item
+                  xs={12}
+                >
+                  <Typography
+                    color="textPrimary"
+                    variant="subtitle1"
+                  >
                     General
                   </Typography>
                 </Grid>
-                <Grid item xs={12}>
+                <Grid
+                  item
+                  xs={12}
+                >
                   <TextInput
                     error={!!formik.touched.title && !!formik.errors.title}
                     fullWidth
@@ -177,7 +203,10 @@ export const CollectionForm: FC<CollectionFormProps> = (props) => {
                     value={formik.values.title}
                   />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid
+                  item
+                  xs={12}
+                >
                   <TextInput
                     error={!!formik.touched.slug && !!formik.errors.slug}
                     fullWidth
@@ -190,7 +219,10 @@ export const CollectionForm: FC<CollectionFormProps> = (props) => {
                     value={formik.values.slug}
                   />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid
+                  item
+                  xs={12}
+                >
                   <TextInput
                     error={
                       !!formik.touched.description &&
@@ -210,7 +242,10 @@ export const CollectionForm: FC<CollectionFormProps> = (props) => {
                     value={formik.values.description}
                   />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid
+                  item
+                  xs={12}
+                >
                   <FormControlLabel
                     control={
                       <Switch
@@ -219,7 +254,7 @@ export const CollectionForm: FC<CollectionFormProps> = (props) => {
                         onChange={(
                           event: React.ChangeEvent<HTMLInputElement>
                         ) => {
-                          formik.setFieldValue("isDeal", event.target.checked);
+                          formik.setFieldValue('isDeal', event.target.checked);
                         }}
                       />
                     }
@@ -228,14 +263,17 @@ export const CollectionForm: FC<CollectionFormProps> = (props) => {
                     sx={{ ml: 0 }}
                   />
                 </Grid>
-                <Grid item xs={12}>
-                  <Dropzone
+                <Grid
+                  item
+                  xs={12}
+                >
+                  <ImageDropzone
                     file={
                       isImage(formik.values.cover)
                         ? formik.values.cover?.url
                         : formik.values.cover
                     }
-                    onDrop={(file: any) => formik.setFieldValue("cover", file)}
+                    onDrop={(file: any) => formik.setFieldValue('cover', file)}
                   />
                   {!!formik.touched.cover && !!formik.errors.cover && (
                     <FormHelperText error>{formik.errors.cover}</FormHelperText>
@@ -244,15 +282,30 @@ export const CollectionForm: FC<CollectionFormProps> = (props) => {
               </Grid>
             </Card>
           </Grid>
-          <Grid item xs={12}>
+          <Grid
+            item
+            xs={12}
+          >
             <Card sx={{ p: 2 }}>
-              <Grid container spacing={2}>
-                <Grid item xs={12}>
-                  <Typography color="textPrimary" variant="subtitle2">
+              <Grid
+                container
+                spacing={2}
+              >
+                <Grid
+                  item
+                  xs={12}
+                >
+                  <Typography
+                    color="textPrimary"
+                    variant="subtitle2"
+                  >
                     Products
                   </Typography>
                 </Grid>
-                <Grid item xs={12}>
+                <Grid
+                  item
+                  xs={12}
+                >
                   <Button
                     onClick={handleOpenDialog}
                     color="primary"
@@ -262,11 +315,17 @@ export const CollectionForm: FC<CollectionFormProps> = (props) => {
                   </Button>
                 </Grid>
                 {!!formik.touched?.products && !!formik.errors?.products && (
-                  <Grid item xs={12}>
+                  <Grid
+                    item
+                    xs={12}
+                  >
                     <div>{formik.errors.products as string}</div>
                   </Grid>
                 )}
-                <Grid item xs={12}>
+                <Grid
+                  item
+                  xs={12}
+                >
                   <List disablePadding>
                     {formik.values.products.map((product) => (
                       <ListItem
@@ -274,9 +333,9 @@ export const CollectionForm: FC<CollectionFormProps> = (props) => {
                         disableGutters
                         divider
                         sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "space-between",
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
                         }}
                       >
                         <Link
@@ -291,7 +350,7 @@ export const CollectionForm: FC<CollectionFormProps> = (props) => {
                           color="error"
                           onClick={() => {
                             formik.setFieldValue(
-                              "products",
+                              'products',
                               formik.values.products.filter(
                                 (_product) => _product._id !== product._id
                               )
@@ -307,7 +366,10 @@ export const CollectionForm: FC<CollectionFormProps> = (props) => {
               </Grid>
             </Card>
           </Grid>
-          <Grid item xs={12}>
+          <Grid
+            item
+            xs={12}
+          >
             <FormInterval
               formik={formik}
               onShouldSetEndDateChange={onShouldSetEndDateChange}
@@ -320,18 +382,33 @@ export const CollectionForm: FC<CollectionFormProps> = (props) => {
           item
           md={4}
           spacing={2}
-          sx={{ height: "fit-content" }}
+          sx={{ height: 'fit-content' }}
           xs={12}
         >
-          <Grid item xs={12}>
+          <Grid
+            item
+            xs={12}
+          >
             <Card sx={{ p: 2 }}>
-              <Grid container spacing={2}>
-                <Grid item xs={12}>
-                  <Typography color="textPrimary" variant="subtitle1">
+              <Grid
+                container
+                spacing={2}
+              >
+                <Grid
+                  item
+                  xs={12}
+                >
+                  <Typography
+                    color="textPrimary"
+                    variant="subtitle1"
+                  >
                     Meta
                   </Typography>
                 </Grid>
-                <Grid item xs={12}>
+                <Grid
+                  item
+                  xs={12}
+                >
                   <TextInput
                     error={
                       !!formik.touched.meta?.title &&
@@ -349,7 +426,10 @@ export const CollectionForm: FC<CollectionFormProps> = (props) => {
                     value={formik.values.meta.title}
                   />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid
+                  item
+                  xs={12}
+                >
                   <TextInput
                     error={
                       !!formik.touched.meta?.description &&
@@ -370,7 +450,10 @@ export const CollectionForm: FC<CollectionFormProps> = (props) => {
                     value={formik.values.meta?.description}
                   />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid
+                  item
+                  xs={12}
+                >
                   <Autocomplete
                     value={formik.values.meta?.keywords}
                     filterSelectedOptions
@@ -379,7 +462,7 @@ export const CollectionForm: FC<CollectionFormProps> = (props) => {
                     id="meta.keywords"
                     multiple
                     onChange={(event: SyntheticEvent, newValue: string[]) => {
-                      formik.setFieldValue("meta.keywords", newValue);
+                      formik.setFieldValue('meta.keywords', newValue);
                     }}
                     options={metaKeywordOptions}
                     renderInput={(params) => (
@@ -403,7 +486,10 @@ export const CollectionForm: FC<CollectionFormProps> = (props) => {
               </Grid>
             </Card>
           </Grid>
-          <Grid item xs={12}>
+          <Grid
+            item
+            xs={12}
+          >
             <Button
               color="primary"
               fullWidth
@@ -417,7 +503,7 @@ export const CollectionForm: FC<CollectionFormProps> = (props) => {
                 createCollection.isPending || updateCollection.isPending
               }
             >
-              {mode === "create" ? "Create" : "Update"}
+              {mode === 'create' ? 'Create' : 'Update'}
             </Button>
           </Grid>
         </Grid>

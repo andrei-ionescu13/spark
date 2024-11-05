@@ -1,71 +1,77 @@
-"use client"
+'use client';
 
-import { useState } from "react";
-import type { FC, ChangeEvent } from "react";
-import { Box, Card, TableBody, MenuItem, TextField } from "@mui/material";
-import { RaviewsTableRow } from "./reviews-table-row";
-import { AlertDialog } from "./alert-dialog";
-import { SearchInput } from "./search-input";
-import { useSearch } from "../hooks/useSearch";
-import { useQueryValue } from "../hooks/useQueryValue";
-import { DataTable } from "./data-table";
-import { DataTableHead } from "./data-table-head";
-import type { HeadCell } from "./data-table-head";
-import type { Review } from "../types/review";
-import { useDeleteReviews } from "@/api/reviews";
-import { Button } from "./button";
+import { useDeleteReviews } from '@/api/reviews';
+import { Box, Card, MenuItem, TableBody, TextField } from '@mui/material';
+import type { ChangeEvent, FC } from 'react';
+import { useState } from 'react';
+import { useQueryValue } from '../hooks/useQueryValue';
+import { useSearch } from '../hooks/useSearch';
+import type { Review } from '../types/review';
+import { AlertDialog } from './alert-dialog';
+import { Button } from './button';
+import { DataTable } from './data-table';
+import type { HeadCell } from './data-table-head';
+import { DataTableHead } from './data-table-head';
+import { RaviewsTableRow } from './reviews-table-row';
+import { SearchInput } from './search-input';
 
 const getHeadCells = (showProduct: boolean, showUser: boolean): HeadCell[] => [
   {
-    id: "_id",
-    label: "Id",
+    id: '_id',
+    label: 'Id',
+    width: showProduct || showUser ? '15%' : '31%',
   },
   {
-    id: "rating",
-    label: "Rating",
+    id: 'rating',
+    label: 'Rating',
+    width: '16%',
   },
   ...(showProduct
     ? [
-      {
-        id: "product",
-        label: "Product",
-      },
-    ]
+        {
+          id: 'product',
+          label: 'Product',
+          width: '16%',
+        },
+      ]
     : []),
   ...(showUser
     ? [
-      {
-        id: "user",
-        label: "User",
-      },
-    ]
+        {
+          id: 'user',
+          label: 'User',
+          width: '16%',
+        },
+      ]
     : []),
   {
-    id: "createdAt",
-    label: "Date",
+    id: 'createdAt',
+    label: 'Date',
+    width: '16%',
   },
   {
-    id: "status",
-    label: "Status",
+    id: 'status',
+    label: 'Status',
+    width: '16%',
   },
 ];
 
 const statusOptions = [
   {
-    label: "All",
-    value: "all",
+    label: 'All',
+    value: 'all',
   },
   {
-    label: "Published",
-    value: "published",
+    label: 'Published',
+    value: 'published',
   },
   {
-    label: "Unpublished",
-    value: "unpublished",
+    label: 'Unpublished',
+    value: 'unpublished',
   },
   {
-    label: "Flagged",
-    value: "flagged",
+    label: 'Flagged',
+    value: 'flagged',
   },
 ];
 
@@ -87,12 +93,11 @@ const ReviewsTable: FC<ReviewsTableProps> = (props) => {
     count,
     refetch,
     isLoading,
-    isError
+    isError,
   } = props;
-  const [status, setStatus] = useQueryValue("status", "all", "all");
+  const [status, setStatus] = useQueryValue('status', 'all', 'all');
   const [selected, setSelected] = useState<string[]>([]);
-  const [keyword, handleKeywordChange, handleSearch] =
-    useSearch();
+  const [keyword, handleKeywordChange, handleSearch] = useSearch();
   const [dialogOpen, setDialogOpen] = useState(false);
   const deleteReviews = useDeleteReviews();
 
@@ -111,7 +116,7 @@ const ReviewsTable: FC<ReviewsTableProps> = (props) => {
         refetch();
         handleCloseDialog();
       },
-      onError: (error) => { },
+      onError: (error) => {},
     });
   };
 
@@ -148,10 +153,10 @@ const ReviewsTable: FC<ReviewsTableProps> = (props) => {
       <Card>
         <Box
           sx={{
-            display: "grid",
+            display: 'grid',
             gap: 2,
             gridTemplateColumns: {
-              sm: `${!!selected.length ? "auto" : ""} 1fr 240px`,
+              sm: `${!!selected.length ? 'auto' : ''} 1fr 240px`,
             },
             p: 2,
           }}
@@ -180,7 +185,10 @@ const ReviewsTable: FC<ReviewsTableProps> = (props) => {
             value={status}
           >
             {statusOptions.map((status) => (
-              <MenuItem key={status.value} value={status.value}>
+              <MenuItem
+                key={status.value}
+                value={status.value}
+              >
                 {status.label}
               </MenuItem>
             ))}

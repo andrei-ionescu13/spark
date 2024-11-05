@@ -2,10 +2,8 @@
 import { useUpdateProductMedia } from '@/api/products';
 import {
   Box,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
+  Card,
+  CardContent,
   FormHelperText,
   Grid,
   Typography,
@@ -16,23 +14,21 @@ import { ChangeEvent, FC, useState } from 'react';
 import { FileWithPath } from 'react-dropzone';
 import * as Yup from 'yup';
 import { Button } from '../../../../components/button';
-import type { CustomFile } from '../../../../components/dropzone';
 import { ImagesDropzone } from '../../../../components/images-dropzone';
 import { TextInput } from '../../../../components/text-input';
 import type { Image } from '../../../../types/common';
 import { Product } from '../../../../types/products';
 import { buildFormData } from '../../../../utils/build-form-data';
 import { ProductImage } from '../../product-image';
-import { ProductCover } from './product-cover';
+import { ImageUpdate } from './product-cover';
 
 interface ProductFormProps {
   product: Product;
-  open: boolean;
-  onClose: any;
+  onClose: () => void;
 }
 
 interface InitialValues {
-  cover: Image | CustomFile;
+  cover: Image | File;
   videos: string[];
   images: Array<Image | FileWithPath>;
   selectedImages: Array<string>;
@@ -43,7 +39,7 @@ const isFile = (file: any): file is FileWithPath =>
 const isImage = (file: any): file is Image => !!file?.public_id;
 
 export const ProductMediaForm: FC<ProductFormProps> = (props) => {
-  const { open, product, onClose } = props;
+  const { product, onClose } = props;
   const queryClient = useQueryClient();
   const updateProductMedia = useUpdateProductMedia(product._id);
   const [newVideo, setNewVideo] = useState('');
@@ -134,65 +130,95 @@ export const ProductMediaForm: FC<ProductFormProps> = (props) => {
   };
 
   return (
-    <Dialog
-      open={open}
-      onClose={onClose}
-    >
-      <DialogTitle>Update Media</DialogTitle>
-      <DialogContent sx={{ py: '24px !important' }}>
-        <Grid
-          container
-          spacing={2}
-        >
+    <Box>
+      <Card>
+        <CardContent>
           <Grid
-            item
-            xs={12}
+            container
+            spacing={2}
           >
-            <Typography
-              color="textPrimary"
-              variant="subtitle2"
+            <Grid
+              item
+              xs={12}
             >
-              Cover
-            </Typography>
-            <ProductCover
-              url={formik.values.cover.url}
-              alt=""
-              onFileSelect={(file: any) => {
-                formik.setFieldTouched('cover', true);
-                formik.setFieldValue('cover', file);
-              }}
-            />
-            {!!formik.touched.cover && !!formik.errors.cover && (
-              <FormHelperText error>
-                {formik.errors.cover as string}
-              </FormHelperText>
-            )}
-          </Grid>
-          <Grid
-            item
-            xs={12}
-          >
-            <Typography
-              color="textPrimary"
-              variant="subtitle2"
+              <Typography
+                color="textPrimary"
+                variant="subtitle2"
+              >
+                Cover
+              </Typography>
+              <ImageUpdate
+                url={formik.values.cover.url}
+                alt=""
+                onFileSelect={(file: any) => {
+                  formik.setFieldTouched('cover', true);
+                  formik.setFieldValue('cover', file);
+                }}
+              />
+              {!!formik.touched.cover && !!formik.errors.cover && (
+                <FormHelperText error>
+                  {formik.errors.cover as string}
+                </FormHelperText>
+              )}
+            </Grid>
+            <Grid
+              item
+              xs={12}
             >
-              Videos
-            </Typography>
-            <FormikProvider value={formik}>
-              <FieldArray
-                name="videos"
-                render={(arrayHelpers) => (
-                  <>
-                    <Grid
-                      container
-                      spacing={2}
-                    >
-                      {formik.values.videos.map(
-                        (video: string, index: number) => (
-                          <Grid
-                            item
-                            xs={12}
-                            key={index}
+              <Typography
+                color="textPrimary"
+                variant="subtitle2"
+              >
+                Videos
+              </Typography>
+              <FormikProvider value={formik}>
+                <FieldArray
+                  name="videos"
+                  render={(arrayHelpers) => (
+                    <>
+                      <Grid
+                        container
+                        spacing={2}
+                      >
+                        {formik.values.videos.map(
+                          (video: string, index: number) => (
+                            <Grid
+                              item
+                              xs={12}
+                              key={index}
+                              sx={{
+                                display: 'grid',
+                                alignItems: 'center',
+                                gridTemplateColumns: '1fr auto',
+                                gridAutoFlow: 'column',
+                                gap: 2,
+                              }}
+                            >
+                              <TextInput
+                                fullWidth
+                                id={`${arrayHelpers.name}[${index}]`}
+                                name={`${arrayHelpers.name}[${index}]`}
+                                onBlur={formik.handleBlur}
+                                onChange={formik.handleChange}
+                                value={formik.values.videos[index]}
+                                size="small"
+                                disabled
+                              />
+                              <Button
+                                color="error"
+                                variant="text"
+                                onClick={() => arrayHelpers.remove(index)}
+                              >
+                                Delete
+                              </Button>
+                            </Grid>
+                          )
+                        )}
+                        <Grid
+                          item
+                          xs={12}
+                        >
+                          <Box
                             sx={{
                               display: 'grid',
                               alignItems: 'center',
@@ -203,155 +229,132 @@ export const ProductMediaForm: FC<ProductFormProps> = (props) => {
                           >
                             <TextInput
                               fullWidth
-                              id={`${arrayHelpers.name}[${index}]`}
-                              name={`${arrayHelpers.name}[${index}]`}
-                              onBlur={formik.handleBlur}
-                              onChange={formik.handleChange}
-                              value={formik.values.videos[index]}
+                              id="newVideo"
+                              name="newVideo"
+                              onChange={handleNewVideoChange}
+                              value={newVideo}
                               size="small"
-                              disabled
                             />
                             <Button
-                              color="error"
-                              variant="text"
-                              onClick={() => arrayHelpers.remove(index)}
+                              color="primary"
+                              variant="contained"
+                              onClick={async () => {
+                                try {
+                                  await newVideoSchema.validate(newVideo);
+                                  arrayHelpers.push(newVideo);
+                                  setNewVideo('');
+                                } catch (error) {
+                                  setNewVideoError((error as Error).message);
+                                }
+                              }}
                             >
-                              Delete
+                              Add
                             </Button>
-                          </Grid>
-                        )
-                      )}
-                      <Grid
-                        item
-                        xs={12}
-                      >
-                        <Box
-                          sx={{
-                            display: 'grid',
-                            alignItems: 'center',
-                            gridTemplateColumns: '1fr auto',
-                            gridAutoFlow: 'column',
-                            gap: 2,
-                          }}
-                        >
-                          <TextInput
-                            fullWidth
-                            id="newVideo"
-                            name="newVideo"
-                            onChange={handleNewVideoChange}
-                            value={newVideo}
-                            size="small"
-                          />
-                          <Button
-                            color="primary"
-                            variant="contained"
-                            onClick={async () => {
-                              try {
-                                await newVideoSchema.validate(newVideo);
-                                arrayHelpers.push(newVideo);
-                                setNewVideo('');
-                              } catch (error) {
-                                setNewVideoError((error as Error).message);
-                              }
-                            }}
-                          >
-                            Add
-                          </Button>
-                        </Box>
-                        {!!formik.errors.videos && (
-                          <FormHelperText error>
-                            {formik.errors.videos}
-                          </FormHelperText>
-                        )}
-                        {!!newVideoError && (
-                          <FormHelperText error>{newVideoError}</FormHelperText>
-                        )}
-                      </Grid>
-                      <Grid
-                        item
-                        xs={12}
-                      >
-                        <Typography
-                          color="textPrimary"
-                          variant="subtitle2"
-                        >
-                          Images
-                        </Typography>
-                        <ImagesDropzone
-                          onDrop={(files: FileWithPath[]) => {
-                            formik.setFieldValue('images', [
-                              ...formik.values.images,
-                              ...files,
-                            ]);
-                            formik.setFieldValue('selectedImages', [
-                              ...formik.values.selectedImages,
-                              ...files.map((file) => file.path),
-                            ]);
-                          }}
-                        />
-                        {!!formik.values.images.length && (
-                          <Box
-                            sx={{
-                              mt: 5,
-                              display: 'grid',
-                              gridTemplateColumns: 'repeat(3, 1fr)',
-                              gap: 2,
-                            }}
-                          >
-                            {formik.values.images.map((item) => (
-                              <ProductImage
-                                image={
-                                  isFile(item)
-                                    ? URL.createObjectURL(item)
-                                    : item.url
-                                }
-                                key={
-                                  isFile(item)
-                                    ? item.path || ''
-                                    : item?.public_id
-                                }
-                                onDelete={() => {
-                                  handleImageDelete(item);
-                                }}
-                                selected={formik.values.selectedImages.includes(
-                                  isFile(item)
-                                    ? item.path || ''
-                                    : item?.public_id
-                                )}
-                                onSelect={() => {
-                                  handleSelectImage(item);
-                                }}
-                              />
-                            ))}
                           </Box>
-                        )}
-                        {!!formik.touched.images && !!formik.errors.images && (
-                          <FormHelperText error>
-                            {formik.errors.images as string}
-                          </FormHelperText>
-                        )}
-                        {!formik.errors.images &&
-                          !!formik.touched.selectedImages &&
-                          !!formik.errors.selectedImages && (
+                          {!!formik.errors.videos && (
                             <FormHelperText error>
-                              {formik.errors.selectedImages}
+                              {formik.errors.videos}
                             </FormHelperText>
                           )}
+                          {!!newVideoError && (
+                            <FormHelperText error>
+                              {newVideoError}
+                            </FormHelperText>
+                          )}
+                        </Grid>
+                        <Grid
+                          item
+                          xs={12}
+                        >
+                          <Typography
+                            color="textPrimary"
+                            variant="subtitle2"
+                          >
+                            Images
+                          </Typography>
+                          <ImagesDropzone
+                            onDrop={(files: FileWithPath[]) => {
+                              formik.setFieldValue('images', [
+                                ...formik.values.images,
+                                ...files,
+                              ]);
+                              formik.setFieldValue('selectedImages', [
+                                ...formik.values.selectedImages,
+                                ...files.map((file) => file.path),
+                              ]);
+                            }}
+                          />
+                          {!!formik.values.images.length && (
+                            <Box
+                              sx={{
+                                mt: 5,
+                                display: 'grid',
+                                gridTemplateColumns: 'repeat(3, 1fr)',
+                                gap: 2,
+                              }}
+                            >
+                              {formik.values.images.map((item) => (
+                                <ProductImage
+                                  image={
+                                    isFile(item)
+                                      ? URL.createObjectURL(item)
+                                      : item.url
+                                  }
+                                  key={
+                                    isFile(item)
+                                      ? item.path || ''
+                                      : item?.public_id
+                                  }
+                                  onDelete={() => {
+                                    handleImageDelete(item);
+                                  }}
+                                  selected={formik.values.selectedImages.includes(
+                                    isFile(item)
+                                      ? item.path || ''
+                                      : item?.public_id
+                                  )}
+                                  onSelect={() => {
+                                    handleSelectImage(item);
+                                  }}
+                                />
+                              ))}
+                            </Box>
+                          )}
+                          {!!formik.touched.images &&
+                            !!formik.errors.images && (
+                              <FormHelperText error>
+                                {formik.errors.images as string}
+                              </FormHelperText>
+                            )}
+                          {!formik.errors.images &&
+                            !!formik.touched.selectedImages &&
+                            !!formik.errors.selectedImages && (
+                              <FormHelperText error>
+                                {formik.errors.selectedImages}
+                              </FormHelperText>
+                            )}
+                        </Grid>
                       </Grid>
-                    </Grid>
-                  </>
-                )}
-              />
-            </FormikProvider>
+                    </>
+                  )}
+                />
+              </FormikProvider>
+            </Grid>
           </Grid>
-        </Grid>
-      </DialogContent>
-      <DialogActions>
+        </CardContent>
+      </Card>
+      <Box
+        sx={{
+          mt: 2,
+          display: 'flex',
+          justifyContent: 'flex-end',
+          gap: 2,
+        }}
+      >
         <Button
           color="inherit"
-          onClick={onClose}
           size="large"
-          sx={{ mr: 1 }}
+          onClick={onClose}
         >
           Cancel
         </Button>
@@ -365,7 +368,7 @@ export const ProductMediaForm: FC<ProductFormProps> = (props) => {
         >
           Update
         </Button>
-      </DialogActions>
-    </Dialog>
+      </Box>
+    </Box>
   );
 };

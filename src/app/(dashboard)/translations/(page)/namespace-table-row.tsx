@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import type { FC } from 'react';
+import { useDeleteNamespace } from '@/api/translations';
 import {
   Box,
   IconButton,
@@ -8,42 +7,49 @@ import {
   TableCell,
   TableHead,
   TableRow,
-  useTheme
+  useTheme,
 } from '@mui/material';
-import { TranslationNamespaceDialog } from './translation-namespace-dialog';
+import { useQueryClient } from '@tanstack/react-query';
+import type { FC } from 'react';
+import { useState } from 'react';
 import { ActionsItem } from '../../../components/actions-menu';
 import { AlertDialog } from '../../../components/alert-dialog';
 import { ActionsIconButton } from '../../../components/icon-actions';
 import { Link } from '../../../components/link';
+import { useDialog } from '../../../hooks/useDialog';
 import { ChevronRight as ChevronRightIcon } from '../../../icons/chevron-right';
 import { Pencil as PencilIcon } from '../../../icons/pencil';
-import { Trash as TrashIcon } from '../../../icons/trash';
 import { Plus as PlusIcon } from '../../../icons/plus';
-import { useDialog } from '../../../hooks/useDialog';
+import { Trash as TrashIcon } from '../../../icons/trash';
 import type { Language, Namespace } from '../../../types/translations';
+import { TranslationNamespaceDialog } from './translation-namespace-dialog';
 import { TranslationsDialog } from './translations-dialog';
-import { useDeleteNamespace } from '@/api/translations';
-import { useQueryClient } from '@tanstack/react-query';
 import { TranslationsTableRow } from './translations-table-row';
 
 interface NamespaceTableRowProps {
   namespace: Namespace;
   shownLanguages: Language[];
   languages: Language[];
+  keyword?: string;
 }
 
 export const NamespaceTableRow: FC<NamespaceTableRowProps> = (props) => {
-  const { namespace, shownLanguages, languages } = props;
-  const [editDialogOpen, handleOpenEditDialog, handleCloseEditDialog] = useDialog();
-  const [deleteDialogOpen, handleOpenDeleteDialog, handleCloseDeleteDialog] = useDialog();
-  const [addDialogOpen, handleOpenAddDialog, handleCloseAddDialog] = useDialog();
+  const { namespace, shownLanguages, languages, keyword } = props;
+  const [editDialogOpen, handleOpenEditDialog, handleCloseEditDialog] =
+    useDialog();
+  const [deleteDialogOpen, handleOpenDeleteDialog, handleCloseDeleteDialog] =
+    useDialog();
+  const [addDialogOpen, handleOpenAddDialog, handleCloseAddDialog] =
+    useDialog();
   const queryClient = useQueryClient();
-  const deleteNamespace = useDeleteNamespace(() => queryClient.invalidateQueries({ queryKey: ['namespaces'] }));
+  const deleteNamespace = useDeleteNamespace(() =>
+    queryClient.invalidateQueries({ queryKey: ['namespaces'] })
+  );
   const [open, setOpen] = useState(false);
-  const theme = useTheme()
+  const theme = useTheme();
 
   const openStyles = {
-    "::after": {
+    '::after': {
       position: 'absolute',
       content: '""',
       top: '0px',
@@ -52,38 +58,38 @@ export const NamespaceTableRow: FC<NamespaceTableRowProps> = (props) => {
       width: '3px',
       height: 'calc(100%)',
     },
-  }
+  };
 
   const handleClick = (): void => {
     setOpen((prevOpen) => !prevOpen);
-  }
+  };
 
   const actionItems: ActionsItem[] = [
     {
       label: 'Edit',
       icon: PencilIcon,
-      onClick: handleOpenEditDialog
+      onClick: handleOpenEditDialog,
     },
     {
       label: 'Add',
       icon: PlusIcon,
-      onClick: handleOpenAddDialog
+      onClick: handleOpenAddDialog,
     },
     {
       label: 'Delete',
       icon: TrashIcon,
       onClick: handleOpenDeleteDialog,
-      color: 'error'
+      color: 'error',
     },
-  ]
+  ];
 
   const handleDeleteNamespace = () => {
     deleteNamespace.mutate(namespace._id, {
       onSuccess: () => {
         handleCloseDeleteDialog();
-      }
-    })
-  }
+      },
+    });
+  };
 
   return (
     <>
@@ -119,8 +125,8 @@ export const NamespaceTableRow: FC<NamespaceTableRowProps> = (props) => {
           position: 'relative',
           ...(open && openStyles),
           'td:first-of-type': {
-            pl: 1
-          }
+            pl: 1,
+          },
         }}
       >
         <TableCell>
@@ -150,7 +156,7 @@ export const NamespaceTableRow: FC<NamespaceTableRowProps> = (props) => {
           sx={{
             border: 'none',
             position: 'relative',
-            ...(open && openStyles)
+            ...(open && openStyles),
           }}
         >
           <TableCell
@@ -165,21 +171,15 @@ export const NamespaceTableRow: FC<NamespaceTableRowProps> = (props) => {
                     sx={{
                       th: {
                         fontWeight: 600,
-                        textTransform: 'uppercase'
-                      }
+                        textTransform: 'uppercase',
+                      },
                     }}
                   >
-                    <TableCell>
-                      Key
-                    </TableCell>
+                    <TableCell>Key</TableCell>
                     {shownLanguages.map((language) => (
-                      <TableCell key={language.code}>
-                        {language.name}
-                      </TableCell>
+                      <TableCell key={language.code}>{language.name}</TableCell>
                     ))}
-                    <TableCell align="right">
-                      Actions
-                    </TableCell>
+                    <TableCell align="right">Actions</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -190,6 +190,7 @@ export const NamespaceTableRow: FC<NamespaceTableRowProps> = (props) => {
                       translation={item}
                       key={item.key}
                       shownLanguages={shownLanguages}
+                      keyword={keyword}
                     />
                   ))}
                 </TableBody>

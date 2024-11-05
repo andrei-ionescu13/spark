@@ -1,11 +1,18 @@
+import {
+  Checkbox,
+  TableCell,
+  TableHead,
+  TableRow,
+  TableSortLabel,
+} from '@mui/material';
 import type { FC } from 'react';
-import { Checkbox, TableCell, TableHead, TableRow, TableSortLabel } from '@mui/material';
 import { useSort } from '../hooks/useSort';
 
 export interface HeadCell {
   label: string;
   id: string;
-  disableSort?: boolean
+  disableSort?: boolean;
+  width?: string;
 }
 
 interface DataTableHeadProps {
@@ -24,14 +31,17 @@ export const DataTableHead: FC<DataTableHeadProps> = (props) => {
     selectedLength = 0,
     itemsLength = 0,
     onSelectAll,
-    isLoading = false
+    isLoading = false,
   } = props;
 
   return (
     <TableHead>
       <TableRow>
         {onSelectAll && (
-          <TableCell padding="checkbox">
+          <TableCell
+            width="3%"
+            padding="checkbox"
+          >
             <Checkbox
               checked={selectedLength > 0 && selectedLength === itemsLength}
               color="primary"
@@ -42,27 +52,25 @@ export const DataTableHead: FC<DataTableHeadProps> = (props) => {
           </TableCell>
         )}
         {headCells.map((cell) => (
-          cell?.disableSort ? (
-            <TableCell
-              key={cell.label}
-              sx={{ fontWeight: 600 }}
-            >
-              {cell.label}
-            </TableCell>
-          ) : (
-            <TableCell
-              key={cell.label}
-              sx={{ fontWeight: 600 }}
-            >
+          <TableCell
+            key={cell.label}
+            sx={{ fontWeight: 600 }}
+            width={cell.width}
+          >
+            {cell?.disableSort ? (
+              cell.label
+            ) : (
               <TableSortLabel
                 active={cell.id === sortBy}
                 direction={cell.id === sortBy ? sortOrder : 'asc'}
-                onClick={() => { handleSort(cell.id) }}
+                onClick={() => {
+                  handleSort(cell.id);
+                }}
               >
                 {cell.label}
               </TableSortLabel>
-            </TableCell>
-          )
+            )}
+          </TableCell>
         ))}
         <TableCell
           align="right"
@@ -73,5 +81,5 @@ export const DataTableHead: FC<DataTableHeadProps> = (props) => {
         </TableCell>
       </TableRow>
     </TableHead>
-  )
-}
+  );
+};

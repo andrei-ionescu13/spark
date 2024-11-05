@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import { useQuery } from "@tanstack/react-query";
-import { listLanguages, searchNamespaces } from "./api-calls";
-import { useSearchParams } from "next/navigation";
+import { useQuery } from '@tanstack/react-query';
+import { useSearchParams } from 'next/navigation';
+import { listLanguages, searchNamespaces } from './api-calls';
 
 export const useListLanguagesQuery = () =>
   useQuery({
-    queryKey: ["namespace-languages"],
-    queryFn: listLanguages()
+    queryKey: ['namespace-languages'],
+    queryFn: listLanguages(),
   });
 
 export const useSearchNamespacesQuery = () => {
@@ -19,7 +19,7 @@ export const useSearchNamespacesQuery = () => {
   }
 
   return useQuery({
-    queryKey: ["namespaces"],
-    queryFn: searchNamespaces(query)
+    queryKey: ['namespaces', query],
+    queryFn: searchNamespaces(query),
   });
-}
+};

@@ -9,7 +9,10 @@ const isString = (value: any): value is string => typeof value === 'string';
 export const useSearch = (): [
   string,
   (event: ChangeEvent<HTMLInputElement>) => void,
-  (event: SyntheticEvent, extraQuery?: object) => void,
+  (
+    event: SyntheticEvent,
+    extraQuery?: Record<string, string | string[]>
+  ) => void,
 ] => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -23,7 +26,10 @@ export const useSearch = (): [
     setKeyword(event.target.value);
   };
 
-  const handleSearch = (event: SyntheticEvent): void => {
+  const handleSearch = (
+    event: SyntheticEvent,
+    extraQuery?: Record<string, string | string[]>
+  ): void => {
     event.preventDefault();
     const newSearchParams = new URLSearchParams(searchParams.toString());
 
@@ -31,6 +37,19 @@ export const useSearch = (): [
       newSearchParams.set('keyword', keyword);
     } else {
       newSearchParams.delete('keyword');
+    }
+
+    if (extraQuery) {
+      Object.entries(extraQuery).forEach(([key, value]) => {
+        if (Array.isArray(value)) {
+          newSearchParams.delete(key);
+          value.forEach((item) => {
+            newSearchParams.append(key, item);
+          });
+        } else {
+          newSearchParams.set(key, value);
+        }
+      });
     }
 
     newSearchParams.delete('page');

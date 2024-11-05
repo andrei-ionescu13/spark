@@ -5,11 +5,17 @@ import { Grid } from '@mui/material';
 import { ProductMedia } from 'app/(dashboard)/products/[id]/(page)/product-media';
 import { ProductMeta } from 'app/(dashboard)/products/[id]/(page)/product-meta';
 import Head from 'next/head';
+import { useState } from 'react';
 import { useGetProduct } from '../../api-calls-hooks';
 import { ProductDiscount } from '../product-discount';
 import { ProductLayout } from '../product-layout';
 import { ProductStatus } from '../product-status';
 import { ProductGeneral } from './product-general';
+import { ProductGeneralForm } from './product-general-form';
+import { ProductMediaForm } from './product-media-form';
+import { ProductMetaForm } from './product-meta-form';
+
+type DisplayedForm = 'details' | 'media' | 'meta' | null;
 
 export default function Product() {
   const { data: product } = useGetProduct();
@@ -18,12 +24,41 @@ export default function Product() {
     product?.discount &&
     getStatusFromInterval(product.discount.startDate, product.discount.endDate);
   const isEditDisabled = product?.status === 'archived';
+  const [displayedForm, setDisplayedForm] = useState<DisplayedForm>();
+
+  const handleDisplayForm = (displayedForm: DisplayedForm) => {
+    window.scrollTo(0, 0);
+    setDisplayedForm(displayedForm);
+  };
+
+  const handleHideForm = () => {
+    window.scrollTo(0, 0);
+    setDisplayedForm(null);
+  };
 
   return (
     <>
       <Head>Game</Head>
       <ProductLayout>
-        {!!product && (
+        {product && displayedForm === 'details' && (
+          <ProductGeneralForm
+            product={product}
+            onClose={handleHideForm}
+          />
+        )}
+        {product && displayedForm === 'media' && (
+          <ProductMediaForm
+            product={product}
+            onClose={handleHideForm}
+          />
+        )}
+        {product && displayedForm === 'meta' && (
+          <ProductMetaForm
+            product={product}
+            onClose={handleHideForm}
+          />
+        )}
+        {!!product && !displayedForm && (
           <Grid
             container
             spacing={2}
@@ -42,6 +77,9 @@ export default function Product() {
                 <ProductGeneral
                   product={product}
                   isEditDisabled={isEditDisabled}
+                  onEdit={() => {
+                    handleDisplayForm('details');
+                  }}
                 />
               </Grid>
               <Grid
@@ -51,6 +89,9 @@ export default function Product() {
                 <ProductMedia
                   product={product}
                   isEditDisabled={isEditDisabled}
+                  onEdit={() => {
+                    handleDisplayForm('media');
+                  }}
                 />
               </Grid>
             </Grid>
@@ -75,6 +116,9 @@ export default function Product() {
                 <ProductMeta
                   product={product}
                   isEditDisabled={isEditDisabled}
+                  onEdit={() => {
+                    handleDisplayForm('meta');
+                  }}
                 />
               </Grid>
               {product?.discount && discountStatus != 'expired' && (

@@ -1,9 +1,8 @@
-"use client"
+'use client';
 
-import ReviewsTable from "@/components/reviews-table";
-import { UserLayout } from "@/components/users/user-layout";
-import { useSearchUserReviews } from "../../api-calls-hooks";
-import Head from "next/head";
+import ReviewsTable from '@/components/reviews-table';
+import Head from 'next/head';
+import { useSearchUserReviews } from '../../api-calls-hooks';
 
 export default function UserReviews() {
   const { data, refetch, isError, isLoading } = useSearchUserReviews();
@@ -14,16 +13,14 @@ export default function UserReviews() {
       <Head>
         <title>Reviews</title>
       </Head>
-      <UserLayout>
-        <ReviewsTable
-          reviews={reviews}
-          count={count}
-          showUser={false}
-          refetch={refetch}
-          isError={isError}
-          isLoading={isLoading}
-        />
-      </UserLayout>
+      <ReviewsTable
+        reviews={reviews}
+        count={count}
+        showUser={false}
+        refetch={refetch}
+        isError={isError}
+        isLoading={isLoading}
+      />
     </>
   );
-};
+}

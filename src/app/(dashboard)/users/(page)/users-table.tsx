@@ -1,15 +1,21 @@
 import { AlertDialog } from '@/components/alert-dialog';
 import { DataTable } from '@/components/data-table';
-import { HeadCell, DataTableHead } from '@/components/data-table-head';
+import { DataTableHead, HeadCell } from '@/components/data-table-head';
 import { SearchInput } from '@/components/search-input';
-import { UsersTableRow } from '@/components/users/users-list/users-table-row';
 import { useDialog } from '@/hooks/useDialog';
 import { useQueryValue } from '@/hooks/useQueryValue';
 import { useSearch } from '@/hooks/useSearch';
 import { User } from '@/types/user';
-import { Card, Box, Button, TextField, MenuItem, TableBody } from '@mui/material';
-import { useRouter } from 'next/router';
-import { ChangeEvent, useState, type FC } from 'react'
+import {
+  Box,
+  Button,
+  Card,
+  MenuItem,
+  TableBody,
+  TextField,
+} from '@mui/material';
+import { ChangeEvent, useState, type FC } from 'react';
+import { UsersTableRow } from './users-table-row';
 
 interface UsersTableProps {
   users?: User[];
@@ -21,57 +27,61 @@ interface UsersTableProps {
 
 const headCells: HeadCell[] = [
   {
-    id: "id",
-    label: "Id",
+    id: 'id',
+    label: 'Id',
+    width: '22%',
   },
   {
-    id: "email",
-    label: "Email",
+    id: 'email',
+    label: 'Email',
+    width: '20%',
   },
   {
-    id: "createdAt",
-    label: "Created At",
+    id: 'createdAt',
+    label: 'Created At',
+    width: '12%',
   },
   {
-    id: "ordersCount",
-    label: "Total orders",
+    id: 'ordersCount',
+    label: 'Total orders',
+    width: '12%',
   },
   {
-    id: "totalSpend",
-    label: "Total spend",
+    id: 'totalSpend',
+    label: 'Total spend',
+    width: '12%',
   },
   {
-    id: "status",
-    label: "Status",
+    id: 'status',
+    label: 'Status',
+    width: '12%',
   },
 ];
 
 const statusOptions = [
   {
-    label: "All",
-    value: "all",
+    label: 'All',
+    value: 'all',
   },
   {
-    label: "Active",
-    value: "active",
+    label: 'Active',
+    value: 'active',
   },
   {
-    label: "Inactive",
-    value: "inactive",
+    label: 'Inactive',
+    value: 'inactive',
   },
   {
-    label: "Banned",
-    value: "banned",
+    label: 'Banned',
+    value: 'banned',
   },
 ];
 
-
 export const UsersTable: FC<UsersTableProps> = (props) => {
   const { users, count, isError, isLoading, refetch } = props;
-  const [keyword, handleKeywordChange, handleSearch] =
-    useSearch();
+  const [keyword, handleKeywordChange, handleSearch] = useSearch();
   const [selected, setSelected] = useState<string[]>([]);
-  const [status, setStatus] = useQueryValue("status", "all", "all");
+  const [status, setStatus] = useQueryValue('status', 'all', 'all');
   const [dialogOpen, handleOpenDialog, handleCloseDialog] = useDialog();
 
   const handleStatusChange = (event: ChangeEvent<HTMLInputElement>): void => {
@@ -100,16 +110,15 @@ export const UsersTable: FC<UsersTableProps> = (props) => {
     });
   };
 
-
   return (
     <>
       <Card>
         <Box
           sx={{
-            display: "grid",
+            display: 'grid',
             gap: 2,
             gridTemplateColumns: {
-              sm: `${!!selected.length ? "auto" : ""} 1fr 240px`,
+              sm: `${!!selected.length ? 'auto' : ''} 1fr 240px`,
             },
             p: 2,
           }}
@@ -138,7 +147,10 @@ export const UsersTable: FC<UsersTableProps> = (props) => {
             value={status}
           >
             {statusOptions.map((status) => (
-              <MenuItem key={status.value} value={status.value}>
+              <MenuItem
+                key={status.value}
+                value={status.value}
+              >
                 {status.label}
               </MenuItem>
             ))}
@@ -185,5 +197,5 @@ export const UsersTable: FC<UsersTableProps> = (props) => {
         isLoading={false}
       />
     </>
-  )
+  );
 };

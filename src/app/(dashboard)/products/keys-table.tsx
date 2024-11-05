@@ -1,44 +1,44 @@
-import { useState } from "react";
-import type { FC, ChangeEvent, SyntheticEvent } from "react";
+import { useDeleteKeys } from '@/api/keys';
+import { useQueryValue } from '@/hooks/useQueryValue';
+import { useSearch } from '@/hooks/useSearch';
+import type { SelectChangeEvent } from '@mui/material';
 import {
   Box,
   Card,
-  TableBody,
-  Select,
-  MenuItem,
   FormControl,
   InputLabel,
-} from "@mui/material";
-import type { SelectChangeEvent } from "@mui/material";
-import { SearchInput } from "../../components/search-input";
-import { useDialog } from "../../hooks/useDialog";
-import { AlertDialog } from "../../components/alert-dialog";
-import { KeysTableRow } from "./keys-table-row";
-import { useDeleteKeys } from "@/api/keys";
-import { DataTable } from "../../components/data-table";
-import type { Key } from "../../types/keys";
-import { DataTableHead } from "../../components/data-table-head";
-import type { HeadCell } from "../../components/data-table-head";
-import { Button } from "../../components/button";
-import { useQueryValue } from "@/hooks/useQueryValue";
-import { useSearch } from "@/hooks/useSearch";
+  MenuItem,
+  Select,
+  TableBody,
+} from '@mui/material';
+import type { FC } from 'react';
+import { useState } from 'react';
+import { AlertDialog } from '../../components/alert-dialog';
+import { Button } from '../../components/button';
+import { DataTable } from '../../components/data-table';
+import type { HeadCell } from '../../components/data-table-head';
+import { DataTableHead } from '../../components/data-table-head';
+import { SearchInput } from '../../components/search-input';
+import { useDialog } from '../../hooks/useDialog';
+import type { Key } from '../../types/keys';
+import { KeysTableRow } from './keys-table-row';
 
 const statusOptions = [
   {
-    label: "All",
-    value: "all",
+    label: 'All',
+    value: 'all',
   },
   {
-    label: "Secret",
-    value: "secret",
+    label: 'Secret',
+    value: 'secret',
   },
   {
-    label: "Revealed",
-    value: "revealed",
+    label: 'Revealed',
+    value: 'revealed',
   },
   {
-    label: "Reported",
-    value: "reported",
+    label: 'Reported',
+    value: 'reported',
   },
 ];
 
@@ -58,39 +58,43 @@ export const KeysTable: FC<KeysTableProps> = (props) => {
     count,
     refetch,
     isLoading,
-    isError
+    isError,
   } = props;
-  const [keyword, handleKeywordChange, handleSearch] =
-    useSearch();
-  const [status, setStatus] = useQueryValue("status", "all", "all");
+  const [keyword, handleKeywordChange, handleSearch] = useSearch();
+  const [status, setStatus] = useQueryValue('status', 'all', 'all');
   const [selected, setSelected] = useState<string[]>([]);
   const [dialogOpen, handleOpenDialog, handleCloseDialog] = useDialog();
   const deleteKeys = useDeleteKeys(refetch);
 
   const headCells: HeadCell[] = [
     {
-      id: "key",
-      label: "Key",
+      id: 'key',
+      label: 'Key',
+      width: showProductCell ? '22%' : '42%',
     },
     ...(showProductCell
       ? [
-        {
-          id: "productName",
-          label: "Product",
-        },
-      ]
+          {
+            id: 'productName',
+            label: 'Product',
+            width: '20%',
+          },
+        ]
       : []),
     {
-      id: "createdAt",
-      label: "Created At",
+      id: 'createdAt',
+      label: 'Created At',
+      width: '20%',
     },
     {
-      id: "availability",
-      label: "Availability",
+      id: 'availability',
+      label: 'Availability',
+      width: '15%',
     },
     {
-      id: "status",
-      label: "Status",
+      id: 'status',
+      label: 'Status',
+      width: '15%',
     },
   ];
 
@@ -142,10 +146,10 @@ export const KeysTable: FC<KeysTableProps> = (props) => {
       <Card>
         <Box
           sx={{
-            display: "grid",
+            display: 'grid',
             gap: 2,
             gridTemplateColumns: {
-              sm: `${!!selected.length ? "auto" : ""} 1fr 240px`,
+              sm: `${!!selected.length ? 'auto' : ''} 1fr 240px`,
             },
             p: 2,
           }}
@@ -175,7 +179,10 @@ export const KeysTable: FC<KeysTableProps> = (props) => {
               value={status}
             >
               {statusOptions.map((status) => (
-                <MenuItem key={status.value} value={status.value}>
+                <MenuItem
+                  key={status.value}
+                  value={status.value}
+                >
                   {status.label}
                 </MenuItem>
               ))}

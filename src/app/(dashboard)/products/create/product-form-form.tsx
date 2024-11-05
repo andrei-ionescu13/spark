@@ -1,24 +1,23 @@
-"use client"
+'use client';
 import { useCreateProduct } from '@/api/products';
-import { ProductFormGeneral } from 'app/(dashboard)/products/create/product-form-general';
-import { ProductFormKeys } from 'app/(dashboard)/products/create/product-form-keys';
-import { ProductFormMedia } from 'app/(dashboard)/products/create/product-form-media';
-import { ProductFormMeta } from 'app/(dashboard)/products/create/product-form-meta';
 import { ToastItemCreated } from '@/components/toast-item-created';
 import { Developer } from '@/types/developer';
 import { Feature } from '@/types/feature';
 import { buildFormData } from '@/utils/build-form-data';
-import { Stepper, Step, StepLabel } from '@mui/material';
-import { useState, type FC } from 'react'
+import { Step, StepLabel, Stepper } from '@mui/material';
+import { ProductFormGeneral } from 'app/(dashboard)/products/create/product-form-general';
+import { ProductFormKeys } from 'app/(dashboard)/products/create/product-form-keys';
+import { ProductFormMedia } from 'app/(dashboard)/products/create/product-form-media';
+import { ProductFormMeta } from 'app/(dashboard)/products/create/product-form-meta';
+import { useState, type FC } from 'react';
 import { toast } from 'react-toastify';
 
-interface ProductFormProps {
-}
+interface ProductFormProps {}
 
-const steps = ["General", "Media", "Meta", "Keys"];
+const steps = ['General', 'Media', 'Meta', 'Keys'];
 
 export const ProductForm: FC<ProductFormProps> = (props) => {
-  const [activeStep, setActiveStep] = useState(0);
+  const [activeStep, setActiveStep] = useState(1);
   const [values, setValues] = useState<Record<string, any>>({});
   const createProduct = useCreateProduct();
 
@@ -49,14 +48,18 @@ export const ProductForm: FC<ProductFormProps> = (props) => {
 
     createProduct.mutate(formData, {
       onSuccess: ({ id }) => {
-        toast.success(ToastItemCreated("product", `/products/${id}`));
+        toast.success(ToastItemCreated('product', `/products/${id}`));
       },
     });
   };
 
   return (
     <div>
-      <Stepper activeStep={activeStep} alternativeLabel sx={{ mb: 5 }}>
+      <Stepper
+        activeStep={activeStep}
+        alternativeLabel
+        sx={{ mb: 5 }}
+      >
         {steps.map((label) => (
           <Step key={label}>
             <StepLabel>{label}</StepLabel>
@@ -64,7 +67,10 @@ export const ProductForm: FC<ProductFormProps> = (props) => {
         ))}
       </Stepper>
       {activeStep === 0 && (
-        <ProductFormGeneral product={values} onNext={handleNext} />
+        <ProductFormGeneral
+          product={values}
+          onNext={handleNext}
+        />
       )}
       {activeStep === 1 && (
         <ProductFormMedia
@@ -89,5 +95,5 @@ export const ProductForm: FC<ProductFormProps> = (props) => {
         />
       )}
     </div>
-  )
+  );
 };

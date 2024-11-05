@@ -1,9 +1,8 @@
-"use client"
-import { useState } from "react";
-import type { FC } from "react";
-import { useFormik } from "formik";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import * as Yup from "yup";
+'use client';
+import { useUpdateArticleGeneral } from '@/api/articles';
+import { Button } from '@/components/button';
+import { ImageDropzone } from '@/components/image-dropzone';
+import { TextInput } from '@/components/text-input';
 import {
   Dialog,
   DialogActions,
@@ -11,14 +10,14 @@ import {
   DialogTitle,
   FormHelperText,
   Grid,
-} from "@mui/material";
-import { Article } from "../../../types/articles";
-import { useUpdateArticleGeneral } from "@/api/articles";
-import { buildFormData } from "../../../utils/build-form-data";
-import { isImage } from "../../../utils/type-checks";
-import { Dropzone } from "@/components/dropzone";
-import { Button } from "@/components/button";
-import { TextInput } from "@/components/text-input";
+} from '@mui/material';
+import { useQueryClient } from '@tanstack/react-query';
+import { useFormik } from 'formik';
+import type { FC } from 'react';
+import { useState } from 'react';
+import * as Yup from 'yup';
+import { Article } from '../../../types/articles';
+import { buildFormData } from '../../../utils/build-form-data';
 
 interface ArticleDetailsGeneralFormProps {
   article: Article;
@@ -46,13 +45,13 @@ export const ArticleDetailsGeneralForm: FC<ArticleDetailsGeneralFormProps> = (
       slug: article.slug,
     },
     validationSchema: Yup.object({
-      description: Yup.string().required("Required"),
-      title: Yup.string().required("Required"),
-      slug: Yup.string().required("Required"),
-      markdown: Yup.string().required("Required"),
+      description: Yup.string().required('Required'),
+      title: Yup.string().required('Required'),
+      slug: Yup.string().required('Required'),
+      markdown: Yup.string().required('Required'),
       cover: Yup.mixed()
-        .test("resolution", "wrong resolution", () => !resolutionError)
-        .required("Required"),
+        .test('resolution', 'wrong resolution', () => !resolutionError)
+        .required('Required'),
     }),
     onSubmit: async (values) => {
       const formData = buildFormData(values);
@@ -60,7 +59,7 @@ export const ArticleDetailsGeneralForm: FC<ArticleDetailsGeneralFormProps> = (
 
       updateArticleDetails.mutate(formData, {
         onSuccess: (data) => {
-          queryClient.setQueryData(["articles", article._id], {
+          queryClient.setQueryData(['articles', article._id], {
             ...article,
             ...data,
           });
@@ -74,11 +73,20 @@ export const ArticleDetailsGeneralForm: FC<ArticleDetailsGeneralFormProps> = (
   });
 
   return (
-    <Dialog onClose={onClose} open={open}>
+    <Dialog
+      onClose={onClose}
+      open={open}
+    >
       <DialogTitle>Update General</DialogTitle>
       <DialogContent>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
+        <Grid
+          container
+          spacing={2}
+        >
+          <Grid
+            item
+            xs={12}
+          >
             <TextInput
               error={!!formik.touched.title && !!formik.errors.title}
               fullWidth
@@ -92,7 +100,10 @@ export const ArticleDetailsGeneralForm: FC<ArticleDetailsGeneralFormProps> = (
               value={formik.values.title}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid
+            item
+            xs={12}
+          >
             <TextInput
               error={!!formik.touched.slug && !!formik.errors.slug}
               fullWidth
@@ -106,7 +117,10 @@ export const ArticleDetailsGeneralForm: FC<ArticleDetailsGeneralFormProps> = (
               value={formik.values.slug}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid
+            item
+            xs={12}
+          >
             <TextInput
               error={
                 !!formik.touched.description && !!formik.errors.description
@@ -126,7 +140,10 @@ export const ArticleDetailsGeneralForm: FC<ArticleDetailsGeneralFormProps> = (
               value={formik.values.description}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid
+            item
+            xs={12}
+          >
             <TextInput
               error={!!formik.touched.markdown && !!formik.errors.markdown}
               fullWidth
@@ -143,8 +160,11 @@ export const ArticleDetailsGeneralForm: FC<ArticleDetailsGeneralFormProps> = (
               value={formik.values.markdown}
             />
           </Grid>
-          <Grid item xs={12}>
-            <Dropzone
+          <Grid
+            item
+            xs={12}
+          >
+            <ImageDropzone
               resolution={{ width: 1920, height: 1080 }}
               file={
                 isImage(formik.values.cover)
@@ -152,12 +172,12 @@ export const ArticleDetailsGeneralForm: FC<ArticleDetailsGeneralFormProps> = (
                   : formik.values.cover
               }
               onDrop={(file: any) => {
-                formik.setFieldTouched("cover", true);
-                formik.setFieldValue("cover", file);
+                formik.setFieldTouched('cover', true);
+                formik.setFieldValue('cover', file);
               }}
               onError={(error: string) => {
                 setResolutionError(error);
-                formik.setFieldError("cover", error);
+                formik.setFieldError('cover', error);
               }}
             />
             {!!formik.touched.cover && !!formik.errors.cover && (
@@ -166,13 +186,20 @@ export const ArticleDetailsGeneralForm: FC<ArticleDetailsGeneralFormProps> = (
           </Grid>
         </Grid>
         {!!submitError && (
-          <FormHelperText error sx={{ mt: 1 }}>
+          <FormHelperText
+            error
+            sx={{ mt: 1 }}
+          >
             {submitError}
           </FormHelperText>
         )}
       </DialogContent>
       <DialogActions>
-        <Button color="secondary" onClick={onClose} variant="text">
+        <Button
+          color="secondary"
+          onClick={onClose}
+          variant="text"
+        >
           Cancel
         </Button>
         <Button

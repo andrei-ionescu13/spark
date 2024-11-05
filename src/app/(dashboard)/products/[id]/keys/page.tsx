@@ -21,6 +21,7 @@ export default function ProductKeys() {
           isError={isError}
           isLoading={isLoading}
           refetch={refetch}
+          showProductCell={false}
         />
       </ProductLayout>
     </>

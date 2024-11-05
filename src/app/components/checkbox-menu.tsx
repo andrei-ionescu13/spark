@@ -1,14 +1,7 @@
-import { useRef } from 'react';
+import { Button, Checkbox, Menu, MenuItem, Typography } from '@mui/material';
 import type { FC } from 'react';
-import {
-  MenuItem,
-  Typography,
-  Checkbox,
-  Menu,
-  Button
-} from '@mui/material';
+import { useRef } from 'react';
 import { useDialog } from '../hooks/useDialog';
-import 'simplebar/dist/simplebar.min.css';
 
 export interface CheckboxMenuOption {
   label: string;
@@ -24,7 +17,7 @@ interface CheckboxMenuProps {
 }
 
 export const CheckboxMenu: FC<CheckboxMenuProps> = (props) => {
-  const { options, onSelect, buttonLabel, optionsKey, verifyIsChecked } = props
+  const { options, onSelect, buttonLabel, optionsKey, verifyIsChecked } = props;
   const buttonRef = useRef<HTMLButtonElement>(null);
   const [open, handleOpen, handleClose] = useDialog();
 
@@ -44,8 +37,8 @@ export const CheckboxMenu: FC<CheckboxMenuProps> = (props) => {
         onClose={handleClose}
         PaperProps={{
           sx: {
-            minWidth: 260
-          }
+            minWidth: 260,
+          },
         }}
       >
         {options.map((option) => (
@@ -69,5 +62,5 @@ export const CheckboxMenu: FC<CheckboxMenuProps> = (props) => {
         ))}
       </Menu>
     </>
-  )
-}
+  );
+};

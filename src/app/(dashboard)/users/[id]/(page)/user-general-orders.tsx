@@ -1,8 +1,18 @@
+import {
+  Box,
+  Card,
+  CardContent,
+  CardHeader,
+  Divider,
+  List,
+  ListItem,
+  Typography,
+  useTheme,
+} from '@mui/material';
+import { yellow } from '@mui/material/colors';
 import type { FC } from 'react';
 import { Label } from '../../../../components/label';
 import { Link } from '../../../../components/link';
-import { Box, Card, CardContent, CardHeader, Divider, List, ListItem, Typography, useTheme } from '@mui/material';
-import { yellow } from '@mui/material/colors';
 import { Order, OrderStatus } from '../../../../types/orders';
 
 interface UserOrdersProps {
@@ -11,24 +21,26 @@ interface UserOrdersProps {
 
 export const UserOrders: FC<UserOrdersProps> = (props) => {
   const { orders } = props;
-  const theme = useTheme()
+  const theme = useTheme();
 
   const mappedColors: Record<OrderStatus, string> = {
     open: theme.palette.success.main,
     archived: theme.palette.error.main,
     canceled: yellow[600],
-  }
+  };
 
   return (
     <Card>
       <CardHeader title="Latest Orders" />
       <Divider />
-      <CardContent sx={{
-        p: 0,
-        '&:last-child': {
-          pb: 0
-        }
-      }}>
+      <CardContent
+        sx={{
+          p: 0,
+          '&:last-child': {
+            pb: 0,
+          },
+        }}
+      >
         <List
           sx={{ width: '100%' }}
           disablePadding
@@ -39,13 +51,13 @@ export const UserOrders: FC<UserOrdersProps> = (props) => {
               key={order._id}
               sx={{
                 display: 'flex',
-                alignItems: 'center'
+                alignItems: 'center',
               }}
             >
               <Box
                 sx={{
                   display: 'grid',
-                  placeItems: 'center'
+                  placeItems: 'center',
                 }}
               >
                 <Typography
@@ -71,9 +83,7 @@ export const UserOrders: FC<UserOrdersProps> = (props) => {
                 #132
               </Link>
               <Box sx={{ flexGrow: 1 }} />
-              <Label color={mappedColors[order.status]}>
-                {order.status}
-              </Label>
+              <Label color={mappedColors[order.status]}>{order.status}</Label>
             </ListItem>
           ))}
         </List>

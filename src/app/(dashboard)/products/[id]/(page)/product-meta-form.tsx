@@ -1,14 +1,7 @@
 'use client';
 
 import { useUpdateProductMeta } from '@/api/products';
-import {
-  Autocomplete,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Grid,
-} from '@mui/material';
+import { Autocomplete, Box, Card, CardContent, Grid } from '@mui/material';
 import { useQueryClient } from '@tanstack/react-query';
 import { useFormik } from 'formik';
 import type { FC, SyntheticEvent } from 'react';
@@ -19,14 +12,13 @@ import type { Product } from '../../../../types/products';
 
 interface ProductMetaFormProps {
   product: Product;
-  open: boolean;
-  onClose: any;
+  onClose: () => void;
 }
 
 const metaKeywordOptions = ['Games', 'News', 'mopneydas'];
 
 export const ProductMetaForm: FC<ProductMetaFormProps> = (props) => {
-  const { open, product, onClose } = props;
+  const { product, onClose } = props;
   const queryClient = useQueryClient();
   const updateProductMeta = useUpdateProductMeta(product._id);
 
@@ -52,100 +44,106 @@ export const ProductMetaForm: FC<ProductMetaFormProps> = (props) => {
             ...product,
             ...data,
           });
-          onClose();
+          onClose;
         },
       });
     },
   });
 
   return (
-    <Dialog
-      open={open}
-      onClose={onClose}
-    >
-      <DialogTitle>Update Meta Details</DialogTitle>
-      <DialogContent sx={{ py: '24px !important' }}>
-        <Grid
-          container
-          spacing={2}
-        >
+    <Box>
+      <Card>
+        <CardContent>
           <Grid
-            item
-            xs={12}
+            container
+            spacing={2}
           >
-            <TextInput
-              size="small"
-              error={!!formik.touched.metaTitle && !!formik.errors.metaTitle}
-              fullWidth
-              helperText={formik.touched.metaTitle && formik.errors.metaTitle}
-              id="metaTitle"
-              label="Meta title"
-              name="metaTitle"
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
-              value={formik.values.metaTitle}
-            />
+            <Grid
+              item
+              xs={12}
+            >
+              <TextInput
+                size="small"
+                error={!!formik.touched.metaTitle && !!formik.errors.metaTitle}
+                fullWidth
+                helperText={formik.touched.metaTitle && formik.errors.metaTitle}
+                id="metaTitle"
+                label="Meta title"
+                name="metaTitle"
+                onBlur={formik.handleBlur}
+                onChange={formik.handleChange}
+                value={formik.values.metaTitle}
+              />
+            </Grid>
+            <Grid
+              item
+              xs={12}
+            >
+              <TextInput
+                size="small"
+                error={
+                  !!formik.touched.metaDescription &&
+                  !!formik.errors.metaDescription
+                }
+                fullWidth
+                helperText={
+                  formik.touched.metaDescription &&
+                  formik.errors.metaDescription
+                }
+                id="metaDescription"
+                label="Meta description"
+                minRows={4}
+                multiline
+                name="metaDescription"
+                onBlur={formik.handleBlur}
+                onChange={formik.handleChange}
+                value={formik.values.metaDescription}
+              />
+            </Grid>
+            <Grid
+              item
+              xs={12}
+            >
+              <Autocomplete
+                value={formik.values.metaKeywords}
+                freeSolo
+                filterSelectedOptions
+                getOptionLabel={(option) => option}
+                id="metaKeywords"
+                multiple
+                onChange={(event: SyntheticEvent, newValue: string[]) => {
+                  formik.setFieldValue('metaKeywords', newValue);
+                }}
+                options={metaKeywordOptions}
+                renderInput={(params) => (
+                  <TextInput
+                    {...params}
+                    size="small"
+                    label="Meta Keywords"
+                    name="metaKeywords"
+                    onBlur={formik.handleBlur}
+                    error={
+                      !!formik.touched.metaKeywords &&
+                      !!formik.errors.metaKeywords
+                    }
+                    helperText={
+                      formik.touched.metaKeywords && formik.errors.metaKeywords
+                    }
+                  />
+                )}
+              />
+            </Grid>
           </Grid>
-          <Grid
-            item
-            xs={12}
-          >
-            <TextInput
-              size="small"
-              error={
-                !!formik.touched.metaDescription &&
-                !!formik.errors.metaDescription
-              }
-              fullWidth
-              helperText={
-                formik.touched.metaDescription && formik.errors.metaDescription
-              }
-              id="metaDescription"
-              label="Meta description"
-              minRows={4}
-              multiline
-              name="metaDescription"
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
-              value={formik.values.metaDescription}
-            />
-          </Grid>
-          <Grid
-            item
-            xs={12}
-          >
-            <Autocomplete
-              value={formik.values.metaKeywords}
-              freeSolo
-              filterSelectedOptions
-              getOptionLabel={(option) => option}
-              id="metaKeywords"
-              multiple
-              onChange={(event: SyntheticEvent, newValue: string[]) => {
-                formik.setFieldValue('metaKeywords', newValue);
-              }}
-              options={metaKeywordOptions}
-              renderInput={(params) => (
-                <TextInput
-                  {...params}
-                  size="small"
-                  label="Meta Keywords"
-                  name="metaKeywords"
-                  onBlur={formik.handleBlur}
-                  error={
-                    !!formik.touched.metaKeywords &&
-                    !!formik.errors.metaKeywords
-                  }
-                  helperText={
-                    formik.touched.metaKeywords && formik.errors.metaKeywords
-                  }
-                />
-              )}
-            />
-          </Grid>
-        </Grid>
-      </DialogContent>
-      <DialogActions>
+        </CardContent>
+      </Card>
+      <Box
+        sx={{
+          mt: 2,
+          display: 'flex',
+          justifyContent: 'flex-end',
+          gap: 2,
+        }}
+      >
         <Button
           variant="text"
           color="secondary"
@@ -163,7 +161,7 @@ export const ProductMetaForm: FC<ProductMetaFormProps> = (props) => {
         >
           Update
         </Button>
-      </DialogActions>
-    </Dialog>
+      </Box>
+    </Box>
   );
 };

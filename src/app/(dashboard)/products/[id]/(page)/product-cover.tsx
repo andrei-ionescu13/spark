@@ -3,13 +3,13 @@ import { Box, IconButton } from '@mui/material';
 import Image from 'next/image';
 import { ChangeEvent, useRef, useState, type FC } from 'react';
 
-interface ProductImageProps {
+interface ImageUpdateProps {
   url: string;
   alt: string;
   onFileSelect: (file: File) => void;
 }
 
-export const ProductCover: FC<ProductImageProps> = (props) => {
+export const ImageUpdate: FC<ImageUpdateProps> = (props) => {
   const inputRef = useRef<any>();
   const { url, alt, onFileSelect } = props;
   const [preview, setPreview] = useState('');

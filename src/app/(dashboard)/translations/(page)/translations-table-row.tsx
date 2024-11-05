@@ -1,57 +1,69 @@
-import type { FC } from 'react';
-import { TableCell, TableRow } from "@mui/material";
-import type { TableRowProps } from "@mui/material";
-import { TranslationsDialog } from "./translations-dialog";
-import { Pencil as PencilIcon } from '../../../icons/pencil';
-import { Trash as TrashIcon } from '../../../icons/trash';
-import { useDialog } from "../../../hooks/useDialog";
-import type { Language, Translation } from "../../../types/translations";
 import { useDeleteNamespaceTranslation } from '@/api/translations';
-import { useQueryClient } from '@tanstack/react-query';
 import { ActionsItem } from '@/components/actions-menu';
 import { AlertDialog } from '@/components/alert-dialog';
+import { Highlight } from '@/components/highlight';
 import { ActionsIconButton } from '@/components/icon-actions';
+import type { TableRowProps } from '@mui/material';
+import { TableCell, TableRow } from '@mui/material';
+import { useQueryClient } from '@tanstack/react-query';
+import type { FC } from 'react';
+import { useDialog } from '../../../hooks/useDialog';
+import { Pencil as PencilIcon } from '../../../icons/pencil';
+import { Trash as TrashIcon } from '../../../icons/trash';
+import type { Language, Translation } from '../../../types/translations';
+import { TranslationsDialog } from './translations-dialog';
 
 interface TranslationsTableRowProps extends TableRowProps {
   translation: Translation;
   shownLanguages: Language[];
   languages: Language[];
   namespaceId: string;
+  keyword?: string;
 }
 
 export const TranslationsTableRow: FC<TranslationsTableRowProps> = (props) => {
-  const { translation, shownLanguages, namespaceId, languages } = props;
+  const {
+    translation,
+    shownLanguages,
+    namespaceId,
+    languages,
+    keyword = '',
+  } = props;
   const queryClient = useQueryClient();
-  const [deleteDialogOpen, handleOpenDeleteDialog, handleCloseDeleteDialog] = useDialog();
+  const [deleteDialogOpen, handleOpenDeleteDialog, handleCloseDeleteDialog] =
+    useDialog();
   const [dialogOpen, handleOpenDialog, handleCloseDialog] = useDialog();
   const deleteNamespaceTranslation = useDeleteNamespaceTranslation();
 
   const handleDelete = async () => {
-    deleteNamespaceTranslation.mutate({
-      id: namespaceId,
-      translationKey: translation.key
-    }, {
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ['namespaces'] })
-        queryClient.invalidateQueries({ queryKey: ['namespace'] })
-        handleCloseDeleteDialog();
+    deleteNamespaceTranslation.mutate(
+      {
+        id: namespaceId,
+        translationKey: translation.key,
+      },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ['namespaces'] });
+          queryClient.invalidateQueries({ queryKey: ['namespace'] });
+          handleCloseDeleteDialog();
+        },
       }
-    })
+    );
   };
 
   const actionItems: ActionsItem[] = [
     {
       label: 'Edit',
       icon: PencilIcon,
-      onClick: handleOpenDialog
+      onClick: handleOpenDialog,
     },
     {
       label: 'Delete',
       icon: TrashIcon,
       onClick: handleOpenDeleteDialog,
-      color: 'error'
+      color: 'error',
     },
-  ]
+  ];
 
   return (
     <>
@@ -75,11 +87,13 @@ export const TranslationsTableRow: FC<TranslationsTableRowProps> = (props) => {
       )}
       <TableRow key={translation.key}>
         <TableCell>
-          {translation.key}
+          <Highlight value={keyword}>{translation.key}</Highlight>
         </TableCell>
         {shownLanguages.map((language) => (
           <TableCell key={language.code}>
-            {translation?.[language.code]}
+            <Highlight value={keyword}>
+              {translation?.[language.code]}
+            </Highlight>
           </TableCell>
         ))}
         <TableCell align="right">
@@ -87,5 +101,5 @@ export const TranslationsTableRow: FC<TranslationsTableRowProps> = (props) => {
         </TableCell>
       </TableRow>
     </>
-  )
-}
+  );
+};

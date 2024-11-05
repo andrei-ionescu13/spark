@@ -1,4 +1,4 @@
-"use client"
+'use client';
 
 import { useDeleteCollections } from '@/api/collections';
 import { AlertDialog } from '@/components/alert-dialog';
@@ -8,12 +8,17 @@ import { SearchInput } from '@/components/search-input';
 import { useDialog } from '@/hooks/useDialog';
 import { useQueryValue } from '@/hooks/useQueryValue';
 import { useSearch } from '@/hooks/useSearch';
-import { Card, Box, Button, TextField, MenuItem, TableBody } from '@mui/material';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { ChangeEvent, useState, type FC } from 'react'
-import { searchCollections } from '../api-calls';
-import { useSearchCollectionsQuery } from '../api-calls-hooks';
 import { Collection } from '@/types/collection';
+import {
+  Box,
+  Button,
+  Card,
+  MenuItem,
+  TableBody,
+  TextField,
+} from '@mui/material';
+import { useQueryClient } from '@tanstack/react-query';
+import { ChangeEvent, useState, type FC } from 'react';
 import { CollectionsTableRow } from './collections-table.row';
 
 interface CollectionsTableProps {
@@ -26,65 +31,62 @@ interface CollectionsTableProps {
 
 const headCells: HeadCell[] = [
   {
-    id: "title",
-    label: "Title",
+    id: 'title',
+    label: 'Title',
+    width: '22%',
   },
   {
-    id: "products",
-    label: "Products",
+    id: 'products',
+    label: 'Products',
     disableSort: true,
+    width: '20%',
   },
   {
-    id: "startDate",
-    label: "Start Date",
+    id: 'startDate',
+    label: 'Start Date',
+    width: '20%',
   },
   {
-    id: "endDate",
-    label: "End Date",
+    id: 'endDate',
+    label: 'End Date',
+    width: '20%',
   },
   {
-    id: "status",
-    label: "Status",
+    id: 'status',
+    label: 'Status',
     disableSort: true,
+    width: '10%',
   },
 ];
 
 const statusOptions = [
   {
-    label: "All",
-    value: "all",
+    label: 'All',
+    value: 'all',
   },
   {
-    label: "Active",
-    value: "active",
+    label: 'Active',
+    value: 'active',
   },
   {
-    label: "Scheduled",
-    value: "scheduled",
+    label: 'Scheduled',
+    value: 'scheduled',
   },
   {
-    label: "Expired",
-    value: "expired",
+    label: 'Expired',
+    value: 'expired',
   },
 ];
 
-
 export const CollectionsTable: FC<CollectionsTableProps> = (props) => {
-  const {
-    collections,
-    count,
-    isError,
-    isLoading,
-    refetch
-  } = props
+  const { collections, count, isError, isLoading, refetch } = props;
   const queryClient = useQueryClient();
-  const [keyword, handleKeywordChange, handleSearch] =
-    useSearch();
+  const [keyword, handleKeywordChange, handleSearch] = useSearch();
   const [selected, setSelected] = useState<string[]>([]);
   const [dialogOpen, handleOpenDialog, handleCloseDialog] = useDialog();
-  const [status, setStatus] = useQueryValue("status", "all", "all");
+  const [status, setStatus] = useQueryValue('status', 'all', 'all');
   const deleteCollections = useDeleteCollections(() =>
-    queryClient.invalidateQueries({ queryKey: ["collections"] })
+    queryClient.invalidateQueries({ queryKey: ['collections'] })
   );
 
   const handleStatusChange = (event: ChangeEvent<HTMLInputElement>): void => {
@@ -97,7 +99,7 @@ export const CollectionsTable: FC<CollectionsTableProps> = (props) => {
         setSelected([]);
         handleCloseDialog();
       },
-      onError: (error) => { },
+      onError: (error) => {},
     });
   };
 
@@ -123,16 +125,15 @@ export const CollectionsTable: FC<CollectionsTableProps> = (props) => {
     });
   };
 
-
   return (
     <>
       <Card>
         <Box
           sx={{
-            display: "grid",
+            display: 'grid',
             gap: 2,
             gridTemplateColumns: {
-              sm: `${!!selected.length ? "auto" : ""} 1fr 240px`,
+              sm: `${!!selected.length ? 'auto' : ''} 1fr 240px`,
             },
             p: 2,
           }}
@@ -161,7 +162,10 @@ export const CollectionsTable: FC<CollectionsTableProps> = (props) => {
             value={status}
           >
             {statusOptions.map((status) => (
-              <MenuItem key={status.value} value={status.value}>
+              <MenuItem
+                key={status.value}
+                value={status.value}
+              >
                 {status.label}
               </MenuItem>
             ))}
@@ -207,5 +211,5 @@ export const CollectionsTable: FC<CollectionsTableProps> = (props) => {
         title={`Delete ${selected.length} collections`}
       />
     </>
-  )
+  );
 };

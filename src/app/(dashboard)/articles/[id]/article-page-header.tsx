@@ -1,8 +1,9 @@
-"use client"
+'use client';
 
 import { useDeleteArticle, useDuplicateArticle } from '@/api/articles';
 import { ActionsItem } from '@/components/actions-menu';
 import { AlertDialog } from '@/components/alert-dialog';
+import { Label } from '@/components/label';
 import { MarkdownPreview } from '@/components/markdown-preview';
 import { PageHeader } from '@/components/page-header';
 import { useDialog } from '@/hooks/useDialog';
@@ -10,12 +11,9 @@ import { Duplicate } from '@/icons/duplicate';
 import { Eye } from '@/icons/eye';
 import { Trash } from '@/icons/trash';
 import { Article, ArticleStatus } from '@/types/articles';
-import { Box, colors, Link, Typography } from '@mui/material';
-import type { FC } from 'react'
+import { Box, colors, Link, Typography, useTheme } from '@mui/material';
+import type { FC } from 'react';
 import { toast } from 'react-toastify';
-import { useTheme } from '@mui/material';
-import { Label } from '@/components/label';
-import { useGetArticle } from '../api-calls-hooks';
 import { ArticleDuplicateDialog } from '../article-duplicate-dialog';
 
 interface ArticlePageHeaderProps {
@@ -24,7 +22,10 @@ interface ArticlePageHeaderProps {
 
 const ToastSuccess = (id: string) => (
   <Box>
-    <Typography variant="body1" color="textPrimary">
+    <Typography
+      variant="body1"
+      color="textPrimary"
+    >
       Article duplicated
     </Typography>
     <Link
@@ -51,24 +52,24 @@ export const ArticlePageHeader: FC<ArticlePageHeaderProps> = (props) => {
   const [openPreviewDialog, handleOpenPreviewDialog, handleClosePreviewDialog] =
     useDialog();
   const deleteArticle = useDeleteArticle();
-  const duplicateArticle = useDuplicateArticle(article?._id || "");
+  const duplicateArticle = useDuplicateArticle(article?._id || '');
 
   const actionItems: ActionsItem[] = [
     {
-      label: "Preview",
+      label: 'Preview',
       icon: Eye,
       onClick: handleOpenPreviewDialog,
     },
     {
-      label: "Duplicate",
+      label: 'Duplicate',
       icon: Duplicate,
       onClick: handleOpenDuplicateDialog,
     },
     {
-      label: "Delete",
+      label: 'Delete',
       icon: Trash,
       onClick: handleOpenDeleteDialog,
-      color: "error",
+      color: 'error',
     },
   ];
 
@@ -78,13 +79,12 @@ export const ArticlePageHeader: FC<ArticlePageHeaderProps> = (props) => {
     archived: theme.palette.error.main,
   };
 
-
   if (!article) return null;
 
   const handleDeleteArticle = () => {
     deleteArticle.mutate(article._id, {
       onSuccess: () => {
-        router.push("/articles");
+        router.push('/articles');
       },
     });
   };
@@ -129,5 +129,5 @@ export const ArticlePageHeader: FC<ArticlePageHeaderProps> = (props) => {
         cover={article.cover.url}
       />
     </>
-  )
+  );
 };

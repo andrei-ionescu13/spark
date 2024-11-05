@@ -1,32 +1,28 @@
-"use client"
-import { useState, ReactNode } from "react";
-import type { FC, ChangeEvent } from "react";
+'use client';
+import { DotsVertical } from '@/icons/dots-vertical';
 import {
   Box,
+  Checkbox,
+  FormControlLabel,
+  IconButton,
+  Skeleton,
+  styled,
+  Switch,
   Table,
+  TableBody,
+  TableCell,
   TableContainer,
   TablePagination,
-  FormControlLabel,
-  Switch,
-  styled,
-  TableBody,
-  Checkbox,
-  Link,
-  TableCell,
-  Skeleton,
-  IconButton,
-} from "@mui/material";
-import { usePage } from "../hooks/usePage";
-import { useLimit } from "../hooks/usePerPage";
-import SimpleBar from "simplebar-react";
-import "simplebar/dist/simplebar.min.css";
-import { TableDataError } from "./table-data-error";
-import { TableNoData } from "./table-no-data";
-import { DataTableRow } from "./data-table-row";
-import { formatDate } from "@/utils/format-date";
-import { ActionsIconButton } from "./icon-actions";
-import { Label } from "./label";
-import { DotsVertical } from "@/icons/dots-vertical";
+} from '@mui/material';
+import type { ChangeEvent, FC } from 'react';
+import { ReactNode, useState } from 'react';
+import SimpleBar from 'simplebar-react';
+import 'simplebar/dist/simplebar.min.css';
+import { usePage } from '../hooks/usePage';
+import { useLimit } from '../hooks/usePerPage';
+import { DataTableRow } from './data-table-row';
+import { TableDataError } from './table-data-error';
+import { TableNoData } from './table-no-data';
 
 interface DataTableProps {
   children: ReactNode;
@@ -38,27 +34,44 @@ interface DataTableProps {
   headCellsCount: number;
   headSlot: ReactNode;
   isLoading: boolean;
+  hasCheckbox?: boolean;
+  hasAction?: boolean;
 }
 
 const DataTableRoot = styled(TableContainer)(() => ({
   a: {
-    color: "inherit",
+    color: 'inherit',
   },
 }));
 
-const TextSkeleton = () => <Skeleton variant="text" width={'80px'} />
+const TextSkeleton = () => (
+  <Skeleton
+    variant="text"
+    width={'80px'}
+  />
+);
 
 export const DataTable: FC<DataTableProps> = (props) => {
-  const { children, count, removeSimplebar = false, hasError,
+  const {
+    children,
+    count,
+    removeSimplebar = false,
+    hasError,
     hasNoData,
     onRefetchData,
     headCellsCount,
     headSlot,
     isLoading = false,
+    hasCheckbox = true,
+    hasAction = true,
   } = props;
   const [page, handlePageChange] = usePage();
   const [limit, handleLimitChange] = useLimit();
   const [dense, setDense] = useState(false);
+
+  let extraCellsCount = 0;
+  hasCheckbox && extraCellsCount++;
+  hasAction && extraCellsCount++;
 
   const handleChangeDense = (event: ChangeEvent<HTMLInputElement>): void => {
     setDense(event.target.checked);
@@ -68,16 +81,14 @@ export const DataTable: FC<DataTableProps> = (props) => {
     if (hasError) {
       return (
         <TableDataError
-          colSpan={headCellsCount + 2}
+          colSpan={headCellsCount + extraCellsCount}
           onRefetch={onRefetchData}
         />
-      )
+      );
     }
 
     if (hasNoData) {
-      return (
-        <TableNoData colSpan={headCellsCount + 2} />
-      )
+      return <TableNoData colSpan={headCellsCount + extraCellsCount} />;
     }
 
     if (isLoading) {
@@ -85,22 +96,29 @@ export const DataTable: FC<DataTableProps> = (props) => {
         <TableBody>
           {[...Array(limit).keys()].map((x) => (
             <DataTableRow key={x}>
-              <TableCell padding="checkbox">
-                <Checkbox color="primary" disabled />
-              </TableCell>
+              {hasCheckbox && (
+                <TableCell padding="checkbox">
+                  <Checkbox
+                    color="primary"
+                    disabled
+                  />
+                </TableCell>
+              )}
               {[...Array(headCellsCount).keys()].map((x) => (
                 <TableCell key={x}>
                   <TextSkeleton />
                 </TableCell>
               ))}
-              <TableCell align="right">
-                <IconButton
-                  color="primary"
-                  disabled
-                >
-                  <DotsVertical />
-                </IconButton>
-              </TableCell>
+              {hasAction && (
+                <TableCell align="right">
+                  <IconButton
+                    color="primary"
+                    disabled
+                  >
+                    <DotsVertical />
+                  </IconButton>
+                </TableCell>
+              )}
             </DataTableRow>
           ))}
         </TableBody>
@@ -108,14 +126,13 @@ export const DataTable: FC<DataTableProps> = (props) => {
     }
 
     return children;
-
-  }
+  };
 
   return (
     <DataTableRoot>
       {removeSimplebar ? (
         <Box>
-          <Table size={dense ? "small" : "medium"}>
+          <Table size={dense ? 'small' : 'medium'}>
             <>
               {headSlot}
               {getContent()}
@@ -125,7 +142,7 @@ export const DataTable: FC<DataTableProps> = (props) => {
       ) : (
         <SimpleBar>
           <Box>
-            <Table size={dense ? "small" : "medium"}>
+            <Table size={dense ? 'small' : 'medium'}>
               {headSlot}
               {getContent()}
             </Table>
@@ -134,14 +151,19 @@ export const DataTable: FC<DataTableProps> = (props) => {
       )}
       <Box
         sx={{
-          display: "flex",
-          alignItems: "center",
+          display: 'flex',
+          alignItems: 'center',
           pl: 2,
           minHeight: 52,
         }}
       >
         <FormControlLabel
-          control={<Switch checked={dense} onChange={handleChangeDense} />}
+          control={
+            <Switch
+              checked={dense}
+              onChange={handleChangeDense}
+            />
+          }
           label="Dense padding"
         />
         <Box sx={{ flexGrow: 1 }} />

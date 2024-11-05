@@ -34,8 +34,8 @@ export default function Articles() {
             articles={articles}
             count={count}
             isError={isError}
-            isLoading={isLoading}
             refetch={refetch}
+            isLoading={isLoading}
             categories={categories || []}
           />
         </Container>

@@ -1,18 +1,24 @@
-import type { FC } from 'react';
-import { Checkbox, colors, TableCell, Typography, useTheme } from '@mui/material';
-import { useQueryClient } from '@tanstack/react-query';
-import type { ActionsItem } from '../../actions-menu';
-import { AlertDialog } from '../../alert-dialog';
-import { ActionsIconButton } from '../../icon-actions';
-import { Link } from '../../link';
-import { Trash as TrashIcon } from '../../../icons/trash';
-import { EyeOff as EyeOffIcon } from '../../../icons/eye-off';
-import { useDialog } from '../../../hooks/useDialog';
-import { Label } from '../../label';
-import { DataTableRow } from '../../data-table-row';
-import type { Discount } from '../../../types/discounts';
-import { format } from 'date-fns';
 import { useDeactivateDiscount, useDeleteDiscount } from '@/api/discounts';
+import { ActionsItem } from '@/components/actions-menu';
+import { AlertDialog } from '@/components/alert-dialog';
+import { DataTableRow } from '@/components/data-table-row';
+import { ActionsIconButton } from '@/components/icon-actions';
+import { Label } from '@/components/label';
+import Link from '@/components/link';
+import {
+  Checkbox,
+  colors,
+  TableCell,
+  Typography,
+  useTheme,
+} from '@mui/material';
+import { useQueryClient } from '@tanstack/react-query';
+import { format } from 'date-fns';
+import type { FC } from 'react';
+import { useDialog } from '../../../hooks/useDialog';
+import { EyeOff as EyeOffIcon } from '../../../icons/eye-off';
+import { Trash as TrashIcon } from '../../../icons/trash';
+import type { Discount } from '../../../types/discounts';
 import { getStatusFromInterval } from '../../../utils/get-status-from-interval';
 
 interface DiscountsTableRow {
@@ -23,19 +29,28 @@ interface DiscountsTableRow {
 
 export const DiscountsTableRow: FC<DiscountsTableRow> = (props) => {
   const { discount, selected, onSelect } = props;
-  const theme = useTheme()
+  const theme = useTheme();
   const queryClient = useQueryClient();
-  const deleteDiscount = useDeleteDiscount(() => queryClient.invalidateQueries({ queryKey: ['discounts'] }))
-  const deactivateDiscount = useDeactivateDiscount(() => queryClient.invalidateQueries({ queryKey: ['discounts'] }))
-  const [deleteDialogOpen, handleOpenDeleteDialog, handleCloseDeleteDialog] = useDialog(false);
-  const [deactivateDialogOpen, handleOpenDeactivateDialog, handleCloseDeactivateDialog] = useDialog(false);
+  const deleteDiscount = useDeleteDiscount(() =>
+    queryClient.invalidateQueries({ queryKey: ['discounts'] })
+  );
+  const deactivateDiscount = useDeactivateDiscount(() =>
+    queryClient.invalidateQueries({ queryKey: ['discounts'] })
+  );
+  const [deleteDialogOpen, handleOpenDeleteDialog, handleCloseDeleteDialog] =
+    useDialog(false);
+  const [
+    deactivateDialogOpen,
+    handleOpenDeactivateDialog,
+    handleCloseDeactivateDialog,
+  ] = useDialog(false);
   const status = getStatusFromInterval(discount.startDate, discount.endDate);
 
   const mappedColors = {
     scheduled: colors.grey[500],
     active: theme.palette.success.main,
-    expired: theme.palette.error.main
-  }
+    expired: theme.palette.error.main,
+  };
 
   const actionItems: ActionsItem[] = [
     {
@@ -47,25 +62,25 @@ export const DiscountsTableRow: FC<DiscountsTableRow> = (props) => {
       label: 'Delete',
       icon: TrashIcon,
       onClick: handleOpenDeleteDialog,
-      color: 'error'
-    }
-  ]
+      color: 'error',
+    },
+  ];
 
   const handleDeleteDiscount = (): void => {
     deleteDiscount.mutate(discount._id, {
       onSuccess: () => {
-        handleCloseDeleteDialog()
-      }
-    })
-  }
+        handleCloseDeleteDialog();
+      },
+    });
+  };
 
   const handleDeactivateDiscount = (): void => {
     deactivateDiscount.mutate(discount._id, {
       onSuccess: () => {
-        handleCloseDeactivateDialog()
-      }
-    })
-  }
+        handleCloseDeactivateDialog();
+      },
+    });
+  };
 
   return (
     <>
@@ -111,12 +126,11 @@ export const DiscountsTableRow: FC<DiscountsTableRow> = (props) => {
           {format(new Date(discount.startDate), 'dd.MM.yyyy hh:mm')}
         </TableCell>
         <TableCell>
-          {discount.endDate && format(new Date(discount.endDate), 'dd.MM.yyyy hh:mm')}
+          {discount.endDate &&
+            format(new Date(discount.endDate), 'dd.MM.yyyy hh:mm')}
         </TableCell>
         <TableCell>
-          <Label color={mappedColors[status]}>
-            {status}
-          </Label>
+          <Label color={mappedColors[status]}>{status}</Label>
         </TableCell>
         <TableCell align="right">
           <ActionsIconButton items={actionItems} />

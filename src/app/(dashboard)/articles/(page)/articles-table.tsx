@@ -51,22 +51,27 @@ const headCells: HeadCell[] = [
   {
     id: 'title',
     label: 'Title',
+    width: '22%',
   },
   {
     id: 'slug',
     label: 'Slug',
+    width: '20%',
   },
   {
     id: 'category',
     label: 'Category',
+    width: '20%',
   },
   {
     id: 'createdAt',
     label: 'Created At',
+    width: '15%',
   },
   {
     id: 'status',
     label: 'Status',
+    width: '15%',
   },
 ];
 
@@ -74,8 +79,8 @@ interface ArticlesTableProps {
   articles?: Article[];
   count?: number;
   isError: boolean;
-  isLoading: boolean;
   refetch: any;
+  isLoading: boolean;
   categories: ArticleCategory[];
 }
 
@@ -206,7 +211,10 @@ export const ArticlesTable: FC<ArticlesTableProps> = (props) => {
             value={status}
           >
             {statusOptions.map((status) => (
-              <MenuItem key={status.value} value={status.value}>
+              <MenuItem
+                key={status.value}
+                value={status.value}
+              >
                 {status.label}
               </MenuItem>
             ))}
@@ -217,8 +225,8 @@ export const ArticlesTable: FC<ArticlesTableProps> = (props) => {
           count={count}
           hasError={isError}
           hasNoData={count === 0}
-          headCellsCount={headCells.length}
           onRefetchData={refetch}
+          headCellsCount={headCells.length}
           headSlot={
             <DataTableHead
               isLoading={isLoading}

@@ -1,55 +1,58 @@
-"use client"
-import { useEffect, useState } from 'react';
-import type { FC } from 'react';
-import {
-  Box,
-  Card,
-  Chip,
-  Stack,
-  TableBody,
-} from '@mui/material';
-import { useSearch } from '../hooks/useSearch';
-import { OrdersTableRow } from './orders-table-row';
-import type { Order } from '../types/orders';
-import { DataTable } from './data-table';
-import 'simplebar/dist/simplebar.min.css';
-import { CheckboxMenu } from './checkbox-menu';
+'use client';
+import { Box, Card, Chip, Stack, TableBody } from '@mui/material';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { DataTableHead } from './data-table-head';
+import type { FC } from 'react';
+import { useEffect, useState } from 'react';
+import { useSearch } from '../hooks/useSearch';
+import type { Order } from '../types/orders';
+import { CheckboxMenu } from './checkbox-menu';
+import { DataTable } from './data-table';
 import type { HeadCell } from './data-table-head';
-import { useSearchOrders } from '../(dashboard)/orders/api-calls-hooks';
-import { SearchInput } from '@/components/search-input';
+import { DataTableHead } from './data-table-head';
+import { OrdersTableRow } from './orders-table-row';
+import { SearchInput } from './search-input';
 
-const getHeadCells = (showCustomer: boolean): HeadCell[] => ([
+const getHeadCells = (showCustomer: boolean): HeadCell[] => [
   {
     id: 'orderNumber',
     label: 'Order number',
+    width: showCustomer ? '16%' : '32%',
   },
-  ...showCustomer ? [{
-    id: 'customer',
-    label: 'Customer',
-  }] : [],
+  ...(showCustomer
+    ? [
+        {
+          id: 'customer',
+          label: 'Customer',
+          width: '16%',
+        },
+      ]
+    : []),
   {
     id: 'createdAt',
     label: 'Created At',
+    width: '12%',
   },
   {
     id: 'totalPrice',
     label: 'Total',
+    width: '12%',
   },
   {
     id: 'paymentStatus',
     label: 'Payment',
+    width: '12%',
   },
   {
     id: 'fulfillmentStatus',
     label: 'Fulfillment',
+    width: '12%',
   },
   {
     id: 'status',
     label: 'Status',
-  }
-])
+    width: '12%',
+  },
+];
 
 interface Option {
   label: string;
@@ -57,8 +60,8 @@ interface Option {
 }
 
 export interface CheckboxMenuField {
-  label: string,
-  key: string,
+  label: string;
+  key: string;
   options: Option[];
 }
 
@@ -69,17 +72,17 @@ const menusSchema: CheckboxMenuField[] = [
     options: [
       {
         label: 'Open',
-        value: 'open'
+        value: 'open',
       },
       {
         label: 'Archived',
-        value: 'archived'
+        value: 'archived',
       },
       {
         label: 'Canceled',
-        value: 'canceled'
-      }
-    ]
+        value: 'canceled',
+      },
+    ],
   },
   {
     label: 'Payment',
@@ -87,25 +90,25 @@ const menusSchema: CheckboxMenuField[] = [
     options: [
       {
         label: 'Authorized',
-        value: 'authorized'
+        value: 'authorized',
       },
       {
         label: 'Paid',
-        value: 'paid'
+        value: 'paid',
       },
       {
         label: 'Pending',
-        value: 'pending'
+        value: 'pending',
       },
       {
         label: 'Refunded',
-        value: 'refunded'
+        value: 'refunded',
       },
       {
         label: 'Expired',
-        value: 'expired'
-      }
-    ]
+        value: 'expired',
+      },
+    ],
   },
   {
     label: 'Fulfillment',
@@ -113,20 +116,19 @@ const menusSchema: CheckboxMenuField[] = [
     options: [
       {
         label: 'Fulfilled',
-        value: 'fulfilled'
+        value: 'fulfilled',
       },
       {
         label: 'Unfulfilled',
-        value: 'unfulfilled'
+        value: 'unfulfilled',
       },
       {
         label: 'Partially fulfilled',
         value: 'partially fulfilled',
-      }
-    ]
+      },
+    ],
   },
-]
-
+];
 
 interface OrdersTableProps {
   showCustomer?: boolean;
@@ -144,9 +146,9 @@ export const OrdersTable: FC<OrdersTableProps> = (props) => {
     count,
     refetch,
     isLoading,
-    isError
+    isError,
   } = props;
-  const router = useRouter()
+  const router = useRouter();
   const [keyword, handleKeywordChange, handleSearch] = useSearch();
   const [selected, setSelected] = useState<string[]>([]);
   const [fieldsSelected, setFieldsSelected] = useState<any>({});
@@ -157,19 +159,18 @@ export const OrdersTable: FC<OrdersTableProps> = (props) => {
   }
   useEffect(() => {
     const { fulfillmentStatus = [], paymentStatus = [], status = [] } = query;
-    setFieldsSelected({ fulfillmentStatus, paymentStatus, status })
-  }, [query])
-
+    setFieldsSelected({ fulfillmentStatus, paymentStatus, status });
+  }, []);
 
   const handleSelect = (id: string): void => {
     setSelected((prevSelected) => {
       if (prevSelected.includes(id)) {
-        return prevSelected.filter((_id) => _id !== id)
+        return prevSelected.filter((_id) => _id !== id);
       }
 
       return [...prevSelected, id];
-    })
-  }
+    });
+  };
 
   const handleSelectAll = (): void => {
     if (!orders) return;
@@ -179,39 +180,47 @@ export const OrdersTable: FC<OrdersTableProps> = (props) => {
         return [];
       }
 
-      return orders.map((order) => order._id)
-    })
-  }
+      return orders.map((order) => order._id);
+    });
+  };
 
-  const handleDeleteStatusValue = (type: CheckboxMenuField, option: Option): void => {
+  const handleDeleteStatusValue = (
+    type: CheckboxMenuField,
+    option: Option
+  ): void => {
     const newQuery = { ...query };
 
     if (Array.isArray(query?.[type.key])) {
-      newQuery[type.key] = (newQuery[type.key] as string[]).filter(x => x !== option.value)
+      newQuery[type.key] = (newQuery[type.key] as string[]).filter(
+        (x) => x !== option.value
+      );
     } else {
-      delete newQuery[type.key]
+      delete newQuery[type.key];
     }
 
     // router.push({
     //   pathname: pathname,
     //   query: newQuery
     // });
-  }
+  };
 
   const handleClick = (key: string, value: string): void => {
     const newFieldsSelected = { ...fieldsSelected };
 
     if (!!newFieldsSelected?.[key]) {
       if (Array.isArray(newFieldsSelected[key])) {
-        newFieldsSelected[key] = newFieldsSelected[key]?.includes(value) ? (newFieldsSelected[key] as string[])?.filter((x) => x !== value) : [...(newFieldsSelected[key] as string[]), value]
+        newFieldsSelected[key] = newFieldsSelected[key]?.includes(value)
+          ? (newFieldsSelected[key] as string[])?.filter((x) => x !== value)
+          : [...(newFieldsSelected[key] as string[]), value];
       } else {
-        newFieldsSelected[key] = query[key] === value ? [] : [newFieldsSelected[key], value]
+        newFieldsSelected[key] =
+          query[key] === value ? [] : [newFieldsSelected[key], value];
       }
     } else {
       newFieldsSelected[key] = value;
     }
 
-    setFieldsSelected(newFieldsSelected)
+    setFieldsSelected(newFieldsSelected);
 
     const newQuery = { ...query, ...newFieldsSelected };
     delete newQuery?.page;
@@ -226,36 +235,43 @@ export const OrdersTable: FC<OrdersTableProps> = (props) => {
 
   return (
     <Card>
-      {menusSchema.some((menu) => !!query?.[menu.key]) && <Stack
-        alignItems="center"
-        direction="row"
-        spacing={1}
-        sx={{
-          pt: 2,
-          px: 2,
-        }}
-        flexWrap="wrap"
-      >
-        {menusSchema?.map((menu, index) => (
-          menu.options.map((option) => (query?.[menu.key] === option.value || (Array.isArray(query?.[menu.key]) && query?.[menu.key]?.includes(option.value))) && (
-            <Chip
-              label={option.value}
-              key={`${menu.key}-${option.value}`}
-              size="small"
-              variant="outlined"
-              onDelete={() => handleDeleteStatusValue(menu, option)}
-              onClick={() => handleDeleteStatusValue(menu, option)}
-            />
-          ))
-        ))}
-      </Stack>}
+      {menusSchema.some((menu) => !!query?.[menu.key]) && (
+        <Stack
+          alignItems="center"
+          direction="row"
+          spacing={1}
+          sx={{
+            pt: 2,
+            px: 2,
+          }}
+          flexWrap="wrap"
+        >
+          {menusSchema?.map((menu, index) =>
+            menu.options.map(
+              (option) =>
+                (query?.[menu.key] === option.value ||
+                  (Array.isArray(query?.[menu.key]) &&
+                    query?.[menu.key]?.includes(option.value))) && (
+                  <Chip
+                    label={option.value}
+                    key={`${menu.key}-${option.value}`}
+                    size="small"
+                    variant="outlined"
+                    onDelete={() => handleDeleteStatusValue(menu, option)}
+                    onClick={() => handleDeleteStatusValue(menu, option)}
+                  />
+                )
+            )
+          )}
+        </Stack>
+      )}
       <Box sx={{ p: 2 }}>
         <form onSubmit={handleSearch}>
-          {/* <SearchInput
+          <SearchInput
             onChange={handleKeywordChange}
             placeholder="Search orders..."
             value={keyword}
-          /> */}
+          />
         </form>
       </Box>
       <Stack
@@ -270,7 +286,11 @@ export const OrdersTable: FC<OrdersTableProps> = (props) => {
             onSelect={handleClick}
             optionsKey={type.key}
             key={type.key}
-            verifyIsChecked={(key: string, value: string): boolean => (fieldsSelected?.[key] === value || (Array.isArray(fieldsSelected?.[key]) && fieldsSelected?.[key]?.includes(value)))}
+            verifyIsChecked={(key: string, value: string): boolean =>
+              fieldsSelected?.[key] === value ||
+              (Array.isArray(fieldsSelected?.[key]) &&
+                fieldsSelected?.[key]?.includes(value))
+            }
           />
         ))}
       </Stack>
@@ -297,7 +317,9 @@ export const OrdersTable: FC<OrdersTableProps> = (props) => {
               showCustomer={showCustomer}
               order={order}
               key={order._id}
-              onSelect={() => { handleSelect(order._id) }}
+              onSelect={() => {
+                handleSelect(order._id);
+              }}
               selected={selected.includes(order._id)}
             />
           ))}

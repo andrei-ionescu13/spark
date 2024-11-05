@@ -1,19 +1,24 @@
-"use client";
+'use client';
 
 import { useDeleteProducts } from '@/api/products';
+import { AlertDialog } from '@/components/alert-dialog';
 import { DataTable } from '@/components/data-table';
 import { DataTableHead, HeadCell } from '@/components/data-table-head';
 import { SearchInput } from '@/components/search-input';
 import { useDialog } from '@/hooks/useDialog';
 import { useQueryValue } from '@/hooks/useQueryValue';
 import { useSearch } from '@/hooks/useSearch';
-import { Card, Box, Button, TextField, MenuItem, TableBody } from '@mui/material';
-import { useQueryClient, useQuery } from '@tanstack/react-query';
-import { useRouter } from 'next/router';
-import { ChangeEvent, useState, type FC } from 'react'
-import { useSearchProductKeys, useSearchProducts } from '../api-calls-hooks';
-import { AlertDialog } from '@/components/alert-dialog';
 import { Product } from '@/types/products';
+import {
+  Box,
+  Button,
+  Card,
+  MenuItem,
+  TableBody,
+  TextField,
+} from '@mui/material';
+import { useQueryClient } from '@tanstack/react-query';
+import { ChangeEvent, useState, type FC } from 'react';
 import { ProductTableRow } from './products-table-row';
 
 interface ProductsTableProps {
@@ -26,53 +31,55 @@ interface ProductsTableProps {
 
 const headCells: HeadCell[] = [
   {
-    id: "id",
-    label: "Id",
+    id: 'id',
+    label: 'Id',
+    width: '32%',
   },
   {
-    id: "title",
-    label: "Title",
+    id: 'title',
+    label: 'Title',
+    width: '30%',
   },
   {
-    id: "createdAt",
-    label: "Created At",
+    id: 'createdAt',
+    label: 'Created At',
+    width: '20%',
   },
   {
-    id: "status",
-    label: "Status",
+    id: 'status',
+    label: 'Status',
+    width: '10%',
   },
 ];
 
 const statusOptions = [
   {
-    label: "All",
-    value: "all",
+    label: 'All',
+    value: 'all',
   },
   {
-    label: "Published",
-    value: "published",
+    label: 'Published',
+    value: 'published',
   },
   {
-    label: "Draft",
-    value: "draft",
+    label: 'Draft',
+    value: 'draft',
   },
   {
-    label: "Archived",
-    value: "archived",
+    label: 'Archived',
+    value: 'archived',
   },
 ];
-
 
 export const ProductsTable: FC<ProductsTableProps> = (props) => {
   const { products, count, isError, isLoading, refetch } = props;
   const queryClient = useQueryClient();
-  const [keyword, handleKeywordChange, handleSearch] =
-    useSearch();
+  const [keyword, handleKeywordChange, handleSearch] = useSearch();
   const [selected, setSelected] = useState<string[]>([]);
-  const [status, setStatus] = useQueryValue("status", "all", "all");
+  const [status, setStatus] = useQueryValue('status', 'all', 'all');
   const [dialogOpen, handleOpenDialog, handleCloseDialog] = useDialog();
   const deleteProducts = useDeleteProducts(() =>
-    queryClient.invalidateQueries({ queryKey: ["products"] })
+    queryClient.invalidateQueries({ queryKey: ['products'] })
   );
 
   const handleStatusChange = (event: ChangeEvent<HTMLInputElement>): void => {
@@ -110,16 +117,15 @@ export const ProductsTable: FC<ProductsTableProps> = (props) => {
     });
   };
 
-
   return (
     <>
       <Card>
         <Box
           sx={{
-            display: "grid",
+            display: 'grid',
             gap: 2,
             gridTemplateColumns: {
-              sm: `${!!selected.length ? "auto" : ""} 1fr 240px`,
+              sm: `${!!selected.length ? 'auto' : ''} 1fr 240px`,
             },
             p: 2,
           }}
@@ -149,7 +155,10 @@ export const ProductsTable: FC<ProductsTableProps> = (props) => {
             select
           >
             {statusOptions.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
+              <MenuItem
+                key={option.value}
+                value={option.value}
+              >
                 {option.label}
               </MenuItem>
             ))}
@@ -195,5 +204,5 @@ export const ProductsTable: FC<ProductsTableProps> = (props) => {
         title={`Delete ${selected.length} articles`}
       />
     </>
-  )
+  );
 };

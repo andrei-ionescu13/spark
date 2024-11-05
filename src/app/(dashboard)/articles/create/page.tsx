@@ -1,12 +1,7 @@
-import type { FC } from "react";
-import Head from "next/head";
-import type { GetServerSideProps } from "next";
-import { Box, Container } from "@mui/material";
-import { HydrationBoundary, QueryClient, dehydrate, useQuery } from "@tanstack/react-query";
-import { listTags } from "@/api/article-tags";
-import { PageHeader } from "@/components/page-header";
-import { listArticleCategories } from "../api-calls";
-import { ArticleForm } from "./article-form";
+import { PageHeader } from '@/components/page-header';
+import { Box, Container } from '@mui/material';
+import Head from 'next/head';
+import { ArticleForm } from './article-form';
 
 export default async function ArticleCreate() {
   return (
@@ -26,4 +21,4 @@ export default async function ArticleCreate() {
       </Box>
     </>
   );
-};
+}

@@ -1,14 +1,13 @@
+import { ActionsItem } from '@/components/actions-menu';
+import { AlertDialog } from '@/components/alert-dialog';
+import { DataTableRow } from '@/components/data-table-row';
+import { ActionsIconButton } from '@/components/icon-actions';
+import { Box, Checkbox, Link, TableCell, useTheme } from '@mui/material';
 import type { FC } from 'react';
-import { Box, Checkbox, TableCell, useTheme } from '@mui/material';
-import { ActionsItem } from '../../actions-menu';
-import { AlertDialog } from '../../alert-dialog';
-import { ActionsIconButton } from '../../icon-actions';
-import { Link } from '../../link';
+import { Label } from 'recharts';
 import { useDialog } from '../../../hooks/useDialog';
-import { Label } from '../../label';
 import type { User } from '../../../types/user';
 import { formatDate } from '../../../utils/format-date';
-import { DataTableRow } from '../../data-table-row';
 
 interface UsersTableRowProps {
   user: User;
@@ -18,15 +17,17 @@ interface UsersTableRowProps {
 
 export const UsersTableRow: FC<UsersTableRowProps> = (props) => {
   const { user, selected, onSelect } = props;
-  const theme = useTheme()
-  const [deleteDialogOpen, handleOpenDeleteDialog, handleCloseDeleteDialog] = useDialog(false);
-  const [banDialogOpen, handleOpenBanDialog, handleCloseBanDialog] = useDialog(false);
+  const theme = useTheme();
+  const [deleteDialogOpen, handleOpenDeleteDialog, handleCloseDeleteDialog] =
+    useDialog(false);
+  const [banDialogOpen, handleOpenBanDialog, handleCloseBanDialog] =
+    useDialog(false);
 
   const mappedColors = {
     active: theme.palette.success.main,
     banned: theme.palette.error.main,
     inactive: theme.palette.warning.main,
-  }
+  };
 
   const actionItems: ActionsItem[] = [
     // {
@@ -45,7 +46,7 @@ export const UsersTableRow: FC<UsersTableRowProps> = (props) => {
     //   onClick: handleOpenDeleteDialog,
     //   color: 'error.main'
     // }
-  ]
+  ];
 
   return (
     <>
@@ -54,7 +55,7 @@ export const UsersTableRow: FC<UsersTableRowProps> = (props) => {
         onClose={handleCloseDeleteDialog}
         title={`Delete user ${user._id}`}
         content="Are you sure you want to permanently delete this user?"
-        onSubmit={() => { }}
+        onSubmit={() => {}}
         isLoading={false}
       />
       <AlertDialog
@@ -62,7 +63,7 @@ export const UsersTableRow: FC<UsersTableRowProps> = (props) => {
         onClose={handleCloseBanDialog}
         title={`Ban user ${user._id}`}
         content="Are you sure you want to ban this user?"
-        onSubmit={() => { }}
+        onSubmit={() => {}}
         isLoading={false}
       />
       <DataTableRow selected={selected}>
@@ -91,20 +92,12 @@ export const UsersTableRow: FC<UsersTableRowProps> = (props) => {
             {user.email}
           </Link>
         </TableCell>
-        <TableCell>
-          {formatDate(user.createdAt)}
-        </TableCell>
-        <TableCell>
-          {user.ordersCount}
-        </TableCell>
-        <TableCell>
-          {user.totalSpend}
-        </TableCell>
+        <TableCell>{formatDate(user.createdAt)}</TableCell>
+        <TableCell>{user.ordersCount}</TableCell>
+        <TableCell>{user.totalSpend}</TableCell>
         <TableCell>
           <Box>
-            <Label color={mappedColors[user.status]}>
-              {user.status}
-            </Label>
+            <Label color={mappedColors[user.status]}>{user.status}</Label>
           </Box>
         </TableCell>
         <TableCell align="right">
