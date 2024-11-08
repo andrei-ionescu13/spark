@@ -1,22 +1,11 @@
-"use client"
+'use client';
 
-import { useState } from "react";
-import type { FC, ChangeEvent } from "react";
-import Head from "next/head";
-import { useRouter } from "next/navigation";
-import {
-  Box,
-  Card,
-  Container,
-  MenuItem,
-  TableBody,
-  TextField,
-} from "@mui/material";
-import { HeadCell } from "@/components/data-table-head";
-import { PageHeader } from "@/components/page-header";
-import { Plus } from "@/icons/plus";
-import { useSearchDiscounts } from "../api-calls-hooks";
-import { DiscountsTable } from "./discounts-table";
+import { PageHeader } from '@/components/page-header';
+import { Plus } from '@/icons/plus';
+import { Box, Container } from '@mui/material';
+import Head from 'next/head';
+import { useSearchDiscounts } from './api';
+import { DiscountsTable } from './discounts-table';
 
 export default function Discounts() {
   const { data, refetch, isError, isLoading } = useSearchDiscounts();
@@ -33,8 +22,8 @@ export default function Discounts() {
           <PageHeader
             title="Discounts"
             action={{
-              href: "/discounts/create",
-              label: "Create",
+              href: '/discounts/create',
+              label: 'Create',
               icon: Plus,
             }}
           />
@@ -49,4 +38,4 @@ export default function Discounts() {
       </Box>
     </>
   );
-};
+}

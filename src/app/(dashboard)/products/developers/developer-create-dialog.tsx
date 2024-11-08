@@ -1,19 +1,25 @@
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import { FC } from "react";
-import { Box, FormHelperText, Grid, Link, Typography } from "@mui/material";
-import { toast } from "react-toastify";
-import { useQueryClient } from "@tanstack/react-query";
-import { AlertDialog, AlertDialogProps } from "../../../components/alert-dialog";
-import { TextInput } from "../../../components/text-input";
-import { useCreateDeveloper } from "@/api/developers";
+import { Box, FormHelperText, Grid, Typography } from '@mui/material';
+import { useQueryClient } from '@tanstack/react-query';
+import { useFormik } from 'formik';
+import { FC } from 'react';
+import { toast } from 'react-toastify';
+import * as Yup from 'yup';
+import {
+  AlertDialog,
+  AlertDialogProps,
+} from '../../../components/alert-dialog';
+import { TextInput } from '../../../components/text-input';
+import { useCreateDeveloper } from './api';
 
 interface DeveloperCreateDialogProps
-  extends Omit<AlertDialogProps, "title" | "onSubmit" | "isLoading"> { }
+  extends Omit<AlertDialogProps, 'title' | 'onSubmit' | 'isLoading'> {}
 
 const ToastSuccess = (id: string) => (
   <Box>
-    <Typography variant="body1" color="textPrimary">
+    <Typography
+      variant="body1"
+      color="textPrimary"
+    >
       Developer created
     </Typography>
   </Box>
@@ -25,13 +31,13 @@ export const DeveloperCreateDialog: FC<DeveloperCreateDialogProps> = (
   const { onClose, ...rest } = props;
   const queryClient = useQueryClient();
   const createDeveloper = useCreateDeveloper(() =>
-    queryClient.invalidateQueries({ queryKey: ["developers"] })
+    queryClient.invalidateQueries({ queryKey: ['developers'] })
   );
 
   const formik = useFormik({
     initialValues: {
-      name: "",
-      slug: "",
+      name: '',
+      slug: '',
     },
     validationSchema: Yup.object({
       name: Yup.string().required(),
@@ -55,8 +61,14 @@ export const DeveloperCreateDialog: FC<DeveloperCreateDialogProps> = (
       isLoading={createDeveloper.isPending}
       {...rest}
     >
-      <Grid container spacing={3}>
-        <Grid item xs={12}>
+      <Grid
+        container
+        spacing={3}
+      >
+        <Grid
+          item
+          xs={12}
+        >
           <TextInput
             error={!!formik.touched.name && !!formik.errors.name}
             fullWidth
@@ -69,7 +81,10 @@ export const DeveloperCreateDialog: FC<DeveloperCreateDialogProps> = (
             value={formik.values.name}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid
+          item
+          xs={12}
+        >
           <TextInput
             info="If a slug is not provided, one will be generated"
             error={!!formik.touched.slug && !!formik.errors.slug}
@@ -84,7 +99,10 @@ export const DeveloperCreateDialog: FC<DeveloperCreateDialogProps> = (
           />
         </Grid>
         {createDeveloper.error?.message && (
-          <Grid item xs={12}>
+          <Grid
+            item
+            xs={12}
+          >
             <FormHelperText error>
               {createDeveloper.error?.message}
             </FormHelperText>

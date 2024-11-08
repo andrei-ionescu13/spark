@@ -2,7 +2,8 @@
 
 import { Box, Container, Grid } from '@mui/material';
 import Head from 'next/head';
-import { useGetArticle, useListArticleTags } from '../api-calls-hooks';
+import { useListArticleCategories } from '../api';
+import { useGetArticle } from './api';
 import { ArticleDetailsGeneral } from './article-details-general';
 import { ArticleDetailsMeta } from './article-details-meta';
 import { ArticleDetailsTags } from './article-details-tags';
@@ -11,7 +12,7 @@ import { ArticleStatusCategory } from './article-status-category';
 
 export default function Article() {
   const { data: article } = useGetArticle();
-  const { data: categories } = useListArticleTags();
+  const { data: categories } = useListArticleCategories();
 
   if (!article || !categories) return null;
 

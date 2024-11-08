@@ -1,10 +1,5 @@
-"use client"
+'use client';
 
-import type { FC } from "react";
-import { toast } from "react-toastify";
-import { useFormik } from "formik";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import * as Yup from "yup";
 import {
   Card,
   CardContent,
@@ -17,16 +12,18 @@ import {
   MenuItem,
   Select,
   useTheme,
-} from "@mui/material";
-import {
-  useUpdateArticleStatus,
-  useUpdateArticleCategory,
-} from "@/api/articles";
-import { Article } from "../../../types/articles";
-import { ArticleCategory } from "../../../types/article-category";
-import { StatusOption, StatusSelect } from "@/components/status";
-import { Button } from "@/components/button";
-import { useGetArticle, useListArticleTags } from "../api-calls-hooks";
+} from '@mui/material';
+import { useQueryClient } from '@tanstack/react-query';
+import { useFormik } from 'formik';
+import type { FC } from 'react';
+import { toast } from 'react-toastify';
+import * as Yup from 'yup';
+
+import { Button } from '@/components/button';
+import { StatusOption, StatusSelect } from '@/components/status';
+import { ArticleCategory } from '../../../types/article-category';
+import { Article } from '../../../types/articles';
+import { useUpdateArticleCategory, useUpdateArticleStatus } from './api';
 
 interface ArticleStatusTagProps {
   article: Article;
@@ -56,18 +53,18 @@ export const ArticleStatusCategory: FC<ArticleStatusTagProps> = (props) => {
 
   const statusOptions: StatusOption[] = [
     {
-      label: "Published",
-      value: "published",
+      label: 'Published',
+      value: 'published',
       color: theme.palette.success.main,
     },
     {
-      label: "Draft",
-      value: "draft",
+      label: 'Draft',
+      value: 'draft',
       color: colors.grey[500],
     },
     {
-      label: "Archived",
-      value: "archived",
+      label: 'Archived',
+      value: 'archived',
       color: theme.palette.error.main,
     },
   ];
@@ -79,16 +76,16 @@ export const ArticleStatusCategory: FC<ArticleStatusTagProps> = (props) => {
     validationSchema: Yup.object({
       status: Yup.string()
         .oneOf(statusOptions.map((status) => status.value))
-        .required("Required"),
+        .required('Required'),
     }),
     onSubmit: (values) => {
       updateArticleStatus.mutate(values, {
         onSuccess: ({ status }) => {
-          queryClient.setQueryData(["articles", article._id], {
+          queryClient.setQueryData(['articles', article._id], {
             ...article,
             status,
           });
-          toast.success("Article updated");
+          toast.success('Article updated');
         },
         onError: (error) => {
           toast.error(error.message);
@@ -104,16 +101,16 @@ export const ArticleStatusCategory: FC<ArticleStatusTagProps> = (props) => {
     validationSchema: Yup.object({
       category: Yup.string()
         .oneOf(categoryOptions.map((category) => category.value))
-        .required("Required"),
+        .required('Required'),
     }),
     onSubmit: (values) => {
       updateArticleCategory.mutate(values, {
         onSuccess: ({ category }) => {
-          queryClient.setQueryData(["articles", article._id], {
+          queryClient.setQueryData(['articles', article._id], {
             ...article,
             category,
           });
-          toast.success("Article updated");
+          toast.success('Article updated');
         },
         onError: (error) => {
           toast.error(error.message);
@@ -124,16 +121,19 @@ export const ArticleStatusCategory: FC<ArticleStatusTagProps> = (props) => {
 
   return (
     <Card>
-      <CardHeader title="Status/Tag" />
+      <CardHeader title="Status/Category" />
       <Divider />
       <CardContent>
-        <Grid container spacing={2}>
+        <Grid
+          container
+          spacing={2}
+        >
           <Grid
             item
             xs={12}
             sx={{
-              display: "grid",
-              gridTemplateColumns: "9fr 3fr",
+              display: 'grid',
+              gridTemplateColumns: '9fr 3fr',
               gap: 1,
             }}
           >
@@ -173,8 +173,8 @@ export const ArticleStatusCategory: FC<ArticleStatusTagProps> = (props) => {
             item
             xs={12}
             sx={{
-              display: "grid",
-              gridTemplateColumns: "9fr 3fr",
+              display: 'grid',
+              gridTemplateColumns: '9fr 3fr',
               gap: 1,
             }}
           >
@@ -193,7 +193,10 @@ export const ArticleStatusCategory: FC<ArticleStatusTagProps> = (props) => {
                 value={formikTag.values.category}
               >
                 {categoryOptions.map((category) => (
-                  <MenuItem value={category.value} key={category.value}>
+                  <MenuItem
+                    value={category.value}
+                    key={category.value}
+                  >
                     {category.label}
                   </MenuItem>
                 ))}

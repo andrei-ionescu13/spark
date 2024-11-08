@@ -1,6 +1,5 @@
 'use client';
 
-import { useDeleteDevelopers } from '@/api/developers';
 import { AlertDialog } from '@/components/alert-dialog';
 import { DataTable } from '@/components/data-table';
 import { DataTableHead, HeadCell } from '@/components/data-table-head';
@@ -9,6 +8,7 @@ import { useSearch } from '@/hooks/useSearch';
 import { Developer } from '@/types/developer';
 import { Box, Button, Card, TableBody } from '@mui/material';
 import { useState, type FC } from 'react';
+import { useDeleteDevelopers } from './api';
 import { DevelopersTableRow } from './developers-table-row';
 
 interface DevelopersTableProps {
@@ -51,7 +51,6 @@ export const DevelopersTable: FC<DevelopersTableProps> = (props) => {
         setSelected([]);
         handleCloseDialog();
       },
-      onError: (error) => {},
     });
   };
 

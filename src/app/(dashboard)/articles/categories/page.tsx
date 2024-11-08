@@ -1,14 +1,14 @@
-'use client'
+'use client';
 
-import { Box, Container } from '@mui/material'
-import Head from 'next/head'
-import { CategoriesHeader } from './categories-header'
-import { CategoriesTable } from './categories-table'
-import { useSearchArticleCategories } from '../api-calls-hooks'
+import { Box, Container } from '@mui/material';
+import Head from 'next/head';
+import { useSearchArticleCategories } from './api';
+import { CategoriesHeader } from './categories-header';
+import { CategoriesTable } from './categories-table';
 
 export default function ArticleCategories() {
-  const { data, refetch, isError, isLoading } = useSearchArticleCategories()
-  const { categories, count } = data || {}
+  const { data, refetch, isError, isLoading } = useSearchArticleCategories();
+  const { categories, count } = data || {};
 
   return (
     <>
@@ -28,5 +28,5 @@ export default function ArticleCategories() {
         </Container>
       </Box>
     </>
-  )
+  );
 }

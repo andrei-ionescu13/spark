@@ -6,10 +6,10 @@ import {
   List,
   Typography,
 } from '@mui/material';
-import { useGetProduct } from 'app/(dashboard)/products/api-calls-hooks';
 import type { FC } from 'react';
 import { Discount } from '../../../types/discounts';
 import { formatDate } from '../../../utils/format-date';
+import { useGetProduct } from './api';
 
 interface ProductDiscountProps {
   discount: Discount;
@@ -67,7 +67,10 @@ export const ProductDiscount: FC<ProductDiscountProps> = (props) => {
             ({ value, text }) =>
               value && (
                 <li key={value}>
-                  <Typography color="textPrimary" variant="body2">
+                  <Typography
+                    color="textPrimary"
+                    variant="body2"
+                  >
                     {`${text.pre} ${value}${text.post}`}
                   </Typography>
                 </li>

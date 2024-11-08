@@ -1,18 +1,18 @@
-import type { FC } from "react";
-import { Box, Checkbox, TableCell, Typography, useTheme } from "@mui/material";
-import { ActionsItem } from "../../components/actions-menu";
-import { AlertDialog } from "../../components/alert-dialog";
-import { ActionsIconButton } from "../../components/icon-actions";
-import { Link } from "../../components/link";
-import { Trash as TrashIcon } from "../../icons/trash";
-import { Pencil as PencilIcon } from "../../icons/pencil";
-import { useDialog } from "../../hooks/useDialog";
-import { Label } from "../../components/label";
-import { KeysUpdateDialog } from "./keys/keys-update-dialog";
-import { formatDate } from "../../utils/format-date";
-import { useDeleteKey } from "@/api/keys";
-import type { Key } from "../../types/keys";
-import { DataTableRow } from "../../components/data-table-row";
+import { Box, Checkbox, TableCell, Typography, useTheme } from '@mui/material';
+import type { FC } from 'react';
+import { ActionsItem } from '../../components/actions-menu';
+import { AlertDialog } from '../../components/alert-dialog';
+import { DataTableRow } from '../../components/data-table-row';
+import { ActionsIconButton } from '../../components/icon-actions';
+import { Label } from '../../components/label';
+import { Link } from '../../components/link';
+import { useDialog } from '../../hooks/useDialog';
+import { Pencil as PencilIcon } from '../../icons/pencil';
+import { Trash as TrashIcon } from '../../icons/trash';
+import type { Key } from '../../types/keys';
+import { formatDate } from '../../utils/format-date';
+import { useDeleteKey } from './api';
+import { KeysUpdateDialog } from './keys/keys-update-dialog';
 
 interface UsersTableRowProps {
   productKey: Key;
@@ -58,16 +58,16 @@ export const KeysTableRow: FC<UsersTableRowProps> = (props) => {
 
   const actionItems: ActionsItem[] = [
     {
-      label: "Edit",
+      label: 'Edit',
       icon: PencilIcon,
       onClick: handleOpenEditDialog,
-      disabled: key.status === "secret",
+      disabled: key.status === 'secret',
     },
     {
-      label: "Delete",
+      label: 'Delete',
       icon: TrashIcon,
       onClick: handleOpenDeleteDialog,
-      color: "error",
+      color: 'error',
     },
   ];
 
@@ -91,10 +91,17 @@ export const KeysTableRow: FC<UsersTableRowProps> = (props) => {
       )}
       <DataTableRow selected={selected}>
         <TableCell padding="checkbox">
-          <Checkbox color="primary" onChange={onSelect} checked={selected} />
+          <Checkbox
+            color="primary"
+            onChange={onSelect}
+            checked={selected}
+          />
         </TableCell>
         <TableCell>
-          <Typography color="textPrimary" variant="body1">
+          <Typography
+            color="textPrimary"
+            variant="body1"
+          >
             {key.value}
           </Typography>
         </TableCell>

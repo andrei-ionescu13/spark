@@ -1,4 +1,3 @@
-import { useDeletePromoCode, useDeactivatePromoCode } from '@/api/promo-codes';
 import { ActionsItem } from '@/components/actions-menu';
 import { AlertDialog } from '@/components/alert-dialog';
 import { Label } from '@/components/label';
@@ -12,7 +11,8 @@ import { colors, Skeleton, useTheme } from '@mui/material';
 import { useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
 import router from 'next/router';
-import type { FC } from 'react'
+import type { FC } from 'react';
+import { useDeactivatePromoCode, useDeletePromoCode } from '../api-calls';
 
 interface PromoCodeHeaderProps {
   promoCode?: PromoCode;
@@ -23,7 +23,7 @@ export const PromoCodeHeader: FC<PromoCodeHeaderProps> = (props) => {
   const { promoCode, isLoading } = props;
   const queryClient = useQueryClient();
   const { id } = useParams<{ id: string }>();
-  const theme = useTheme()
+  const theme = useTheme();
   const [deleteDialogOpen, handleOpenDeleteDialog, handleCloseDeleteDialog] =
     useDialog(false);
   const [
@@ -33,10 +33,11 @@ export const PromoCodeHeader: FC<PromoCodeHeaderProps> = (props) => {
   ] = useDialog(false);
   const deletePromoCode = useDeletePromoCode();
   const deactivatePromoCode = useDeactivatePromoCode(() =>
-    queryClient.invalidateQueries({ queryKey: ["promo-code", id] })
+    queryClient.invalidateQueries({ queryKey: ['promo-code', id] })
   );
 
-  const status = promoCode && getStatusFromInterval(promoCode.startDate, promoCode.endDate);
+  const status =
+    promoCode && getStatusFromInterval(promoCode.startDate, promoCode.endDate);
 
   const mappedColors = {
     scheduled: colors.grey[500],
@@ -46,22 +47,22 @@ export const PromoCodeHeader: FC<PromoCodeHeaderProps> = (props) => {
 
   const actionItems: ActionsItem[] = [
     {
-      label: "Deactivate",
+      label: 'Deactivate',
       icon: EyeOff,
       onClick: handleOpenDeactivateDialog,
     },
     {
-      label: "Delete",
+      label: 'Delete',
       icon: Trash,
       onClick: handleOpenDeleteDialog,
-      color: "error",
+      color: 'error',
     },
   ];
 
   const handleDeletePromoCode = (promoCode: PromoCode): void => {
     deletePromoCode.mutate(promoCode._id, {
       onSuccess: () => {
-        router.push("/promo-codes");
+        router.push('/promo-codes');
       },
     });
   };
@@ -74,7 +75,7 @@ export const PromoCodeHeader: FC<PromoCodeHeaderProps> = (props) => {
     });
   };
 
-  console.log(promoCode)
+  console.log(promoCode);
 
   return (
     <>
@@ -86,7 +87,13 @@ export const PromoCodeHeader: FC<PromoCodeHeaderProps> = (props) => {
         isLoading={isLoading}
       >
         {status && <Label color={mappedColors[status]}>{status}</Label>}
-        {isLoading && (<Skeleton variant="rounded" width={80} height={21} />)}
+        {isLoading && (
+          <Skeleton
+            variant="rounded"
+            width={80}
+            height={21}
+          />
+        )}
       </PageHeader>
       {!!promoCode && (
         <>
@@ -95,7 +102,9 @@ export const PromoCodeHeader: FC<PromoCodeHeaderProps> = (props) => {
             onClose={handleCloseDeleteDialog}
             title={`Delete promoCode`}
             content="Are you sure you want to delete this promoCode?"
-            onSubmit={() => { handleDeletePromoCode(promoCode) }}
+            onSubmit={() => {
+              handleDeletePromoCode(promoCode);
+            }}
             isLoading={deletePromoCode.isPending}
           />
           <AlertDialog
@@ -103,11 +112,13 @@ export const PromoCodeHeader: FC<PromoCodeHeaderProps> = (props) => {
             onClose={handleCloseDeactivateDialog}
             title={`Deactivate promoCode`}
             content="Are you sure you want to deactivate this promoCode?"
-            onSubmit={() => { handleDeactivatePromoCode(promoCode) }}
+            onSubmit={() => {
+              handleDeactivatePromoCode(promoCode);
+            }}
             isLoading={deactivatePromoCode.isPending}
           />
         </>
       )}
     </>
-  )
+  );
 };

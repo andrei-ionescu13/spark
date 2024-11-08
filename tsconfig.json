@@ -9,7 +9,7 @@
       "@/utils/*": ["app/utils/*"],
       "@/icons/*": ["app/icons/*"],
       "@/constants": ["app/constants"],
-      "@/api/*": ["api/*"],
+      "@/api/*": ["app/api"],
       "@/pages/*": ["pages/*"]
     },
     "target": "ES6",

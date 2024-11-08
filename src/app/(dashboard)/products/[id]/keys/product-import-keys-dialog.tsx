@@ -1,16 +1,16 @@
-"use client"
+'use client';
 
-import { useRef } from "react";
-import type { FC, ChangeEvent } from "react";
-import { useQueryClient } from "@tanstack/react-query";
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import { AlertDialog } from "../../../../components/alert-dialog";
-import { Box, FormHelperText, Typography } from "@mui/material";
-import { useImportProductKeys } from "@/api/products";
-import { buildFormData } from "../../../../utils/build-form-data";
-import { useParams, useRouter } from "next/navigation";
-import { Button } from "../../../../components/button";
+import { Box, FormHelperText, Typography } from '@mui/material';
+import { useQueryClient } from '@tanstack/react-query';
+import { useFormik } from 'formik';
+import { useParams } from 'next/navigation';
+import type { ChangeEvent, FC } from 'react';
+import { useRef } from 'react';
+import * as Yup from 'yup';
+import { AlertDialog } from '../../../../components/alert-dialog';
+import { Button } from '../../../../components/button';
+import { buildFormData } from '../../../../utils/build-form-data';
+import { useImportProductKeys } from './api';
 
 interface ProductImportKeysDialogProps {
   open: boolean;
@@ -25,7 +25,7 @@ export const ProductImportKeysDialog: FC<ProductImportKeysDialogProps> = (
   const { id } = useParams<{ id: string }>();
   const queryClient = useQueryClient();
   const importProductKeys = useImportProductKeys(() =>
-    queryClient.invalidateQueries({ queryKey: ["product-keys", id] })
+    queryClient.invalidateQueries({ queryKey: ['product-keys', id] })
   );
   const initialValues: { keys?: File } = {
     keys: undefined,
@@ -34,7 +34,7 @@ export const ProductImportKeysDialog: FC<ProductImportKeysDialogProps> = (
   const formik = useFormik({
     initialValues,
     validationSchema: Yup.object({
-      keys: Yup.mixed().required("File required"),
+      keys: Yup.mixed().required('File required'),
     }),
     onSubmit: (values) => {
       const formData = buildFormData(values);
@@ -54,12 +54,12 @@ export const ProductImportKeysDialog: FC<ProductImportKeysDialogProps> = (
       return;
     }
 
-    if (event.target.files[0]?.type !== "text/plain") {
-      formik.setFieldError("keys", "the file should be a text file");
+    if (event.target.files[0]?.type !== 'text/plain') {
+      formik.setFieldError('keys', 'the file should be a text file');
       return;
     }
 
-    formik.setFieldValue("keys", event.target.files[0]);
+    formik.setFieldValue('keys', event.target.files[0]);
   };
 
   return (
@@ -76,15 +76,18 @@ export const ProductImportKeysDialog: FC<ProductImportKeysDialogProps> = (
     >
       <Box
         sx={{
-          display: "grid",
-          placeItems: "center",
+          display: 'grid',
+          placeItems: 'center',
           gap: 2,
           input: {
-            display: "none",
+            display: 'none',
           },
         }}
       >
-        <Typography color="textSecondary" variant="body1">
+        <Typography
+          color="textSecondary"
+          variant="body1"
+        >
           Please import a file
         </Typography>
         <input
@@ -103,7 +106,11 @@ export const ProductImportKeysDialog: FC<ProductImportKeysDialogProps> = (
           Import
         </Button>
         {!!formik.values.keys && (
-          <Typography color="textPrimary" textAlign="center" variant="body2">
+          <Typography
+            color="textPrimary"
+            textAlign="center"
+            variant="body2"
+          >
             {formik.values.keys?.name}
             <br />
             <Typography
@@ -117,7 +124,10 @@ export const ProductImportKeysDialog: FC<ProductImportKeysDialogProps> = (
           </Typography>
         )}
         {importProductKeys.isError && (
-          <FormHelperText error sx={{ mt: 1 }}>
+          <FormHelperText
+            error
+            sx={{ mt: 1 }}
+          >
             {importProductKeys.error.message}
           </FormHelperText>
         )}

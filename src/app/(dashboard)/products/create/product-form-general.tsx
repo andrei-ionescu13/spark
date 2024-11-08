@@ -1,79 +1,44 @@
-import { Fragment, useState } from "react";
-import type { FC, SyntheticEvent } from "react";
 import {
   Autocomplete,
   Box,
   Card,
   CardContent,
+  CircularProgress,
+  FormControlLabel,
   Grid,
   IconButton,
-  FormControlLabel,
-  Switch,
   InputAdornment,
-  Tooltip,
-  CircularProgress,
-} from "@mui/material";
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import { Eye as EyeIcon } from "../../../icons/eye";
-import { MarkdownPreview } from "../../../components/markdown-preview";
-import { useDialog } from "../../../hooks/useDialog";
-import type { Genre } from "../../../types/genres";
-import type { Publisher } from "../../../types/publishers";
-import type { Platform } from "../../../types/platforms";
-import { Button } from "../../../components/button";
-import { TextInput } from "../../../components/text-input";
-import { DateInput } from "../../../components/date-picker";
-import { Developer } from "../../../types/developer";
-import { appFetch } from "../../../utils/app-fetch";
-import { useQuery } from "@tanstack/react-query";
-import { Feature } from "../../../types/feature";
-import { Language } from "../../../types/translations";
-import { OperatingSystem } from "../../../types/operating-sistem";
+  Switch,
+} from '@mui/material';
+import { useFormik } from 'formik';
+import type { FC, SyntheticEvent } from 'react';
+import { Fragment, useState } from 'react';
+import * as Yup from 'yup';
+import { Button } from '../../../components/button';
+import { DateInput } from '../../../components/date-picker';
+import { MarkdownPreview } from '../../../components/markdown-preview';
+import { TextInput } from '../../../components/text-input';
+import { useDialog } from '../../../hooks/useDialog';
+import { Eye as EyeIcon } from '../../../icons/eye';
+import {
+  useListDevelopersQuery,
+  useListFeaturesQuery,
+  useListGenresQuery,
+  useListLanguagesQuery,
+  useListOperatingSystemsQuery,
+  useListPlatformsQuery,
+  useListPublishersQuery,
+} from '../api';
 
 interface ProductFormGeneralProps {
   onNext: any;
   product: any;
 }
-
-const listGenres =
-  (config: Record<string, any> = {}) =>
-    () =>
-      appFetch<Genre[]>({ url: "/genres", withAuth: true, ...config });
-const listPublishers =
-  (config: Record<string, any> = {}) =>
-    () =>
-      appFetch<Publisher[]>({ url: "/publishers", withAuth: true, ...config });
-const listPlatforms =
-  (config: Record<string, any> = {}) =>
-    () =>
-      appFetch<Platform[]>({ url: "/platforms", withAuth: true, ...config });
-const listDevelopers =
-  (config: Record<string, any> = {}) =>
-    () =>
-      appFetch<Developer[]>({ url: "/developers", withAuth: true, ...config });
-const listFeatures =
-  (config: Record<string, any> = {}) =>
-    () =>
-      appFetch<Feature[]>({ url: "/features", withAuth: true, ...config });
-const listLanguages =
-  (config: Record<string, any> = {}) =>
-    () =>
-      appFetch<Language[]>({ url: "/languages", withAuth: true, ...config });
-const listOperatingSystems =
-  (config: Record<string, any> = {}) =>
-    () =>
-      appFetch<OperatingSystem[]>({
-        url: "/operating-systems",
-        withAuth: true,
-        ...config,
-      });
-
 export const ProductFormGeneral: FC<ProductFormGeneralProps> = (props) => {
   const { onNext, product } = props;
   const [dialogOpen, handleOpenDialog, handleCloseDialog] = useDialog();
   const [previewSelected, setPreviewSelected] = useState<
-    "minimumRequirements" | "recommendedRequirements" | "markdown" | undefined
+    'minimumRequirements' | 'recommendedRequirements' | 'markdown' | undefined
   >();
   const [autocompleteOpen, setAutocompleteOpen] = useState({
     developers: false,
@@ -92,54 +57,40 @@ export const ProductFormGeneral: FC<ProductFormGeneralProps> = (props) => {
     }));
   };
 
-  const developersQuery = useQuery({
-    queryKey: ["developers"],
-    queryFn: listDevelopers(),
-    enabled: autocompleteOpen.developers,
-  });
-  const featuresQuery = useQuery({
-    queryKey: ["features"],
-    queryFn: listFeatures(),
+  const listDevelopersQuery = useListDevelopersQuery({
     enabled: autocompleteOpen.features,
   });
-  const genresQuery = useQuery({
-    queryKey: ["genres"],
-    queryFn: listGenres(),
+  const listFeaturesQuery = useListFeaturesQuery({
+    enabled: autocompleteOpen.features,
+  });
+  const listGenresQuery = useListGenresQuery({
     enabled: autocompleteOpen.genres,
   });
-  const languagesQuery = useQuery({
-    queryKey: ["languages"],
-    queryFn: listLanguages(),
+  const listLanguagesQuery = useListLanguagesQuery({
     enabled: autocompleteOpen.languages,
   });
-  const operatingSystemsQuery = useQuery({
-    queryKey: ["operating-systems"],
-    queryFn: listOperatingSystems(),
+  const listOperatingSystemsQuery = useListOperatingSystemsQuery({
     enabled: autocompleteOpen.os,
   });
-  const platformsQuery = useQuery({
-    queryKey: ["platforms"],
-    queryFn: listPlatforms(),
+  const listPlatformsQuery = useListPlatformsQuery({
     enabled: autocompleteOpen.platform,
   });
-  const publishersQuery = useQuery({
-    queryKey: ["publishers"],
-    queryFn: listPublishers(),
+  const listPublishersQuery = useListPublishersQuery({
     enabled: autocompleteOpen.publisher,
   });
 
-  const genres = genresQuery.data || [];
-  const publishers = publishersQuery.data || [];
-  const platforms = platformsQuery.data || [];
-  const developers = developersQuery.data || [];
-  const features = featuresQuery.data || [];
-  const languages = languagesQuery.data || [];
-  const operatingSystems = operatingSystemsQuery.data || [];
+  const genres = listGenresQuery.data || [];
+  const publishers = listPublishersQuery.data || [];
+  const platforms = listPlatformsQuery.data || [];
+  const developers = listDevelopersQuery.data || [];
+  const features = listFeaturesQuery.data || [];
+  const languages = listLanguagesQuery.data || [];
+  const operatingSystems = listOperatingSystemsQuery.data || [];
 
   const formik = useFormik({
     initialValues: {
-      title: product?.title || "",
-      price: product?.price || "",
+      title: product?.title || '',
+      price: product?.price || '',
       genres: product?.genres || [],
       releaseDate: product?.releaseDate || null,
       publisher: product?.publisher || null,
@@ -147,13 +98,13 @@ export const ProductFormGeneral: FC<ProductFormGeneralProps> = (props) => {
       developers: product?.developers || [],
       languages: product?.languages || [],
       features: product?.features || [],
-      link: product?.link || "",
+      link: product?.link || '',
       os: product?.os || [],
-      markdown: product?.markdown || "",
-      slug: product?.slug || "",
+      markdown: product?.markdown || '',
+      slug: product?.slug || '',
       shouldPublish: product?.shouldPublish || false,
-      minimumRequirements: product?.minimumRequirements || "",
-      recommendedRequirements: product?.recommendedRequirements || "",
+      minimumRequirements: product?.minimumRequirements || '',
+      recommendedRequirements: product?.recommendedRequirements || '',
     },
     validationSchema: Yup.object({
       minimumRequirements: Yup.string().required(),
@@ -193,8 +144,15 @@ export const ProductFormGeneral: FC<ProductFormGeneralProps> = (props) => {
       <Box>
         <Card>
           <CardContent>
-            <Grid container spacing={3}>
-              <Grid item xs={12} sm={6}>
+            <Grid
+              container
+              spacing={3}
+            >
+              <Grid
+                item
+                xs={12}
+                sm={6}
+              >
                 <TextInput
                   error={!!formik.touched.title && !!formik.errors.title}
                   fullWidth
@@ -209,7 +167,11 @@ export const ProductFormGeneral: FC<ProductFormGeneralProps> = (props) => {
                   value={formik.values.title}
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid
+                item
+                xs={12}
+                sm={6}
+              >
                 <TextInput
                   error={!!formik.touched.price && !!formik.errors.price}
                   fullWidth
@@ -230,7 +192,11 @@ export const ProductFormGeneral: FC<ProductFormGeneralProps> = (props) => {
                   value={formik.values.price}
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid
+                item
+                xs={12}
+                sm={6}
+              >
                 <TextInput
                   error={!!formik.touched.slug && !!formik.errors.slug}
                   fullWidth
@@ -246,23 +212,27 @@ export const ProductFormGeneral: FC<ProductFormGeneralProps> = (props) => {
                   info="If a slug is not provided, one will be generated"
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid
+                item
+                xs={12}
+                sm={6}
+              >
                 <Autocomplete
                   open={autocompleteOpen.publisher}
                   onOpen={() => {
-                    handleAutocompleteOpenToggle("publisher", true);
+                    handleAutocompleteOpenToggle('publisher', true);
                   }}
                   onClose={() => {
-                    handleAutocompleteOpenToggle("publisher", false);
+                    handleAutocompleteOpenToggle('publisher', false);
                   }}
-                  loading={publishersQuery.isFetching}
+                  loading={listPublishersQuery.isFetching}
                   autoSelect
                   filterSelectedOptions
                   value={formik.values.publisher}
                   getOptionLabel={(option) => option.name}
                   id="publisher"
                   onChange={(event: SyntheticEvent, newValue: string[]) => {
-                    formik.setFieldValue("publisher", newValue);
+                    formik.setFieldValue('publisher', newValue);
                   }}
                   options={publishers}
                   renderInput={(params) => (
@@ -282,8 +252,11 @@ export const ProductFormGeneral: FC<ProductFormGeneralProps> = (props) => {
                         ...params.InputProps,
                         endAdornment: (
                           <Fragment>
-                            {publishersQuery.isFetching ? (
-                              <CircularProgress color="inherit" size={20} />
+                            {listPublishersQuery.isFetching ? (
+                              <CircularProgress
+                                color="inherit"
+                                size={20}
+                              />
                             ) : null}
                             {params.InputProps.endAdornment}
                           </Fragment>
@@ -293,23 +266,27 @@ export const ProductFormGeneral: FC<ProductFormGeneralProps> = (props) => {
                   )}
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid
+                item
+                xs={12}
+                sm={6}
+              >
                 <Autocomplete
                   filterSelectedOptions
                   open={autocompleteOpen.platform}
                   onOpen={() => {
-                    handleAutocompleteOpenToggle("platform", true);
+                    handleAutocompleteOpenToggle('platform', true);
                   }}
                   onClose={() => {
-                    handleAutocompleteOpenToggle("platform", false);
+                    handleAutocompleteOpenToggle('platform', false);
                   }}
-                  loading={platformsQuery.isFetching}
+                  loading={listPlatformsQuery.isFetching}
                   autoSelect
                   value={formik.values.platform}
                   getOptionLabel={(option) => option.name}
                   id="platform"
                   onChange={(event: SyntheticEvent, newValue: string[]) => {
-                    formik.setFieldValue("platform", newValue);
+                    formik.setFieldValue('platform', newValue);
                   }}
                   options={platforms}
                   renderInput={(params) => (
@@ -329,8 +306,11 @@ export const ProductFormGeneral: FC<ProductFormGeneralProps> = (props) => {
                         ...params.InputProps,
                         endAdornment: (
                           <Fragment>
-                            {platformsQuery.isFetching ? (
-                              <CircularProgress color="inherit" size={20} />
+                            {listPlatformsQuery.isFetching ? (
+                              <CircularProgress
+                                color="inherit"
+                                size={20}
+                              />
                             ) : null}
                             {params.InputProps.endAdornment}
                           </Fragment>
@@ -340,16 +320,20 @@ export const ProductFormGeneral: FC<ProductFormGeneralProps> = (props) => {
                   )}
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid
+                item
+                xs={12}
+                sm={6}
+              >
                 <Autocomplete
                   open={autocompleteOpen.os}
                   onOpen={() => {
-                    handleAutocompleteOpenToggle("os", true);
+                    handleAutocompleteOpenToggle('os', true);
                   }}
                   onClose={() => {
-                    handleAutocompleteOpenToggle("os", false);
+                    handleAutocompleteOpenToggle('os', false);
                   }}
-                  loading={operatingSystemsQuery.isFetching}
+                  loading={listOperatingSystemsQuery.isFetching}
                   value={formik.values.os}
                   filterSelectedOptions
                   freeSolo
@@ -357,7 +341,7 @@ export const ProductFormGeneral: FC<ProductFormGeneralProps> = (props) => {
                   id="os"
                   multiple
                   onChange={(event: SyntheticEvent, newValue: string[]) => {
-                    formik.setFieldValue("os", newValue);
+                    formik.setFieldValue('os', newValue);
                   }}
                   options={operatingSystems}
                   renderInput={(params) => (
@@ -374,8 +358,11 @@ export const ProductFormGeneral: FC<ProductFormGeneralProps> = (props) => {
                         ...params.InputProps,
                         endAdornment: (
                           <Fragment>
-                            {operatingSystemsQuery.isFetching ? (
-                              <CircularProgress color="inherit" size={20} />
+                            {listOperatingSystemsQuery.isFetching ? (
+                              <CircularProgress
+                                color="inherit"
+                                size={20}
+                              />
                             ) : null}
                             {params.InputProps.endAdornment}
                           </Fragment>
@@ -385,23 +372,27 @@ export const ProductFormGeneral: FC<ProductFormGeneralProps> = (props) => {
                   )}
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid
+                item
+                xs={12}
+                sm={6}
+              >
                 <Autocomplete
                   open={autocompleteOpen.developers}
                   onOpen={() => {
-                    handleAutocompleteOpenToggle("developers", true);
+                    handleAutocompleteOpenToggle('developers', true);
                   }}
                   onClose={() => {
-                    handleAutocompleteOpenToggle("developers", false);
+                    handleAutocompleteOpenToggle('developers', false);
                   }}
-                  loading={developersQuery.isFetching}
+                  loading={listDevelopersQuery.isFetching}
                   value={formik.values.developers}
                   filterSelectedOptions
                   getOptionLabel={(option) => option.name}
                   id="developers"
                   multiple
                   onChange={(event: SyntheticEvent, newValue: string[]) => {
-                    formik.setFieldValue("developers", newValue);
+                    formik.setFieldValue('developers', newValue);
                   }}
                   options={developers}
                   renderInput={(params) => (
@@ -422,8 +413,11 @@ export const ProductFormGeneral: FC<ProductFormGeneralProps> = (props) => {
                         ...params.InputProps,
                         endAdornment: (
                           <Fragment>
-                            {developersQuery.isFetching ? (
-                              <CircularProgress color="inherit" size={20} />
+                            {listDevelopersQuery.isFetching ? (
+                              <CircularProgress
+                                color="inherit"
+                                size={20}
+                              />
                             ) : null}
                             {params.InputProps.endAdornment}
                           </Fragment>
@@ -433,16 +427,20 @@ export const ProductFormGeneral: FC<ProductFormGeneralProps> = (props) => {
                   )}
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid
+                item
+                xs={12}
+                sm={6}
+              >
                 <Autocomplete
                   open={autocompleteOpen.features}
                   onOpen={() => {
-                    handleAutocompleteOpenToggle("features", true);
+                    handleAutocompleteOpenToggle('features', true);
                   }}
                   onClose={() => {
-                    handleAutocompleteOpenToggle("features", false);
+                    handleAutocompleteOpenToggle('features', false);
                   }}
-                  loading={featuresQuery.isFetching}
+                  loading={listFeaturesQuery.isFetching}
                   value={formik.values.features}
                   filterSelectedOptions
                   freeSolo
@@ -450,7 +448,7 @@ export const ProductFormGeneral: FC<ProductFormGeneralProps> = (props) => {
                   id="features"
                   multiple
                   onChange={(event: SyntheticEvent, newValue: string[]) => {
-                    formik.setFieldValue("features", newValue);
+                    formik.setFieldValue('features', newValue);
                   }}
                   options={features}
                   renderInput={(params) => (
@@ -470,8 +468,11 @@ export const ProductFormGeneral: FC<ProductFormGeneralProps> = (props) => {
                         ...params.InputProps,
                         endAdornment: (
                           <Fragment>
-                            {featuresQuery.isFetching ? (
-                              <CircularProgress color="inherit" size={20} />
+                            {listFeaturesQuery.isFetching ? (
+                              <CircularProgress
+                                color="inherit"
+                                size={20}
+                              />
                             ) : null}
                             {params.InputProps.endAdornment}
                           </Fragment>
@@ -481,23 +482,27 @@ export const ProductFormGeneral: FC<ProductFormGeneralProps> = (props) => {
                   )}
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid
+                item
+                xs={12}
+                sm={6}
+              >
                 <Autocomplete
                   open={autocompleteOpen.genres}
                   onOpen={() => {
-                    handleAutocompleteOpenToggle("genres", true);
+                    handleAutocompleteOpenToggle('genres', true);
                   }}
                   onClose={() => {
-                    handleAutocompleteOpenToggle("genres", false);
+                    handleAutocompleteOpenToggle('genres', false);
                   }}
-                  loading={genresQuery.isFetching}
+                  loading={listGenresQuery.isFetching}
                   value={formik.values.genres}
                   filterSelectedOptions
                   getOptionLabel={(option) => option.name}
                   id="genres"
                   multiple
                   onChange={(event: SyntheticEvent, newValue: string[]) => {
-                    formik.setFieldValue("genres", newValue);
+                    formik.setFieldValue('genres', newValue);
                   }}
                   options={genres}
                   renderInput={(params) => (
@@ -515,8 +520,11 @@ export const ProductFormGeneral: FC<ProductFormGeneralProps> = (props) => {
                         ...params.InputProps,
                         endAdornment: (
                           <Fragment>
-                            {genresQuery.isFetching ? (
-                              <CircularProgress color="inherit" size={20} />
+                            {listGenresQuery.isFetching ? (
+                              <CircularProgress
+                                color="inherit"
+                                size={20}
+                              />
                             ) : null}
                             {params.InputProps.endAdornment}
                           </Fragment>
@@ -526,7 +534,11 @@ export const ProductFormGeneral: FC<ProductFormGeneralProps> = (props) => {
                   )}
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid
+                item
+                xs={12}
+                sm={6}
+              >
                 <TextInput
                   error={!!formik.touched.link && !!formik.errors.link}
                   fullWidth
@@ -541,16 +553,20 @@ export const ProductFormGeneral: FC<ProductFormGeneralProps> = (props) => {
                   value={formik.values.link}
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid
+                item
+                xs={12}
+                sm={6}
+              >
                 <Autocomplete
                   open={autocompleteOpen.languages}
                   onOpen={() => {
-                    handleAutocompleteOpenToggle("languages", true);
+                    handleAutocompleteOpenToggle('languages', true);
                   }}
                   onClose={() => {
-                    handleAutocompleteOpenToggle("languages", false);
+                    handleAutocompleteOpenToggle('languages', false);
                   }}
-                  loading={languagesQuery.isFetching}
+                  loading={listLanguagesQuery.isFetching}
                   value={formik.values.languages}
                   filterSelectedOptions
                   freeSolo
@@ -558,7 +574,7 @@ export const ProductFormGeneral: FC<ProductFormGeneralProps> = (props) => {
                   id="languages"
                   multiple
                   onChange={(event: SyntheticEvent, newValue: string[]) => {
-                    formik.setFieldValue("languages", newValue);
+                    formik.setFieldValue('languages', newValue);
                   }}
                   options={languages}
                   renderInput={(params) => (
@@ -578,8 +594,11 @@ export const ProductFormGeneral: FC<ProductFormGeneralProps> = (props) => {
                         ...params.InputProps,
                         endAdornment: (
                           <Fragment>
-                            {languagesQuery.isFetching ? (
-                              <CircularProgress color="inherit" size={20} />
+                            {listLanguagesQuery.isFetching ? (
+                              <CircularProgress
+                                color="inherit"
+                                size={20}
+                              />
                             ) : null}
                             {params.InputProps.endAdornment}
                           </Fragment>
@@ -589,12 +608,16 @@ export const ProductFormGeneral: FC<ProductFormGeneralProps> = (props) => {
                   )}
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid
+                item
+                xs={12}
+                sm={6}
+              >
                 <DateInput
                   label="Release Date"
                   value={formik.values.releaseDate}
                   onChange={(newValue: Date | null) => {
-                    formik.setFieldValue("releaseDate", newValue);
+                    formik.setFieldValue('releaseDate', newValue);
                   }}
                   slotProps={{
                     textField: {
@@ -606,7 +629,11 @@ export const ProductFormGeneral: FC<ProductFormGeneralProps> = (props) => {
                   }}
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid
+                item
+                xs={12}
+                sm={6}
+              >
                 <TextInput
                   error={
                     !!formik.touched.minimumRequirements &&
@@ -629,14 +656,14 @@ export const ProductFormGeneral: FC<ProductFormGeneralProps> = (props) => {
                 />
                 <Box
                   sx={{
-                    display: "flex",
-                    justifyContent: "flex-end",
+                    display: 'flex',
+                    justifyContent: 'flex-end',
                   }}
                 >
                   <IconButton
                     color="secondary"
                     onClick={() => {
-                      setPreviewSelected("minimumRequirements");
+                      setPreviewSelected('minimumRequirements');
                       handleOpenDialog();
                     }}
                   >
@@ -644,7 +671,11 @@ export const ProductFormGeneral: FC<ProductFormGeneralProps> = (props) => {
                   </IconButton>
                 </Box>
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid
+                item
+                xs={12}
+                sm={6}
+              >
                 <TextInput
                   error={
                     !!formik.touched.recommendedRequirements &&
@@ -667,14 +698,14 @@ export const ProductFormGeneral: FC<ProductFormGeneralProps> = (props) => {
                 />
                 <Box
                   sx={{
-                    display: "flex",
-                    justifyContent: "flex-end",
+                    display: 'flex',
+                    justifyContent: 'flex-end',
                   }}
                 >
                   <IconButton
                     color="secondary"
                     onClick={() => {
-                      setPreviewSelected("recommendedRequirements");
+                      setPreviewSelected('recommendedRequirements');
                       handleOpenDialog();
                     }}
                   >
@@ -682,7 +713,11 @@ export const ProductFormGeneral: FC<ProductFormGeneralProps> = (props) => {
                   </IconButton>
                 </Box>
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid
+                item
+                xs={12}
+                sm={6}
+              >
                 <FormControlLabel
                   control={
                     <Switch
@@ -692,7 +727,7 @@ export const ProductFormGeneral: FC<ProductFormGeneralProps> = (props) => {
                         event: React.ChangeEvent<HTMLInputElement>
                       ) => {
                         formik.setFieldValue(
-                          "shouldPublish",
+                          'shouldPublish',
                           event.target.checked
                         );
                       }}
@@ -703,7 +738,10 @@ export const ProductFormGeneral: FC<ProductFormGeneralProps> = (props) => {
                   sx={{ ml: 0 }}
                 />
               </Grid>
-              <Grid item xs={12}>
+              <Grid
+                item
+                xs={12}
+              >
                 <TextInput
                   error={!!formik.touched.markdown && !!formik.errors.markdown}
                   fullWidth
@@ -723,14 +761,14 @@ export const ProductFormGeneral: FC<ProductFormGeneralProps> = (props) => {
                 />
                 <Box
                   sx={{
-                    display: "flex",
-                    justifyContent: "flex-end",
+                    display: 'flex',
+                    justifyContent: 'flex-end',
                   }}
                 >
                   <IconButton
                     color="secondary"
                     onClick={() => {
-                      setPreviewSelected("markdown");
+                      setPreviewSelected('markdown');
                       handleOpenDialog();
                     }}
                   >
@@ -741,7 +779,7 @@ export const ProductFormGeneral: FC<ProductFormGeneralProps> = (props) => {
             </Grid>
           </CardContent>
         </Card>
-        <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
           <Button
             onClick={() => {
               formik.handleSubmit();

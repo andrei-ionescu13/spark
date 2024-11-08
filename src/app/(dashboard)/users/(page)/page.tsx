@@ -3,7 +3,7 @@
 import { Box, Container } from '@mui/material';
 import Head from 'next/head';
 import { PageHeader } from '../../../components/page-header';
-import { useSearchUsers } from '../api-calls-hooks';
+import { useSearchUsers } from './api';
 import { UsersTable } from './users-table';
 
 export default function Users() {

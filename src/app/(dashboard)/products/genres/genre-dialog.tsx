@@ -1,4 +1,3 @@
-import { useCreateGenre, useUpdateGenre } from '@/api/genres';
 import { Button } from '@/components/button';
 import { TextInput } from '@/components/text-input';
 import {
@@ -13,6 +12,7 @@ import { useFormik } from 'formik';
 import type { FC } from 'react';
 import * as Yup from 'yup';
 import { Genre } from '../../../types/genres';
+import { useCreateGenre, useUpdateGenre } from './api';
 
 interface GenreDialogProps {
   open: boolean;

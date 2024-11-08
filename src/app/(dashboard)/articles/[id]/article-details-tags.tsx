@@ -1,35 +1,11 @@
-"use client"
+'use client';
 
-import type { FC } from "react";
-import { toast } from "react-toastify";
-import { useFormik } from "formik";
-import { useQueryClient } from "@tanstack/react-query";
-import * as Yup from "yup";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  Chip,
-  colors,
-  Divider,
-  FormControl,
-  FormHelperText,
-  Grid,
-  MenuItem,
-  Select,
-  useTheme,
-} from "@mui/material";
-import {
-  useUpdateArticleStatus,
-  useUpdateArticleCategory,
-} from "@/api/articles";
-import { Article } from "../../../types/articles";
-import { ArticleCategory } from "../../../types/article-category";
-import { ArticleTag } from "../../../types/article-tag";
-import { useDialog } from "../../../hooks/useDialog";
-import { ArticleDetailsTagsForm } from "./article-details-tags-form";
-import { Button } from "@/components/button";
-import { useGetArticle } from "../api-calls-hooks";
+import { Button } from '@/components/button';
+import { Card, CardContent, CardHeader, Chip, Divider } from '@mui/material';
+import type { FC } from 'react';
+import { useDialog } from '../../../hooks/useDialog';
+import { Article } from '../../../types/articles';
+import { ArticleDetailsTagsForm } from './article-details-tags-form';
 
 interface ArticleStatusTagProps {
   article: Article;
@@ -59,12 +35,15 @@ export const ArticleDetailsTags: FC<ArticleStatusTagProps> = (props) => {
         <Divider />
         <CardContent
           sx={{
-            display: "flex",
+            display: 'flex',
             gap: 1,
           }}
         >
           {article.tags.map((tag) => (
-            <Chip size="small" label={tag.name} />
+            <Chip
+              size="small"
+              label={tag.name}
+            />
           ))}
         </CardContent>
       </Card>

@@ -1,18 +1,12 @@
-"use client"
-import { useState } from 'react';
-import type { FC } from 'react';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  Divider
-} from '@mui/material';
-import { Article } from '../../../types/articles';
+'use client';
+import { Button } from '@/components/button';
 import { InfoList } from '@/components/info-list';
 import { InfoListItem } from '@/components/info-list-item';
-import { Button } from '@/components/button';
+import { Card, CardContent, CardHeader, Divider } from '@mui/material';
+import type { FC } from 'react';
+import { useState } from 'react';
+import { Article } from '../../../types/articles';
 import { ArticleDetailsMetaForm } from './article-details-meta-form';
-import { useGetArticle } from '../api-calls-hooks';
 
 interface ArticleDetailsMetaProps {
   article: Article;
@@ -78,5 +72,5 @@ export const ArticleDetailsMeta: FC<ArticleDetailsMetaProps> = (props) => {
         />
       )}
     </>
-  )
-}
+  );
+};

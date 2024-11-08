@@ -1,11 +1,11 @@
-import { useDeleteCurrency } from "@/api/currencies";
-import { AlertDialog } from "@/components/alert-dialog";
-import { useDialog } from "@/hooks/useDialog";
-import { Trash } from "@/icons/trash";
-import { Currency } from "@/types/currencies";
-import { TableRow, TableCell, IconButton } from "@mui/material";
-import { useQueryClient } from "@tanstack/react-query";
-import { FC } from "react";
+import { AlertDialog } from '@/components/alert-dialog';
+import { useDialog } from '@/hooks/useDialog';
+import { Trash } from '@/icons/trash';
+import { Currency } from '@/types/currencies';
+import { IconButton, TableCell, TableRow } from '@mui/material';
+import { useQueryClient } from '@tanstack/react-query';
+import { FC } from 'react';
+import { useDeleteCurrency } from './api';
 
 interface CurrenciesTableRowProps {
   currency: Currency;
@@ -15,7 +15,7 @@ export const CurrenciesTableRow: FC<CurrenciesTableRowProps> = (props) => {
   const { currency } = props;
   const queryClient = useQueryClient();
   const deleteLanguage = useDeleteCurrency(() =>
-    queryClient.invalidateQueries({ queryKey: ["currencies"] })
+    queryClient.invalidateQueries({ queryKey: ['currencies'] })
   );
   const [deleteDialogOpen, handleOpenDeleteDialog, handleCloseDeleteDialog] =
     useDialog();
@@ -35,7 +35,10 @@ export const CurrenciesTableRow: FC<CurrenciesTableRowProps> = (props) => {
         <TableCell>{currency.code}</TableCell>
         <TableCell>{currency.symbol}</TableCell>
         <TableCell align="right">
-          <IconButton color="error" onClick={handleOpenDeleteDialog}>
+          <IconButton
+            color="error"
+            onClick={handleOpenDeleteDialog}
+          >
             <Trash />
           </IconButton>
         </TableCell>

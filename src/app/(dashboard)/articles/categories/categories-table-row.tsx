@@ -1,21 +1,24 @@
-import type { FC } from "react";
-import { Box, Checkbox, TableCell, Typography } from "@mui/material";
-import { useQueryClient } from "@tanstack/react-query";
-import { Trash as TrashIcon } from "../../../icons/trash";
-import { useDialog } from "../../../hooks/useDialog";
-import { ArticleCategory } from "../../../types/article-category";
-import { Pencil as PencilIcon } from "../../../icons/pencil";
-import { useDeleteArticleCategory } from "@/api/article-categories";
-import Link from "@/components/link";
-import { ActionsItem } from "@/components/actions-menu";
-import { AlertDialog } from "@/components/alert-dialog";
-import { CategoryUpdateDialog } from "app/(dashboard)/articles/categories/category-update-dialog";
-import { DataTableRow } from "@/components/data-table-row";
-import { ActionsIconButton } from "@/components/icon-actions";
+import { ActionsItem } from '@/components/actions-menu';
+import { AlertDialog } from '@/components/alert-dialog';
+import { DataTableRow } from '@/components/data-table-row';
+import { ActionsIconButton } from '@/components/icon-actions';
+import Link from '@/components/link';
+import { Box, Checkbox, TableCell, Typography } from '@mui/material';
+import { useQueryClient } from '@tanstack/react-query';
+import { CategoryUpdateDialog } from 'app/(dashboard)/articles/categories/category-update-dialog';
+import type { FC } from 'react';
+import { useDialog } from '../../../hooks/useDialog';
+import { Pencil as PencilIcon } from '../../../icons/pencil';
+import { Trash as TrashIcon } from '../../../icons/trash';
+import { ArticleCategory } from '../../../types/article-category';
+import { useDeleteArticleCategory } from './api';
 
 const ToastSuccess = (id: string) => (
   <Box>
-    <Typography variant="body1" color="textPrimary">
+    <Typography
+      variant="body1"
+      color="textPrimary"
+    >
       Article duplicated
     </Typography>
     <Link
@@ -44,7 +47,7 @@ export const CategoriesTableRow: FC<CategoriesTableRowProps> = (props) => {
   const [updateDialogOpen, handleOpenUpdateDialog, handleCloseUpdateDialog] =
     useDialog();
   const deleteArticle = useDeleteArticleCategory(() =>
-    queryClient.invalidateQueries({ queryKey: ["article-categories"] })
+    queryClient.invalidateQueries({ queryKey: ['article-categories'] })
   );
 
   const handleDeleteArticle = () => {
@@ -57,15 +60,15 @@ export const CategoriesTableRow: FC<CategoriesTableRowProps> = (props) => {
 
   const actionItems: ActionsItem[] = [
     {
-      label: "Edit",
+      label: 'Edit',
       icon: PencilIcon,
       onClick: handleOpenUpdateDialog,
     },
     {
-      label: "Delete",
+      label: 'Delete',
       icon: TrashIcon,
       onClick: handleOpenDeleteDialog,
-      color: "error",
+      color: 'error',
     },
   ];
 
@@ -86,9 +89,16 @@ export const CategoriesTableRow: FC<CategoriesTableRowProps> = (props) => {
         onSubmit={handleDeleteArticle}
         isLoading={deleteArticle.isPending}
       />
-      <DataTableRow key={articleCategory._id} selected={selected}>
+      <DataTableRow
+        key={articleCategory._id}
+        selected={selected}
+      >
         <TableCell padding="checkbox">
-          <Checkbox color="primary" onChange={onSelect} checked={selected} />
+          <Checkbox
+            color="primary"
+            onChange={onSelect}
+            checked={selected}
+          />
         </TableCell>
         <TableCell>{articleCategory.name}</TableCell>
         <TableCell>{articleCategory.slug}</TableCell>

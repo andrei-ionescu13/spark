@@ -1,4 +1,3 @@
-import { useCreatePublisher, useUpdatePublisher } from '@/api/publishers';
 import { Button } from '@/components/button';
 import { ImageDropzone } from '@/components/image-dropzone';
 import { TextInput } from '@/components/text-input';
@@ -15,8 +14,9 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useFormik } from 'formik';
 import type { FC } from 'react';
 import * as Yup from 'yup';
+import { ImageUpdate } from '../../../components/image-update';
 import { buildFormData } from '../../../utils/build-form-data';
-import { ImageUpdate } from '../[id]/(page)/product-cover';
+import { useCreatePublisher, useUpdatePublisher } from './api';
 
 interface PublisherDialogProps {
   open: boolean;

@@ -9,10 +9,10 @@ import { Ban } from '@/icons/ban';
 import { Key } from '@/icons/key';
 import { Trash } from '@/icons/trash';
 import { Box, Container, Divider, Tab, Tabs } from '@mui/material';
-import { useGetUser } from 'app/(dashboard)/users/api-calls-hooks';
 import Head from 'next/head';
 import { useParams, usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
+import { useGetUser } from './api';
 
 interface Tab {
   label: string;
@@ -23,7 +23,7 @@ interface UserLayoutProps {
   children: ReactNode;
 }
 
-export default function UserLayout(props) {
+export default function UserLayout(props: UserLayoutProps) {
   const { id } = useParams<{ id: string }>();
   const { data: user, isLoading } = useGetUser();
   const { children } = props;
@@ -35,6 +35,7 @@ export default function UserLayout(props) {
   const [resetDialogOpen, handleOpenResetDialog, handleCloseResetDialog] =
     useDialog(false);
   const { email } = user || {};
+
   const tabs: Tab[] = [
     {
       label: 'General',
@@ -49,7 +50,6 @@ export default function UserLayout(props) {
       href: `/users/${id}/reviews`,
     },
   ];
-  console.log(tabs);
 
   const actionItems: ActionsItem[] = [
     {

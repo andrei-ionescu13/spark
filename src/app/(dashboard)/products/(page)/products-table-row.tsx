@@ -1,19 +1,19 @@
-import type { FC } from 'react';
-import { Checkbox, colors, TableCell, TableRow, useTheme } from '@mui/material';
+import { useDialog } from '@/hooks/useDialog';
+import { Checkbox, colors, TableCell, useTheme } from '@mui/material';
 import { useQueryClient } from '@tanstack/react-query';
+import type { FC } from 'react';
 import { ActionsItem } from '../../../components/actions-menu';
 import { AlertDialog } from '../../../components/alert-dialog';
+import { DataTableRow } from '../../../components/data-table-row';
 import { ActionsIconButton } from '../../../components/icon-actions';
+import { Label } from '../../../components/label';
 import { Link } from '../../../components/link';
 import { Pencil as PencilIcon } from '../../../icons/pencil';
 import { Trash as TrashIcon } from '../../../icons/trash';
 import { Upload as UploadIcon } from '../../../icons/upload';
-import { Label } from '../../../components/label';
 import type { Product } from '../../../types/products';
 import { formatDate } from '../../../utils/format-date';
-import { useDeleteProduct } from '@/api/products';
-import { DataTableRow } from '../../../components/data-table-row';
-import { useDialog } from '@/hooks/useDialog';
+import { useDeleteProduct } from '../api';
 
 interface ProductTableRow {
   product: Product;
@@ -23,16 +23,19 @@ interface ProductTableRow {
 
 export const ProductTableRow: FC<ProductTableRow> = (props) => {
   const { product, selected, onSelect } = props;
-  const theme = useTheme()
+  const theme = useTheme();
   const queryClient = useQueryClient();
-  const deleteProduct = useDeleteProduct(() => queryClient.invalidateQueries({ queryKey: ['products'] }))
-  const [deleteDialogOpen, handleOpenDeleteDialog, handleCloseDeleteDialog] = useDialog(false);
+  const deleteProduct = useDeleteProduct(() =>
+    queryClient.invalidateQueries({ queryKey: ['products'] })
+  );
+  const [deleteDialogOpen, handleOpenDeleteDialog, handleCloseDeleteDialog] =
+    useDialog(false);
 
   const mappedColors = {
     draft: colors.grey[500],
     published: theme.palette.success.main,
-    archived: theme.palette.error.main
-  }
+    archived: theme.palette.error.main,
+  };
 
   const actionItems: ActionsItem[] = [
     {
@@ -43,23 +46,23 @@ export const ProductTableRow: FC<ProductTableRow> = (props) => {
     {
       label: 'Publish',
       icon: UploadIcon,
-      onClick: () => { },
+      onClick: () => {},
     },
     {
       label: 'Delete',
       icon: TrashIcon,
       onClick: handleOpenDeleteDialog,
-      color: 'error'
-    }
-  ]
+      color: 'error',
+    },
+  ];
 
   const handleDeleteProduct = (): void => {
     deleteProduct.mutate(product._id, {
       onSuccess: () => {
-        handleCloseDeleteDialog()
-      }
-    })
-  }
+        handleCloseDeleteDialog();
+      },
+    });
+  };
 
   return (
     <>
@@ -97,13 +100,9 @@ export const ProductTableRow: FC<ProductTableRow> = (props) => {
             {product.title}
           </Link>
         </TableCell>
+        <TableCell>{formatDate(product.createdAt)}</TableCell>
         <TableCell>
-          {formatDate(product.createdAt)}
-        </TableCell>
-        <TableCell>
-          <Label color={mappedColors[product.status]}>
-            {product.status}
-          </Label>
+          <Label color={mappedColors[product.status]}>{product.status}</Label>
         </TableCell>
         <TableCell align="right">
           <ActionsIconButton items={actionItems} />

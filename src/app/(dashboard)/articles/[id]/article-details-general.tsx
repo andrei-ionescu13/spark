@@ -1,6 +1,10 @@
-"use client"
+'use client';
 
-import { useState, type FC } from "react";
+import { Button } from '@/components/button';
+import { InfoList } from '@/components/info-list';
+import { InfoListItem } from '@/components/info-list-item';
+import Link from '@/components/link';
+import { Article } from '@/types/articles';
 import {
   Box,
   Card,
@@ -8,16 +12,11 @@ import {
   CardHeader,
   Divider,
   Grid,
-} from "@mui/material";
-import { formatDate } from "../../../utils/format-date";
-import Image from "next/image";
-import { InfoList } from "@/components/info-list";
-import { InfoListItem } from "@/components/info-list-item";
-import Link from "@/components/link";
-import { Article } from "@/types/articles";
-import { Button } from "@/components/button";
-import { ArticleDetailsGeneralForm } from "./article-details-general-form";
-import { useGetArticle } from "../api-calls-hooks";
+} from '@mui/material';
+import Image from 'next/image';
+import { useState, type FC } from 'react';
+import { formatDate } from '../../../utils/format-date';
+import { ArticleDetailsGeneralForm } from './article-details-general-form';
 
 interface ArticleDetailsGeneralProps {
   article: Article;
@@ -58,18 +57,35 @@ export const ArticleDetailsGeneral: FC<ArticleDetailsGeneralProps> = (
         />
         <Divider />
         <CardContent>
-          <Grid container spacing={2.5}>
-            <Grid item md={6} xs={12}>
+          <Grid
+            container
+            spacing={2.5}
+          >
+            <Grid
+              item
+              md={6}
+              xs={12}
+            >
               <InfoList>
-                <InfoListItem content={article._id} title="Id" />
-                <InfoListItem content={article.slug} title="Slug" />
+                <InfoListItem
+                  content={article._id}
+                  title="Id"
+                />
+                <InfoListItem
+                  content={article.slug}
+                  title="Slug"
+                />
                 <InfoListItem
                   content={article.description}
                   title="Description"
                 />
               </InfoList>
             </Grid>
-            <Grid item md={6} xs={12}>
+            <Grid
+              item
+              md={6}
+              xs={12}
+            >
               <InfoList>
                 <InfoListItem
                   content={formatDate(article.createdAt)}
@@ -83,12 +99,21 @@ export const ArticleDetailsGeneral: FC<ArticleDetailsGeneralProps> = (
                 )}
               </InfoList>
             </Grid>
-            <Grid item xs={12}>
+            <Grid
+              item
+              xs={12}
+            >
               <InfoList>
-                <InfoListItem content={article.markdown} title="Content" />
+                <InfoListItem
+                  content={article.markdown}
+                  title="Content"
+                />
                 <InfoListItem title="Cover image">
                   <Box>
-                    <Link target="_blank" href={article.cover.url}>
+                    <Link
+                      target="_blank"
+                      href={article.cover.url}
+                    >
                       <Image
                         src={article.cover.url}
                         width={16}

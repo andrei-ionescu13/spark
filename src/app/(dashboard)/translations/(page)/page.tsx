@@ -2,16 +2,14 @@
 
 import { Box, Container } from '@mui/material';
 import Head from 'next/head';
-import {
-  useListLanguagesQuery,
-  useSearchNamespacesQuery,
-} from '../api-calls-hooks';
+import { useListNamespaceLanguagesQuery } from '../api-calls';
+import { useSearchNamespacesQuery } from './api';
 import { NamespacesHeader } from './namespaces-header';
 import { NamespacesTable } from './namespaces-table';
 
 export default function Namespaces() {
   const searchNamespacesQuery = useSearchNamespacesQuery();
-  const listLanguagesQuery = useListLanguagesQuery();
+  const listLanguagesQuery = useListNamespaceLanguagesQuery();
   const isLoading =
     searchNamespacesQuery.isLoading || listLanguagesQuery.isLoading;
   const isError = searchNamespacesQuery.isError || listLanguagesQuery.isError;

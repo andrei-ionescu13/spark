@@ -10,7 +10,7 @@ import { Box, Card, TableBody } from '@mui/material';
 import { useSearchParams } from 'next/navigation';
 import { useState, type FC } from 'react';
 import { LanguagesMenu } from '../languages-menu';
-import { NamespaceTableRow } from './namespace-table-row';
+import { NamespacesTableRow } from './namespaces-table-row';
 
 interface NamespacesTableProps {
   languages?: Language[];
@@ -118,7 +118,7 @@ export const NamespacesTable: FC<NamespacesTableProps> = (props) => {
         >
           <TableBody>
             {namespaces?.map((namespace) => (
-              <NamespaceTableRow
+              <NamespacesTableRow
                 keyword={keyword}
                 languages={languages || []}
                 namespace={namespace}

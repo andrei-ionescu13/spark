@@ -1,6 +1,6 @@
 'use client';
 import { Box, Card, Chip, Stack, TableBody } from '@mui/material';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import type { FC } from 'react';
 import { useEffect, useState } from 'react';
 import { useSearch } from '../hooks/useSearch';
@@ -148,7 +148,6 @@ export const OrdersTable: FC<OrdersTableProps> = (props) => {
     isLoading,
     isError,
   } = props;
-  const router = useRouter();
   const [keyword, handleKeywordChange, handleSearch] = useSearch();
   const [selected, setSelected] = useState<string[]>([]);
   const [fieldsSelected, setFieldsSelected] = useState<any>({});

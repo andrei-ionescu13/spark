@@ -1,24 +1,24 @@
-import type { FC } from "react";
-import { Box, Checkbox, TableCell, Typography } from "@mui/material";
-import { useQueryClient } from "@tanstack/react-query";
-import { ActionsItem } from "../../../components/actions-menu";
-import { AlertDialog } from "../../../components/alert-dialog";
-import { ActionsIconButton } from "../../../components/icon-actions";
-import { Link } from "../../../components/link";
-import { Trash as TrashIcon } from "../../../icons/trash";
-import { DataTableRow } from "../../../components/data-table-row";
-import { useDialog } from "../../../hooks/useDialog";
-import { ArticleCategory } from "../../../types/article-category";
-import { Pencil as PencilIcon } from "../../../icons/pencil";
-import { useDeleteArticleCategory } from "@/api/article-categories";
-import { CategoryUpdateDialog } from "../categories/category-update-dialog";
-import { useDeleteArticleTag } from "@/api/article-tags";
-import { ArticleTag } from "../../../types/article-tag";
-import { TagUpdateDialog } from "./tag-update-dialog";
+import { Box, Checkbox, TableCell, Typography } from '@mui/material';
+import { useQueryClient } from '@tanstack/react-query';
+import type { FC } from 'react';
+import { ActionsItem } from '../../../components/actions-menu';
+import { AlertDialog } from '../../../components/alert-dialog';
+import { DataTableRow } from '../../../components/data-table-row';
+import { ActionsIconButton } from '../../../components/icon-actions';
+import { Link } from '../../../components/link';
+import { useDialog } from '../../../hooks/useDialog';
+import { Pencil as PencilIcon } from '../../../icons/pencil';
+import { Trash as TrashIcon } from '../../../icons/trash';
+import { ArticleTag } from '../../../types/article-tag';
+import { useDeleteArticleTag } from './api';
+import { TagUpdateDialog } from './tag-update-dialog';
 
 const ToastSuccess = (id: string) => (
   <Box>
-    <Typography variant="body1" color="textPrimary">
+    <Typography
+      variant="body1"
+      color="textPrimary"
+    >
       Article duplicated
     </Typography>
     <Link
@@ -48,7 +48,7 @@ export const TagsTableRow: FC<TagsTableRowProps> = (props) => {
     useDialog();
 
   const deleteArticleTag = useDeleteArticleTag(() =>
-    queryClient.invalidateQueries({ queryKey: ["article-tags"] })
+    queryClient.invalidateQueries({ queryKey: ['article-tags'] })
   );
 
   const handleDeleteArticleTag = () => {
@@ -61,15 +61,15 @@ export const TagsTableRow: FC<TagsTableRowProps> = (props) => {
 
   const actionItems: ActionsItem[] = [
     {
-      label: "Edit",
+      label: 'Edit',
       icon: PencilIcon,
       onClick: handleOpenUpdateDialog,
     },
     {
-      label: "Delete",
+      label: 'Delete',
       icon: TrashIcon,
       onClick: handleOpenDeleteDialog,
-      color: "error",
+      color: 'error',
     },
   ];
 
@@ -90,9 +90,16 @@ export const TagsTableRow: FC<TagsTableRowProps> = (props) => {
         onSubmit={handleDeleteArticleTag}
         isLoading={deleteArticleTag.isPending}
       />
-      <DataTableRow key={articleTag._id} selected={selected}>
+      <DataTableRow
+        key={articleTag._id}
+        selected={selected}
+      >
         <TableCell padding="checkbox">
-          <Checkbox color="primary" onChange={onSelect} checked={selected} />
+          <Checkbox
+            color="primary"
+            onChange={onSelect}
+            checked={selected}
+          />
         </TableCell>
         <TableCell>{articleTag.name}</TableCell>
         <TableCell>{articleTag.slug}</TableCell>

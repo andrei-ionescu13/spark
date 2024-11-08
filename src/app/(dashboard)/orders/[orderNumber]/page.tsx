@@ -1,8 +1,8 @@
 'use client';
 
 import Head from 'next/head';
-import { useGetOrder } from '../api-calls-hooks';
 import { OrderLayout } from '../order-layout';
+import { useGetOrder } from './api';
 
 export default function Order() {
   const { data: order } = useGetOrder();
@@ -12,7 +12,7 @@ export default function Order() {
       <Head>
         <title>Order</title>
       </Head>
-      <OrderLayout>Data</OrderLayout>
+      <OrderLayout>To be continued</OrderLayout>
     </>
   );
 }

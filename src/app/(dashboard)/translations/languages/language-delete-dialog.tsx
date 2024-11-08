@@ -1,9 +1,9 @@
-import { useState } from "react";
-import type { FC } from "react";
-import { Box, FormControlLabel, Switch } from "@mui/material";
-import { useDeleteLanguage } from "@/api/translations";
-import { AlertDialog } from "../../../components/alert-dialog";
-import { useQueryClient } from "@tanstack/react-query";
+import { Box, FormControlLabel, Switch } from '@mui/material';
+import { useQueryClient } from '@tanstack/react-query';
+import type { FC } from 'react';
+import { useState } from 'react';
+import { AlertDialog } from '../../../components/alert-dialog';
+import { useDeleteLanguage } from './api';
 
 interface LanguageDeleteDialogProps {
   open: boolean;
@@ -11,13 +11,11 @@ interface LanguageDeleteDialogProps {
   language: any;
 }
 
-export const LanguageDeleteDialog: FC<LanguageDeleteDialogProps> = (
-  props
-) => {
+export const LanguageDeleteDialog: FC<LanguageDeleteDialogProps> = (props) => {
   const { open, onClose, language } = props;
   const queryClient = useQueryClient();
   const deleteLanguage = useDeleteLanguage(() =>
-    queryClient.invalidateQueries({ queryKey: ["translations-languages"] })
+    queryClient.invalidateQueries({ queryKey: ['translations-languages'] })
   );
   const [shouldDeleteTranslations, setShouldDeleteTranslations] =
     useState(false);
@@ -49,7 +47,10 @@ export const LanguageDeleteDialog: FC<LanguageDeleteDialogProps> = (
       <Box sx={{ pt: 3 }}>
         <FormControlLabel
           control={
-            <Switch onChange={handleChange} value={shouldDeleteTranslations} />
+            <Switch
+              onChange={handleChange}
+              value={shouldDeleteTranslations}
+            />
           }
           label="Remove all associated translations"
         />

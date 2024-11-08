@@ -1,18 +1,10 @@
-"use client"
+'use client';
 
-import Head from "next/head";
-import type { GetServerSideProps } from "next";
-import { Box, Container, useTheme, colors } from "@mui/material";
-import { dehydrate, HydrationBoundary, QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
-import {
-  useDeactivateCollection,
-  useDeleteCollection,
-} from "@/api/collections";
-import { getCollection } from "../../api-calls";
-import { CollectionHeader } from "./collection-header";
-import { CollectionForm } from "../collection-form";
-import { useGetCollectionQuery } from "../../api-calls-hooks";
+import { Box, Container } from '@mui/material';
+import Head from 'next/head';
+import { CollectionForm } from '../collection-form';
+import { useGetCollectionQuery } from './api';
+import { CollectionHeader } from './collection-header';
 
 export default function Collection() {
   const { data: collection } = useGetCollectionQuery();
@@ -35,4 +27,4 @@ export default function Collection() {
       </Box>
     </>
   );
-};
+}

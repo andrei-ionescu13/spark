@@ -1,6 +1,5 @@
 'use client';
 
-import { useCreateArticle, useUpdateArticle } from '@/api/articles';
 import {
   Autocomplete,
   Card,
@@ -22,17 +21,16 @@ import { ToastItemCreated } from '../../../components/toast-item-created';
 import { useDialog } from '../../../hooks/useDialog';
 import { Article } from '../../../types/articles';
 import { buildFormData } from '../../../utils/build-form-data';
-import {
-  useListArticleCategories,
-  useListArticleTags,
-} from '../api-calls-hooks';
+
+import { useListArticleCategories, useListArticleTags } from '../api';
+import { useCreateArticle } from './api';
 
 interface Option {
   label: string;
   value: string;
 }
 
-const metaKeywordOptions = ['Games', 'News', 'mopneydas'];
+const metaKeywordOptions = ['Games', 'News'];
 
 interface ArticleFormProps {
   article?: Article;
@@ -41,7 +39,7 @@ interface ArticleFormProps {
 export const ArticleForm: FC<ArticleFormProps> = (props) => {
   const { article } = props;
   const createArticle = useCreateArticle();
-  const updateArticle = useUpdateArticle(article?._id || '');
+  const updateArticle = useCreateArticle();
   const [openPreview, handleOpenPreview, handleClosePreview] = useDialog(false);
   const [resolutionError, setResolutionError] = useState<string | undefined>(
     undefined
@@ -107,6 +105,7 @@ export const ArticleForm: FC<ArticleFormProps> = (props) => {
       });
     },
   });
+
   return (
     <>
       <Grid

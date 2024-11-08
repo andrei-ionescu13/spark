@@ -1,4 +1,3 @@
-import { useCreateFeature } from '@/api/features';
 import { Box, FormHelperText, Grid, Typography } from '@mui/material';
 import { useQueryClient } from '@tanstack/react-query';
 import { useFormik } from 'formik';
@@ -10,6 +9,7 @@ import {
   AlertDialogProps,
 } from '../../../components/alert-dialog';
 import { TextInput } from '../../../components/text-input';
+import { useCreateFeature } from './api';
 
 interface FeatureCreateDialogProps
   extends Omit<AlertDialogProps, 'title' | 'onSubmit' | 'isLoading'> {}

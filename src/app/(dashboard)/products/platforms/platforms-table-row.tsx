@@ -1,16 +1,16 @@
-import type { FC } from 'react';
-import { Box, Checkbox, TableCell } from '@mui/material';
-import { Trash as TrashIcon } from '../../../icons/trash';
-import { Pencil as PencilIcon } from '../../../icons/pencil';
-import { useDialog } from '../../../hooks/useDialog';
-import { PlatformDialog } from './platform-dialog';
-import { useQueryClient } from '@tanstack/react-query';
-import { useDeletePlatform } from '@/api/platforms';
-import Image from 'next/image';
 import { ActionsItem } from '@/components/actions-menu';
-import { ActionsIconButton } from '@/components/icon-actions';
 import { AlertDialog } from '@/components/alert-dialog';
 import { DataTableRow } from '@/components/data-table-row';
+import { ActionsIconButton } from '@/components/icon-actions';
+import { Box, Checkbox, TableCell } from '@mui/material';
+import { useQueryClient } from '@tanstack/react-query';
+import Image from 'next/image';
+import type { FC } from 'react';
+import { useDialog } from '../../../hooks/useDialog';
+import { Pencil as PencilIcon } from '../../../icons/pencil';
+import { Trash as TrashIcon } from '../../../icons/trash';
+import { useDeletePlatform } from './api';
+import { PlatformDialog } from './platform-dialog';
 
 interface PlatformsTableRowProps {
   platform: any;
@@ -21,9 +21,13 @@ interface PlatformsTableRowProps {
 export const PlatformsTableRow: FC<PlatformsTableRowProps> = (props) => {
   const { platform, selected, onSelect } = props;
   const queryClient = useQueryClient();
-  const [deleteDialogOpen, handleOpenDeleteDialog, handleCloseDeleteDialog] = useDialog(false);
-  const [updateDialogOpen, handleOpenUpdateDialog, handleCloseUpdateDialog] = useDialog(false);
-  const deletePlatform = useDeletePlatform(() => queryClient.invalidateQueries({ queryKey: ['platforms'] }));
+  const [deleteDialogOpen, handleOpenDeleteDialog, handleCloseDeleteDialog] =
+    useDialog(false);
+  const [updateDialogOpen, handleOpenUpdateDialog, handleCloseUpdateDialog] =
+    useDialog(false);
+  const deletePlatform = useDeletePlatform(() =>
+    queryClient.invalidateQueries({ queryKey: ['platforms'] })
+  );
 
   const actionItems: ActionsItem[] = [
     {
@@ -35,17 +39,17 @@ export const PlatformsTableRow: FC<PlatformsTableRowProps> = (props) => {
       label: 'Delete',
       icon: TrashIcon,
       onClick: handleOpenDeleteDialog,
-      color: 'error'
-    }
-  ]
+      color: 'error',
+    },
+  ];
 
   const handleDeletePlatform = () => {
     deletePlatform.mutate(platform._id, {
       onSuccess: () => {
-        handleCloseDeleteDialog()
-      }
-    })
-  }
+        handleCloseDeleteDialog();
+      },
+    });
+  };
 
   return (
     <>
@@ -65,7 +69,7 @@ export const PlatformsTableRow: FC<PlatformsTableRowProps> = (props) => {
         onSubmit={handleDeletePlatform}
         isLoading={deletePlatform.isPending}
       />
-      <DataTableRow selected={selected} >
+      <DataTableRow selected={selected}>
         <TableCell padding="checkbox">
           <Checkbox
             color="primary"
@@ -78,15 +82,15 @@ export const PlatformsTableRow: FC<PlatformsTableRowProps> = (props) => {
             sx={{
               display: 'flex',
               alignItems: 'center',
-              gap: 1
+              gap: 1,
             }}
           >
-            <Box sx={{ width: 64, position: 'relative', pb: 5 }} >
+            <Box sx={{ width: 64, position: 'relative', pb: 5 }}>
               <Image
                 src={platform.logo.url}
                 priority
                 alt={platform.name}
-                layout='fill'
+                layout="fill"
                 objectFit="contain"
               />
             </Box>

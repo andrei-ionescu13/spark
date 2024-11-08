@@ -1,13 +1,12 @@
-"use client"
-import { Box, Container } from "@mui/material";
-import Head from "next/head";
-import { TagsHeader } from "./tags-header";
-import { TagsTable } from "./tags-table";
-import { useSearchArticleTags } from "../api-calls-hooks";
-
+'use client';
+import { Box, Container } from '@mui/material';
+import Head from 'next/head';
+import { useSearchArticleTags } from './api';
+import { TagsHeader } from './tags-header';
+import { TagsTable } from './tags-table';
 
 export default function ArticleTags() {
-  const { data, refetch, isError, isLoading } = useSearchArticleTags()
+  const { data, refetch, isError, isLoading } = useSearchArticleTags();
   const { tags, count } = data || {};
 
   return (
@@ -29,4 +28,4 @@ export default function ArticleTags() {
       </Box>
     </>
   );
-};
+}

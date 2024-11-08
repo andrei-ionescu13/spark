@@ -1,17 +1,16 @@
-import type { FC } from "react";
-import { Box, Checkbox, TableCell, Typography } from "@mui/material";
-import { useQueryClient } from "@tanstack/react-query";
-import { ActionsItem } from "../../../components/actions-menu";
-import { AlertDialog } from "../../../components/alert-dialog";
-import { ActionsIconButton } from "../../../components/icon-actions";
-import { Link } from "../../../components/link";
-import { Trash as TrashIcon } from "../../../icons/trash";
-import { DataTableRow } from "../../../components/data-table-row";
-import { useDialog } from "../../../hooks/useDialog";
-import { Pencil as PencilIcon } from "../../../icons/pencil";
-import { useDeleteDeveloper } from "@/api/developers";
-import { Developer } from "../../../types/developer";
-import { DeveloperUpdateDialog } from "./developer-update-dialog";
+import { Checkbox, TableCell } from '@mui/material';
+import { useQueryClient } from '@tanstack/react-query';
+import type { FC } from 'react';
+import { ActionsItem } from '../../../components/actions-menu';
+import { AlertDialog } from '../../../components/alert-dialog';
+import { DataTableRow } from '../../../components/data-table-row';
+import { ActionsIconButton } from '../../../components/icon-actions';
+import { useDialog } from '../../../hooks/useDialog';
+import { Pencil as PencilIcon } from '../../../icons/pencil';
+import { Trash as TrashIcon } from '../../../icons/trash';
+import { Developer } from '../../../types/developer';
+import { useDeleteDeveloper } from './api';
+import { DeveloperUpdateDialog } from './developer-update-dialog';
 
 interface DevelopersTableRowProps {
   developer: Developer;
@@ -29,7 +28,7 @@ export const DevelopersTableRow: FC<DevelopersTableRowProps> = (props) => {
     useDialog();
 
   const deleteDeveloper = useDeleteDeveloper(() =>
-    queryClient.invalidateQueries({ queryKey: ["developers"] })
+    queryClient.invalidateQueries({ queryKey: ['developers'] })
   );
 
   const handleDeleteDeveloper = () => {
@@ -42,15 +41,15 @@ export const DevelopersTableRow: FC<DevelopersTableRowProps> = (props) => {
 
   const actionItems: ActionsItem[] = [
     {
-      label: "Edit",
+      label: 'Edit',
       icon: PencilIcon,
       onClick: handleOpenUpdateDialog,
     },
     {
-      label: "Delete",
+      label: 'Delete',
       icon: TrashIcon,
       onClick: handleOpenDeleteDialog,
-      color: "error",
+      color: 'error',
     },
   ];
 
@@ -58,7 +57,7 @@ export const DevelopersTableRow: FC<DevelopersTableRowProps> = (props) => {
     <>
       {updateDialogOpen && (
         <DeveloperUpdateDialog
-          Developer={developer}
+          developer={developer}
           open
           onClose={handleCloseUpdateDialog}
         />
@@ -71,9 +70,16 @@ export const DevelopersTableRow: FC<DevelopersTableRowProps> = (props) => {
         onSubmit={handleDeleteDeveloper}
         isLoading={deleteDeveloper.isPending}
       />
-      <DataTableRow key={developer._id} selected={selected}>
+      <DataTableRow
+        key={developer._id}
+        selected={selected}
+      >
         <TableCell padding="checkbox">
-          <Checkbox color="primary" onChange={onSelect} checked={selected} />
+          <Checkbox
+            color="primary"
+            onChange={onSelect}
+            checked={selected}
+          />
         </TableCell>
         <TableCell>{developer.name}</TableCell>
         <TableCell>{developer.slug}</TableCell>

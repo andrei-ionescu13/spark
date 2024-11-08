@@ -2,7 +2,7 @@
 
 import { Grid } from '@mui/material';
 import Head from 'next/head';
-import { useGetUser } from '../../api-calls-hooks';
+import { useGetUser } from '../api';
 import { UserDetails } from './user-general-details';
 
 export default function User() {

@@ -1,24 +1,23 @@
-import { Fragment, useState } from "react";
-import type { FC, SyntheticEvent } from "react";
 import {
   Autocomplete,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
-  Grid,
-  TextField,
   FormHelperText,
-  CircularProgress,
-} from "@mui/material";
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import { useCreateTranslationsLanguage } from "@/api/translations";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Button } from "../../../components/button";
-import { appFetch } from "../../../utils/app-fetch";
-import type { Language } from "../../../types/translations";
-import { TextInput } from "../../../components/text-input";
+  Grid,
+} from '@mui/material';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useFormik } from 'formik';
+import type { FC, SyntheticEvent } from 'react';
+import { Fragment, useState } from 'react';
+import * as Yup from 'yup';
+import { Button } from '../../../components/button';
+import { TextInput } from '../../../components/text-input';
+import type { Language } from '../../../types/translations';
+import { appFetch } from '../../../utils/app-fetch';
+import { useCreateTranslationsLanguage } from './api';
 
 interface LanguageTagDialogProps {
   open: boolean;
@@ -27,39 +26,36 @@ interface LanguageTagDialogProps {
 
 const listLanguages =
   (config: Record<string, any> = {}) =>
-    () =>
-      appFetch<Language[]>({
-        url: "/languages",
-        withAuth: true,
-        ...config,
-      });
+  () =>
+    appFetch<Language[]>({
+      url: '/languages',
+      withAuth: true,
+      ...config,
+    });
 
 const listTranslationsLanguages =
   (config: Record<string, any> = {}) =>
-    () =>
-      appFetch<Language[]>({
-        url: "/translations/languages",
-        withAuth: true,
-        ...config,
-      });
+  () =>
+    appFetch<Language[]>({
+      url: '/translations/languages',
+      withAuth: true,
+      ...config,
+    });
 
 export const LanguageDialog: FC<LanguageTagDialogProps> = (props) => {
   const { open, onClose } = props;
   const [autocompleteOpen, setAutocompleteOpen] = useState(false);
 
   const { data: translationsLanguages } = useQuery({
-    queryKey: ["translations-languages"],
-    queryFn: listTranslationsLanguages()
+    queryKey: ['translations-languages'],
+    queryFn: listTranslationsLanguages(),
   });
-  const { data: languages, isFetching } = useQuery(
-
-    {
-      queryKey: ["languages"],
-      queryFn: listLanguages(),
-      enabled: autocompleteOpen,
-      gcTime: 0
-    }
-  );
+  const { data: languages, isFetching } = useQuery({
+    queryKey: ['languages'],
+    queryFn: listLanguages(),
+    enabled: autocompleteOpen,
+    gcTime: 0,
+  });
 
   const languageCodes = (translationsLanguages || []).map(
     (language) => language.code
@@ -67,7 +63,7 @@ export const LanguageDialog: FC<LanguageTagDialogProps> = (props) => {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const queryClient = useQueryClient();
   const createTranslationsLanguage = useCreateTranslationsLanguage(() =>
-    queryClient.invalidateQueries({ queryKey: ["translations-languages"] })
+    queryClient.invalidateQueries({ queryKey: ['translations-languages'] })
   );
 
   const initialValues: { language?: Language } = {
@@ -100,11 +96,22 @@ export const LanguageDialog: FC<LanguageTagDialogProps> = (props) => {
   );
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth="sm"
+      fullWidth
+    >
       <DialogTitle>Add language</DialogTitle>
-      <DialogContent sx={{ py: "24px !important" }}>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
+      <DialogContent sx={{ py: '24px !important' }}>
+        <Grid
+          container
+          spacing={2}
+        >
+          <Grid
+            item
+            xs={12}
+          >
             <Autocomplete
               autoHighlight
               value={filteredLanguageOptions.find(
@@ -139,7 +146,10 @@ export const LanguageDialog: FC<LanguageTagDialogProps> = (props) => {
                     endAdornment: (
                       <Fragment>
                         {isFetching ? (
-                          <CircularProgress color="inherit" size={20} />
+                          <CircularProgress
+                            color="inherit"
+                            size={20}
+                          />
                         ) : null}
                         {params.InputProps.endAdornment}
                       </Fragment>
@@ -150,14 +160,21 @@ export const LanguageDialog: FC<LanguageTagDialogProps> = (props) => {
             />
           </Grid>
           {!!submitError && (
-            <Grid item xs={12}>
+            <Grid
+              item
+              xs={12}
+            >
               <FormHelperText error>{submitError}</FormHelperText>
             </Grid>
           )}
         </Grid>
       </DialogContent>
       <DialogActions>
-        <Button variant="text" color="secondary" onClick={onClose}>
+        <Button
+          variant="text"
+          color="secondary"
+          onClick={onClose}
+        >
           Cancel
         </Button>
         <Button

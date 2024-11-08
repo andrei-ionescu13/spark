@@ -1,25 +1,14 @@
-"use client"
+'use client';
 
-import Head from "next/head";
-import type { GetServerSideProps } from "next";
-import {
-  Box,
-  Card,
-  Container,
-  IconButton,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-} from "@mui/material";
-import { useListLanguagesQuery } from "../api-calls-hooks";
-import { LanguagesHeader } from "./languages-header";
-import { LanguagesTable } from "./languages-table";
+import { Box, Container } from '@mui/material';
+import Head from 'next/head';
+import { useListNamespaceLanguagesQuery } from '../api-calls';
+import { LanguagesHeader } from './languages-header';
+import { LanguagesTable } from './languages-table';
 
 export default function Languages() {
-  const { data, refetch, isError, isLoading } = useListLanguagesQuery();
+  const { data, refetch, isError, isLoading } =
+    useListNamespaceLanguagesQuery();
   const languages = data || [];
 
   return (
@@ -41,4 +30,4 @@ export default function Languages() {
       </Box>
     </>
   );
-};
+}

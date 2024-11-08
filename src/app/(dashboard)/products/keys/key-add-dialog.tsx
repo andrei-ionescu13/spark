@@ -1,4 +1,3 @@
-import { useCreateKey } from '@/api/keys';
 import {
   Autocomplete,
   Dialog,
@@ -17,6 +16,7 @@ import { Button } from '../../../components/button';
 import { TextInput } from '../../../components/text-input';
 import { Product } from '../../../types/products';
 import { appFetch } from '../../../utils/app-fetch';
+import { useCreateKey } from '../api';
 
 interface KeyAddDialogProps {
   open: boolean;
@@ -75,11 +75,22 @@ export const KeyAddDialog: FC<KeyAddDialogProps> = (props) => {
   });
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth="sm"
+      fullWidth
+    >
       <DialogTitle>Add Key</DialogTitle>
       <DialogContent>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
+        <Grid
+          container
+          spacing={2}
+        >
+          <Grid
+            item
+            xs={12}
+          >
             <TextInput
               error={!!formik.touched.key && !!formik.errors.key}
               fullWidth
@@ -93,7 +104,10 @@ export const KeyAddDialog: FC<KeyAddDialogProps> = (props) => {
               value={formik.values.key}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid
+            item
+            xs={12}
+          >
             <Autocomplete
               onInputChange={(event, newInputValue) => {
                 setKeyword(newInputValue);
@@ -123,13 +137,20 @@ export const KeyAddDialog: FC<KeyAddDialogProps> = (props) => {
           </Grid>
         </Grid>
         {createKey.isError && (
-          <FormHelperText error sx={{ mt: 1 }}>
+          <FormHelperText
+            error
+            sx={{ mt: 1 }}
+          >
             {createKey.error.message}
           </FormHelperText>
         )}
       </DialogContent>
       <DialogActions>
-        <Button color="secondary" onClick={onClose} variant="text">
+        <Button
+          color="secondary"
+          onClick={onClose}
+          variant="text"
+        >
           Cancel
         </Button>
         <Button

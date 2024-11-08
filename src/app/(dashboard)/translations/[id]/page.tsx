@@ -3,13 +3,13 @@
 import { Box, Container } from '@mui/material';
 import Head from 'next/head';
 import { useSearchParams } from 'next/navigation';
-import { useListLanguagesQuery } from '../api-calls-hooks';
-import { useSearchNamespaceTranslations } from './api-calls';
+import { useListNamespaceLanguagesQuery } from '../api-calls';
+import { TranslationsTable } from '../translations-table';
+import { useSearchNamespaceTranslations } from './api';
 import { NamespaceHeader } from './namespace-header';
-import { TranslationsTable } from './translations-table';
 
 export default function Namespace() {
-  const listLanguagesQuery = useListLanguagesQuery();
+  const listLanguagesQuery = useListNamespaceLanguagesQuery();
   const searchNamespaceTranslationsQuery = useSearchNamespaceTranslations();
 
   const query: any = {};

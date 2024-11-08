@@ -1,21 +1,24 @@
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import { AlertDialog, AlertDialogProps } from "../../components/alert-dialog";
-import { FC } from "react";
-import { TextInput } from "../../components/text-input";
-import { Box, FormHelperText, Grid, Link, Typography } from "@mui/material";
-import { useDuplicateArticle } from "@/api/articles";
-import { toast } from "react-toastify";
-import { useQueryClient } from "@tanstack/react-query";
+import { Box, FormHelperText, Grid, Link, Typography } from '@mui/material';
+import { useQueryClient } from '@tanstack/react-query';
+import { useFormik } from 'formik';
+import { FC } from 'react';
+import { toast } from 'react-toastify';
+import * as Yup from 'yup';
+import { AlertDialog, AlertDialogProps } from '../../components/alert-dialog';
+import { TextInput } from '../../components/text-input';
+import { useDuplicateArticle } from './(page)/api';
 
 interface ArticleDuplicateDialog
-  extends Omit<AlertDialogProps, "title" | "onSubmit" | "isLoading"> {
+  extends Omit<AlertDialogProps, 'title' | 'onSubmit' | 'isLoading'> {
   articleId: string;
 }
 
 const ToastSuccess = (id: string) => (
   <Box>
-    <Typography variant="body1" color="textPrimary">
+    <Typography
+      variant="body1"
+      color="textPrimary"
+    >
       Article duplicated
     </Typography>
     <Link
@@ -33,13 +36,13 @@ export const ArticleDuplicateDialog: FC<ArticleDuplicateDialog> = (props) => {
   const { articleId, onClose, ...rest } = props;
   const queryClient = useQueryClient();
   const duplicateArticle = useDuplicateArticle(articleId, () =>
-    queryClient.invalidateQueries({ queryKey: ["articles"] })
+    queryClient.invalidateQueries({ queryKey: ['articles'] })
   );
 
   const formik = useFormik({
     initialValues: {
-      title: "",
-      slug: "",
+      title: '',
+      slug: '',
     },
     validationSchema: Yup.object({
       title: Yup.string().required(),
@@ -63,8 +66,14 @@ export const ArticleDuplicateDialog: FC<ArticleDuplicateDialog> = (props) => {
       isLoading={duplicateArticle.isPending}
       {...rest}
     >
-      <Grid container spacing={3}>
-        <Grid item xs={12}>
+      <Grid
+        container
+        spacing={3}
+      >
+        <Grid
+          item
+          xs={12}
+        >
           <TextInput
             error={!!formik.touched.title && !!formik.errors.title}
             fullWidth
@@ -77,7 +86,10 @@ export const ArticleDuplicateDialog: FC<ArticleDuplicateDialog> = (props) => {
             value={formik.values.title}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid
+          item
+          xs={12}
+        >
           <TextInput
             error={!!formik.touched.slug && !!formik.errors.slug}
             fullWidth
@@ -91,7 +103,10 @@ export const ArticleDuplicateDialog: FC<ArticleDuplicateDialog> = (props) => {
           />
         </Grid>
         {duplicateArticle.error?.message && (
-          <Grid item xs={12}>
+          <Grid
+            item
+            xs={12}
+          >
             <FormHelperText error>
               {duplicateArticle.error?.message}
             </FormHelperText>

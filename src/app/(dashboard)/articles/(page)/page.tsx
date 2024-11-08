@@ -4,10 +4,8 @@ import { PageHeader } from '@/components/page-header';
 import { Plus as PlusIcon } from '@/icons/plus';
 import { Box, Container } from '@mui/material';
 import Head from 'next/head';
-import {
-  useListArticleCategories,
-  useSearchArticles,
-} from '../api-calls-hooks';
+import { useListArticleCategories } from '../api';
+import { useSearchArticles } from './api';
 import { ArticlesTable } from './articles-table';
 
 export default function Articles() {

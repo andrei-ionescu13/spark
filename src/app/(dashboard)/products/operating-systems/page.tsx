@@ -1,34 +1,14 @@
-"use client"
+'use client';
 
-import { useState } from "react";
-import type { FC, SyntheticEvent, ChangeEvent } from "react";
-import { useRouter } from "next/navigation";
-import Head from "next/head";
-import type { GetServerSideProps } from "next";
-import {
-  Box,
-  Card,
-  Checkbox,
-  Container,
-  Divider,
-  Tab,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  Tabs,
-  MenuItem,
-  TableSortLabel,
-  TextField,
-} from "@mui/material";
-import { dehydrate, HydrationBoundary, QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
-import { OperatingSystemsTable } from "./operating-systems-table";
-import { searchOperatingSystems } from "../api-calls";
-import { OperatingSystemsHeader } from "./operating-systems-header";
-import { useSearchOperatingSystemsQuery } from "../api-calls-hooks";
+import { Box, Container } from '@mui/material';
+import Head from 'next/head';
+import { useSearchOperatingSystemsQuery } from './api';
+import { OperatingSystemsHeader } from './operating-systems-header';
+import { OperatingSystemsTable } from './operating-systems-table';
 
 export default function OperatingSystems() {
-  const { data, refetch, isError, isLoading } = useSearchOperatingSystemsQuery();
+  const { data, refetch, isError, isLoading } =
+    useSearchOperatingSystemsQuery();
   const { operatingSystems, count } = data || {};
 
   return (
@@ -50,4 +30,4 @@ export default function OperatingSystems() {
       </Box>
     </>
   );
-};
+}

@@ -1,14 +1,13 @@
-import { useDeleteArticleTags } from '@/api/article-tags';
 import { AlertDialog } from '@/components/alert-dialog';
+import { Button } from '@/components/button';
 import { DataTable } from '@/components/data-table';
 import { DataTableHead, HeadCell } from '@/components/data-table-head';
 import { SearchInput } from '@/components/search-input';
 import { useSearch } from '@/hooks/useSearch';
-import { Card, Box, TableBody } from '@mui/material';
-import { useState, type FC } from 'react'
-import { useSearchArticleTags } from '../api-calls-hooks';
-import { Button } from '@/components/button';
 import { ArticleTag } from '@/types/article-tag';
+import { Box, Card, TableBody } from '@mui/material';
+import { useState, type FC } from 'react';
+import { useDeleteArticleTags } from './api';
 import { TagsTableRow } from './tags-table-row';
 
 interface TagsTableProps {
@@ -21,20 +20,19 @@ interface TagsTableProps {
 
 const headCells: HeadCell[] = [
   {
-    id: "name",
-    label: "Name",
+    id: 'name',
+    label: 'Name',
   },
   {
-    id: "slug",
-    label: "Slug",
+    id: 'slug',
+    label: 'Slug',
   },
 ];
 
 export const TagsTable: FC<TagsTableProps> = (props) => {
   const { tags, count, isError, isLoading, refetch } = props;
   const [selected, setSelected] = useState<string[]>([]);
-  const [keyword, handleKeywordChange, handleSearch] =
-    useSearch();
+  const [keyword, handleKeywordChange, handleSearch] = useSearch();
   const [dialogOpen, setDialogOpen] = useState(false);
   const deleteCategories = useDeleteArticleTags(refetch);
 
@@ -52,7 +50,7 @@ export const TagsTable: FC<TagsTableProps> = (props) => {
         setSelected([]);
         handleCloseDialog();
       },
-      onError: (error) => { },
+      onError: (error) => {},
     });
   };
 
@@ -78,16 +76,15 @@ export const TagsTable: FC<TagsTableProps> = (props) => {
     });
   };
 
-
   return (
     <>
       <Card>
         <Box
           sx={{
-            display: "grid",
+            display: 'grid',
             gap: 2,
             gridTemplateColumns: {
-              sm: `${!!selected.length ? "auto" : ""} 1fr`,
+              sm: `${!!selected.length ? 'auto' : ''} 1fr`,
             },
             p: 2,
           }}
@@ -149,5 +146,5 @@ export const TagsTable: FC<TagsTableProps> = (props) => {
         title={`Delete ${selected.length} categories`}
       />
     </>
-  )
+  );
 };

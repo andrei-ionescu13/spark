@@ -1,26 +1,10 @@
-"use client"
+'use client';
 
-import { useState } from "react";
-import type { FC, ChangeEvent } from "react";
-import Head from "next/head";
-import { useRouter } from "next/navigation";
-import type { GetServerSideProps } from "next";
-import {
-  Box,
-  Card,
-  Checkbox,
-  Container,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  TableSortLabel,
-} from "@mui/material";
-import { dehydrate, HydrationBoundary, QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
-import { searchPlatforms } from "../api-calls";
-import { PlatformsHeader } from "./platforms-header";
-import { PlatformsTable } from "./platforms-table";
-import { useSearchPlatformsQuery } from "../api-calls-hooks";
+import { Box, Container } from '@mui/material';
+import Head from 'next/head';
+import { useSearchPlatformsQuery } from './api';
+import { PlatformsHeader } from './platforms-header';
+import { PlatformsTable } from './platforms-table';
 
 export default function Platforms() {
   const { data, refetch, isError, isLoading } = useSearchPlatformsQuery();
@@ -45,4 +29,4 @@ export default function Platforms() {
       </Box>
     </>
   );
-};
+}

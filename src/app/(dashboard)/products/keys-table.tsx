@@ -1,4 +1,3 @@
-import { useDeleteKeys } from '@/api/keys';
 import { useQueryValue } from '@/hooks/useQueryValue';
 import { useSearch } from '@/hooks/useSearch';
 import type { SelectChangeEvent } from '@mui/material';
@@ -21,6 +20,7 @@ import { DataTableHead } from '../../components/data-table-head';
 import { SearchInput } from '../../components/search-input';
 import { useDialog } from '../../hooks/useDialog';
 import type { Key } from '../../types/keys';
+import { useDeleteKeys } from './api';
 import { KeysTableRow } from './keys-table-row';
 
 const statusOptions = [

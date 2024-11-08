@@ -1,22 +1,28 @@
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import { FC } from "react";
-import { Box, FormHelperText, Grid, Link, Typography } from "@mui/material";
-import { toast } from "react-toastify";
-import { useQueryClient } from "@tanstack/react-query";
-import { AlertDialog, AlertDialogProps } from "../../../components/alert-dialog";
-import { TextInput } from "../../../components/text-input";
-import { useUpdateFeature } from "@/api/features";
-import { Feature } from "../../../types/feature";
+import { Box, FormHelperText, Grid, Typography } from '@mui/material';
+import { useQueryClient } from '@tanstack/react-query';
+import { useFormik } from 'formik';
+import { FC } from 'react';
+import { toast } from 'react-toastify';
+import * as Yup from 'yup';
+import {
+  AlertDialog,
+  AlertDialogProps,
+} from '../../../components/alert-dialog';
+import { TextInput } from '../../../components/text-input';
+import { Feature } from '../../../types/feature';
+import { useUpdateFeature } from './api';
 
 interface FeatureDuplicateDialogProps
-  extends Omit<AlertDialogProps, "title" | "onSubmit" | "isLoading"> {
+  extends Omit<AlertDialogProps, 'title' | 'onSubmit' | 'isLoading'> {
   Feature: Feature;
 }
 
 const ToastSuccess = (id: string) => (
   <Box>
-    <Typography variant="body1" color="textPrimary">
+    <Typography
+      variant="body1"
+      color="textPrimary"
+    >
       Feature updated
     </Typography>
   </Box>
@@ -26,7 +32,7 @@ export const FeatureUpdateDialog: FC<FeatureDuplicateDialogProps> = (props) => {
   const { onClose, Feature, ...rest } = props;
   const queryClient = useQueryClient();
   const updateFeature = useUpdateFeature(Feature._id, () =>
-    queryClient.invalidateQueries({ queryKey: ["features"] })
+    queryClient.invalidateQueries({ queryKey: ['features'] })
   );
 
   const formik = useFormik({
@@ -56,8 +62,14 @@ export const FeatureUpdateDialog: FC<FeatureDuplicateDialogProps> = (props) => {
       isLoading={updateFeature.isPending}
       {...rest}
     >
-      <Grid container spacing={3}>
-        <Grid item xs={12}>
+      <Grid
+        container
+        spacing={3}
+      >
+        <Grid
+          item
+          xs={12}
+        >
           <TextInput
             error={!!formik.touched.name && !!formik.errors.name}
             fullWidth
@@ -70,7 +82,10 @@ export const FeatureUpdateDialog: FC<FeatureDuplicateDialogProps> = (props) => {
             value={formik.values.name}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid
+          item
+          xs={12}
+        >
           <TextInput
             error={!!formik.touched.slug && !!formik.errors.slug}
             fullWidth
@@ -84,7 +99,10 @@ export const FeatureUpdateDialog: FC<FeatureDuplicateDialogProps> = (props) => {
           />
         </Grid>
         {updateFeature.isError && (
-          <Grid item xs={12}>
+          <Grid
+            item
+            xs={12}
+          >
             <FormHelperText error>
               {updateFeature.error?.message}
             </FormHelperText>

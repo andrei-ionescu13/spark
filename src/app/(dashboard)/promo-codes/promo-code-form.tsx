@@ -1,26 +1,29 @@
-import { useEffect, useState } from "react";
-import type { ChangeEvent, FC } from "react";
-import { Box, Grid, Typography } from "@mui/material";
-import { Formik } from "formik";
-import * as Yup from "yup";
-import { useQueryClient } from "@tanstack/react-query";
-import { toast } from "react-toastify";
-import { PromoCodeFormCode } from "./promo-code-form-code";
-import { PromoCodeFormValue } from "./promo-code-form-value";
-import { PromoCodeFormCustomers } from "./promo-code-form-customers";
-import { PromoCodeSummary } from "./promo-code-summary";
-import { useCreatePromoCode, useUpdatePromoCode } from "@/api/promo-codes";
-import Link from "@/components/link";
-import { Button } from "@/components/button";
-import { FormInterval } from "@/components/form-interval";
-import { ToastItemCreated } from "@/components/toast-item-created";
-import { Product } from "@/types/products";
-import { PromoCode } from "@/types/promo-code";
-import { User } from "@/types/user";
+import { Button } from '@/components/button';
+import { FormInterval } from '@/components/form-interval';
+import Link from '@/components/link';
+import { ToastItemCreated } from '@/components/toast-item-created';
+import { Product } from '@/types/products';
+import { PromoCode } from '@/types/promo-code';
+import { User } from '@/types/user';
+import { Box, Grid, Typography } from '@mui/material';
+import { useQueryClient } from '@tanstack/react-query';
+import { Formik } from 'formik';
+import type { ChangeEvent, FC } from 'react';
+import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
+import * as Yup from 'yup';
+import { useCreatePromoCode, useUpdatePromoCode } from './api-calls';
+import { PromoCodeFormCode } from './promo-code-form-code';
+import { PromoCodeFormCustomers } from './promo-code-form-customers';
+import { PromoCodeFormValue } from './promo-code-form-value';
+import { PromoCodeSummary } from './promo-code-summary';
 
 const ToastSuccess = (id: string) => (
   <Box>
-    <Typography variant="body1" color="textPrimary">
+    <Typography
+      variant="body1"
+      color="textPrimary"
+    >
       Discount created
     </Typography>
     <Link
@@ -37,18 +40,18 @@ const ToastSuccess = (id: string) => (
 export interface PromoCodeFormValues {
   products: Product[];
   startDate: string | null;
-  type: "amount" | "percentage";
+  type: 'amount' | 'percentage';
   value: string | number;
   code: string;
   endDate: string | null;
-  productSelection: "general" | "selected";
+  productSelection: 'general' | 'selected';
   users: User[];
-  userSelection: "general" | "selected";
+  userSelection: 'general' | 'selected';
 }
 
 interface PromoCodeFormProps {
   promoCode?: PromoCode;
-  mode: "create" | "update";
+  mode: 'create' | 'update';
   promoCodeIsRefetching?: boolean;
 }
 
@@ -61,18 +64,18 @@ export const PromoCodeForm: FC<PromoCodeFormProps> = (props) => {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const createPromoCode = useCreatePromoCode();
   const updatePromoCode = useUpdatePromoCode(() =>
-    queryClient.invalidateQueries({ queryKey: ["promo-code", promoCode?._id] })
+    queryClient.invalidateQueries({ queryKey: ['promo-code', promoCode?._id] })
   );
   const initialValues: PromoCodeFormValues = {
     products: promoCode?.products || [],
     users: promoCode?.users || [],
     startDate: promoCode?.startDate || null,
-    type: promoCode?.type || "amount",
-    value: promoCode?.value || "",
-    code: promoCode?.code || "",
+    type: promoCode?.type || 'amount',
+    value: promoCode?.value || '',
+    code: promoCode?.code || '',
     endDate: promoCode?.endDate || null,
-    productSelection: promoCode?.productSelection || "selected",
-    userSelection: promoCode?.userSelection || "selected",
+    productSelection: promoCode?.productSelection || 'selected',
+    userSelection: promoCode?.userSelection || 'selected',
   };
 
   const onShouldSetEndDateChange = (
@@ -88,24 +91,27 @@ export const PromoCodeForm: FC<PromoCodeFormProps> = (props) => {
   const isPending = createPromoCode.isPending || updatePromoCode.isPending;
 
   return (
-    <Grid container spacing={3}>
+    <Grid
+      container
+      spacing={3}
+    >
       <Formik
         initialValues={initialValues}
         validationSchema={Yup.object({
           startDate: Yup.date().required(),
-          type: Yup.string().oneOf(["percentage", "amount"]).required(),
+          type: Yup.string().oneOf(['percentage', 'amount']).required(),
           productSelection: Yup.string()
-            .oneOf(["general", "selected"])
+            .oneOf(['general', 'selected'])
             .required(),
-          userSelection: Yup.string().oneOf(["general", "selected"]).required(),
+          userSelection: Yup.string().oneOf(['general', 'selected']).required(),
           value: Yup.string().required(),
           code: Yup.string().required(),
-          products: Yup.array().when("productSelection", {
-            is: "selected",
+          products: Yup.array().when('productSelection', {
+            is: 'selected',
             then: () => Yup.array().of(Yup.mixed()).min(1).required(),
           }),
-          users: Yup.array().when("userSelection", {
-            is: "selected",
+          users: Yup.array().when('userSelection', {
+            is: 'selected',
             then: () => Yup.array().of(Yup.mixed()).min(1).required(),
           }),
           ...(shouldSetEndDate && { endDate: Yup.date().required() }),
@@ -113,22 +119,22 @@ export const PromoCodeForm: FC<PromoCodeFormProps> = (props) => {
         onSubmit={(values, { resetForm }) => {
           const formValues: Record<string, any> = { ...values };
           formValues.users =
-            values.userSelection === "selected"
+            values.userSelection === 'selected'
               ? values.users.map((user) => user._id)
               : null;
           formValues.products =
-            values.productSelection === "selected"
+            values.productSelection === 'selected'
               ? values.products.map((product) => product._id)
               : null;
           formValues.endDate = shouldSetEndDate ? values.endDate : null;
 
-          if (mode === "create") {
+          if (mode === 'create') {
             createPromoCode.mutate(formValues, {
               onSuccess: (promoCode) => {
                 resetForm();
                 toast.success(
                   ToastItemCreated(
-                    "promo code",
+                    'promo code',
                     `/promo-codes/${promoCode._id}`
                   )
                 );
@@ -144,7 +150,7 @@ export const PromoCodeForm: FC<PromoCodeFormProps> = (props) => {
             updatePromoCode.mutate(
               { id: promoCode._id, body: formValues },
               {
-                onSuccess: async (data) => { },
+                onSuccess: async (data) => {},
                 onError: (error) => {
                   setSubmitError(error.message);
                 },
@@ -155,17 +161,34 @@ export const PromoCodeForm: FC<PromoCodeFormProps> = (props) => {
       >
         {(formik) => (
           <>
-            <Grid item xs={8} container spacing={3}>
-              <Grid item xs={12}>
+            <Grid
+              item
+              xs={8}
+              container
+              spacing={3}
+            >
+              <Grid
+                item
+                xs={12}
+              >
                 <PromoCodeFormCode />
               </Grid>
-              <Grid item xs={12}>
+              <Grid
+                item
+                xs={12}
+              >
                 <PromoCodeFormValue />
               </Grid>
-              <Grid item xs={12}>
+              <Grid
+                item
+                xs={12}
+              >
                 <PromoCodeFormCustomers />
               </Grid>
-              <Grid item xs={12}>
+              <Grid
+                item
+                xs={12}
+              >
                 <FormInterval
                   formik={formik}
                   onShouldSetEndDateChange={onShouldSetEndDateChange}
@@ -177,16 +200,22 @@ export const PromoCodeForm: FC<PromoCodeFormProps> = (props) => {
               item
               xs={4}
               container
-              sx={{ height: "fit-content" }}
+              sx={{ height: 'fit-content' }}
               spacing={3}
             >
-              <Grid item xs={12}>
+              <Grid
+                item
+                xs={12}
+              >
                 <PromoCodeSummary
                   {...formik.values}
                   endDate={shouldSetEndDate ? formik.values.endDate : null}
                 />
               </Grid>
-              <Grid item xs={12}>
+              <Grid
+                item
+                xs={12}
+              >
                 <Button
                   isLoading={isPending}
                   color="primary"
@@ -197,7 +226,7 @@ export const PromoCodeForm: FC<PromoCodeFormProps> = (props) => {
                     formik.handleSubmit();
                   }}
                 >
-                  {mode === "create" ? "Create" : "Update"}
+                  {mode === 'create' ? 'Create' : 'Update'}
                 </Button>
               </Grid>
             </Grid>

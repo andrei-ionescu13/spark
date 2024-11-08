@@ -2,7 +2,7 @@
 
 import { Box, Container } from '@mui/material';
 import Head from 'next/head';
-import { useSearchDevelopersQuery } from '../api-calls-hooks';
+import { useSearchDevelopersQuery } from './api';
 import { DevelopersHeader } from './developers-header';
 import { DevelopersTable } from './developers-table';
 

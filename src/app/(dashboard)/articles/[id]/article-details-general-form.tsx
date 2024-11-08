@@ -1,7 +1,6 @@
 'use client';
-import { useUpdateArticleGeneral } from '@/api/articles';
 import { Button } from '@/components/button';
-import { ImageDropzone } from '@/components/image-dropzone';
+import { ImageUpdate } from '@/components/image-update';
 import { TextInput } from '@/components/text-input';
 import {
   Dialog,
@@ -18,6 +17,7 @@ import { useState } from 'react';
 import * as Yup from 'yup';
 import { Article } from '../../../types/articles';
 import { buildFormData } from '../../../utils/build-form-data';
+import { useUpdateArticleGeneral } from './api';
 
 interface ArticleDetailsGeneralFormProps {
   article: Article;
@@ -41,7 +41,7 @@ export const ArticleDetailsGeneralForm: FC<ArticleDetailsGeneralFormProps> = (
       description: article.description,
       title: article.title,
       markdown: article.markdown,
-      cover: article.cover || undefined,
+      cover: article.cover,
       slug: article.slug,
     },
     validationSchema: Yup.object({
@@ -49,9 +49,7 @@ export const ArticleDetailsGeneralForm: FC<ArticleDetailsGeneralFormProps> = (
       title: Yup.string().required('Required'),
       slug: Yup.string().required('Required'),
       markdown: Yup.string().required('Required'),
-      cover: Yup.mixed()
-        .test('resolution', 'wrong resolution', () => !resolutionError)
-        .required('Required'),
+      cover: Yup.mixed().required('Required'),
     }),
     onSubmit: async (values) => {
       const formData = buildFormData(values);
@@ -164,20 +162,12 @@ export const ArticleDetailsGeneralForm: FC<ArticleDetailsGeneralFormProps> = (
             item
             xs={12}
           >
-            <ImageDropzone
-              resolution={{ width: 1920, height: 1080 }}
-              file={
-                isImage(formik.values.cover)
-                  ? formik.values.cover?.url
-                  : formik.values.cover
-              }
-              onDrop={(file: any) => {
+            <ImageUpdate
+              url={formik.values.cover?.url}
+              alt=""
+              onFileSelect={(file: any) => {
                 formik.setFieldTouched('cover', true);
                 formik.setFieldValue('cover', file);
-              }}
-              onError={(error: string) => {
-                setResolutionError(error);
-                formik.setFieldError('cover', error);
               }}
             />
             {!!formik.touched.cover && !!formik.errors.cover && (

@@ -1,6 +1,5 @@
 'use client';
 
-import { useDeleteArticles } from '@/api/articles';
 import { AlertDialog } from '@/components/alert-dialog';
 import { DataTable } from '@/components/data-table';
 import { DataTableHead, HeadCell } from '@/components/data-table-head';
@@ -21,6 +20,7 @@ import {
   TextField,
 } from '@mui/material';
 import { ChangeEvent, FC, SyntheticEvent, useState } from 'react';
+import { useDeleteArticles } from './api';
 import { ArticlesTableRow } from './articles-table-row';
 
 interface Tab {

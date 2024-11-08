@@ -1,9 +1,9 @@
 'use client';
 
 import Head from 'next/head';
-import { useSearchProductKeys } from '../../api-calls-hooks';
 import { KeysTable } from '../../keys-table';
 import { ProductLayout } from '../product-layout';
+import { useSearchProductKeys } from './api';
 
 export default function ProductKeys() {
   const { data, refetch, isError, isLoading } = useSearchProductKeys();

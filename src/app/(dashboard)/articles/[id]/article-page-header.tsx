@@ -1,6 +1,5 @@
 'use client';
 
-import { useDeleteArticle, useDuplicateArticle } from '@/api/articles';
 import { ActionsItem } from '@/components/actions-menu';
 import { AlertDialog } from '@/components/alert-dialog';
 import { Label } from '@/components/label';
@@ -14,6 +13,8 @@ import { Article, ArticleStatus } from '@/types/articles';
 import { Box, colors, Link, Typography, useTheme } from '@mui/material';
 import type { FC } from 'react';
 import { toast } from 'react-toastify';
+import { useDuplicateArticle } from '../(page)/api';
+import { useDeleteArticle } from '../api';
 import { ArticleDuplicateDialog } from '../article-duplicate-dialog';
 
 interface ArticlePageHeaderProps {

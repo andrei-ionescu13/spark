@@ -1,6 +1,5 @@
 'use client';
 
-import { useUpdateProductStatus } from '@/api/products';
 import {
   Box,
   Card,
@@ -21,6 +20,7 @@ import { Button } from '../../../components/button';
 import type { StatusOption } from '../../../components/status';
 import { StatusSelect } from '../../../components/status';
 import type { Product } from '../../../types/products';
+import { useUpdateProductStatus } from './(page)/api';
 
 interface ProductStatusProps {
   product: Product;

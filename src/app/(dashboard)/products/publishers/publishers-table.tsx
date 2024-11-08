@@ -1,6 +1,5 @@
 'use client';
 
-import { useDeletePublishers } from '@/api/publishers';
 import { AlertDialog } from '@/components/alert-dialog';
 import { DataTable } from '@/components/data-table';
 import { DataTableHead, HeadCell } from '@/components/data-table-head';
@@ -11,6 +10,7 @@ import { Publisher } from '@/types/publishers';
 import { Box, Button, Card, TableBody } from '@mui/material';
 import { useQueryClient } from '@tanstack/react-query';
 import { useState, type FC } from 'react';
+import { useDeletePublishers } from './api';
 import { PublishersTableRow } from './publishers-table-row';
 
 interface PublishersTableProps {

@@ -1,18 +1,16 @@
-"use client"
+'use client';
 
-import { useDeletePlatforms } from '@/api/platforms';
 import { AlertDialog } from '@/components/alert-dialog';
 import { DataTable } from '@/components/data-table';
-import { HeadCell, DataTableHead } from '@/components/data-table-head';
+import { DataTableHead, HeadCell } from '@/components/data-table-head';
 import { SearchInput } from '@/components/search-input';
 import { useDialog } from '@/hooks/useDialog';
 import { useSearch } from '@/hooks/useSearch';
-import { Card, Box, Button, TableBody } from '@mui/material';
-import { useQueryClient, useQuery } from '@tanstack/react-query';
-import { useRouter } from 'next/router';
-import { useState, type FC } from 'react'
-import { useSearchPlatformsQuery } from '../api-calls-hooks';
 import { Platform } from '@/types/platforms';
+import { Box, Button, Card, TableBody } from '@mui/material';
+import { useQueryClient } from '@tanstack/react-query';
+import { useState, type FC } from 'react';
+import { useDeletePlatforms } from './api';
 import { PlatformsTableRow } from './platforms-table-row';
 
 interface PlatformsTableProps {
@@ -25,27 +23,20 @@ interface PlatformsTableProps {
 
 const headCells: HeadCell[] = [
   {
-    id: "name",
-    label: "Name",
+    id: 'name',
+    label: 'Name',
   },
 ];
 
 export const PlatformsTable: FC<PlatformsTableProps> = (props) => {
-  const {
-    platforms,
-    count,
-    isError,
-    isLoading,
-    refetch,
-  } = props;
+  const { platforms, count, isError, isLoading, refetch } = props;
   const queryClient = useQueryClient();
-  const [keyword, handleKeywordChange, handleSearch] =
-    useSearch();
+  const [keyword, handleKeywordChange, handleSearch] = useSearch();
   const [selected, setSelected] = useState<string[]>([]);
   const [dialogOpen, handleOpenDialog, handleCloseDialog] = useDialog();
 
   const deletePlatforms = useDeletePlatforms(() =>
-    queryClient.invalidateQueries({ queryKey: ["platforms"] })
+    queryClient.invalidateQueries({ queryKey: ['platforms'] })
   );
 
   const handleSelect = (id: string): void => {
@@ -84,10 +75,10 @@ export const PlatformsTable: FC<PlatformsTableProps> = (props) => {
       <Card>
         <Box
           sx={{
-            display: "grid",
+            display: 'grid',
             gap: 2,
             gridTemplateColumns: {
-              sm: `${!!selected.length ? "auto" : ""} 1fr`,
+              sm: `${!!selected.length ? 'auto' : ''} 1fr`,
             },
             p: 2,
           }}
@@ -149,5 +140,5 @@ export const PlatformsTable: FC<PlatformsTableProps> = (props) => {
         isLoading={deletePlatforms.isPending}
       />
     </>
-  )
+  );
 };

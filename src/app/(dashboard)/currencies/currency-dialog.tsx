@@ -1,4 +1,3 @@
-import { useCreateCurrency } from '@/api/currencies';
 import { Button } from '@/components/button';
 import { TextInput } from '@/components/text-input';
 import {
@@ -13,6 +12,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useFormik } from 'formik';
 import type { FC, SyntheticEvent } from 'react';
 import * as Yup from 'yup';
+import { useCreateCurrency } from './api';
 
 const currencyOptions = {
   USD: {

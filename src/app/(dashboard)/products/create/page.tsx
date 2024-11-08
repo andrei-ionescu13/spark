@@ -1,10 +1,7 @@
-import Head from "next/head";
-import {
-  Box,
-  Container,
-} from "@mui/material";
-import { ProductForm } from "./product-form-form";
-import { PageHeader } from "@/components/page-header";
+import { PageHeader } from '@/components/page-header';
+import { Box, Container } from '@mui/material';
+import Head from 'next/head';
+import { ProductForm } from './product-form';
 
 export default async function ProductCreate() {
   return (
@@ -20,4 +17,4 @@ export default async function ProductCreate() {
       </Box>
     </>
   );
-};
+}

@@ -1,4 +1,4 @@
-import { useDeleteGenre } from '@/api/genres';
+import { ActionsItem } from '@/components/actions-menu';
 import { AlertDialog } from '@/components/alert-dialog';
 import { DataTableRow } from '@/components/data-table-row';
 import { ActionsIconButton } from '@/components/icon-actions';
@@ -8,6 +8,7 @@ import type { FC } from 'react';
 import { useDialog } from '../../../hooks/useDialog';
 import { Pencil as PencilIcon } from '../../../icons/pencil';
 import { Trash as TrashIcon } from '../../../icons/trash';
+import { useDeleteGenre } from './api';
 import { GenreDialog } from './genre-dialog';
 
 interface UsersTableRowProps {

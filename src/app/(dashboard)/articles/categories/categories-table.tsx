@@ -1,27 +1,22 @@
-'use client'
-import { useDeleteCategories } from '@/api/article-categories'
-import { AlertDialog } from '@/components/alert-dialog'
-import { DataTable } from '@/components/data-table'
-import { DataTableHead, HeadCell } from '@/components/data-table-head'
-import { SearchInput } from '@/components/search-input'
-import { useDialog } from '@/hooks/useDialog'
-import { useSearch } from '@/hooks/useSearch'
-import { ArticleCategory } from '@/types/article-category'
-import { appFetch } from '@/utils/app-fetch'
-import { Card, Box, Button, TableBody } from '@mui/material'
-import { useQuery } from '@tanstack/react-query'
-import { useSearchParams } from 'next/navigation'
-import { ParsedUrlQuery } from 'querystring'
-import { useState, type FC } from 'react'
-import { useListArticleCategories } from '../api-calls-hooks'
-import { CategoriesTableRow } from './categories-table-row'
+'use client';
+import { AlertDialog } from '@/components/alert-dialog';
+import { DataTable } from '@/components/data-table';
+import { DataTableHead, HeadCell } from '@/components/data-table-head';
+import { SearchInput } from '@/components/search-input';
+import { useSearch } from '@/hooks/useSearch';
+import { ArticleCategory } from '@/types/article-category';
+import { Box, Button, Card, TableBody } from '@mui/material';
+import { useSearchParams } from 'next/navigation';
+import { useState, type FC } from 'react';
+import { useDeleteCategories } from './api';
+import { CategoriesTableRow } from './categories-table-row';
 
 interface CategoriesTableProps {
-  categories?: ArticleCategory[]
-  count?: number
-  isError: boolean
-  isLoading: boolean
-  refetch: any
+  categories?: ArticleCategory[];
+  count?: number;
+  isError: boolean;
+  isLoading: boolean;
+  refetch: any;
 }
 
 const headCells: HeadCell[] = [
@@ -33,59 +28,59 @@ const headCells: HeadCell[] = [
     id: 'slug',
     label: 'Slug',
   },
-]
+];
 
 export const CategoriesTable: FC<CategoriesTableProps> = (props) => {
-  const { categories, count, isError, isLoading, refetch } = props
-  const query: any = {}
-  const searchParams = useSearchParams()
+  const { categories, count, isError, isLoading, refetch } = props;
+  const query: any = {};
+  const searchParams = useSearchParams();
   for (const [key, value] of searchParams.entries()) {
-    query[key] = value
+    query[key] = value;
   }
-  const [selected, setSelected] = useState<string[]>([])
-  const [keyword, handleKeywordChange, handleSearch] = useSearch()
-  const [dialogOpen, setDialogOpen] = useState(false)
-  const deleteCategories = useDeleteCategories(refetch)
+  const [selected, setSelected] = useState<string[]>([]);
+  const [keyword, handleKeywordChange, handleSearch] = useSearch();
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const deleteCategories = useDeleteCategories(refetch);
 
   const handleOpenDialog = (): void => {
-    setDialogOpen(true)
-  }
+    setDialogOpen(true);
+  };
 
   const handleCloseDialog = (): void => {
-    setDialogOpen(false)
-  }
+    setDialogOpen(false);
+  };
 
   const handleDeleteCategories = (): void => {
     deleteCategories.mutate(selected, {
       onSuccess: () => {
-        setSelected([])
-        handleCloseDialog()
+        setSelected([]);
+        handleCloseDialog();
       },
       onError: (error) => {},
-    })
-  }
+    });
+  };
 
   const handleSelect = (id: string): void => {
     setSelected((prevSelected) => {
       if (prevSelected.includes(id)) {
-        return prevSelected.filter((_id) => _id !== id)
+        return prevSelected.filter((_id) => _id !== id);
       }
 
-      return [...prevSelected, id]
-    })
-  }
+      return [...prevSelected, id];
+    });
+  };
 
   const handleSelectAll = (): void => {
-    if (!categories) return
+    if (!categories) return;
 
     setSelected((prevSelected) => {
       if (prevSelected.length === categories.length) {
-        return []
+        return [];
       }
 
-      return categories.map((article) => article._id)
-    })
-  }
+      return categories.map((article) => article._id);
+    });
+  };
 
   return (
     <>
@@ -140,7 +135,7 @@ export const CategoriesTable: FC<CategoriesTableProps> = (props) => {
                 articleCategory={article}
                 key={article._id}
                 onSelect={() => {
-                  handleSelect(article._id)
+                  handleSelect(article._id);
                 }}
                 selected={selected.includes(article._id)}
               />
@@ -157,5 +152,5 @@ export const CategoriesTable: FC<CategoriesTableProps> = (props) => {
         title={`Delete ${selected.length} categories`}
       />
     </>
-  )
-}
+  );
+};

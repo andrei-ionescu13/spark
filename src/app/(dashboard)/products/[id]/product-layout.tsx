@@ -1,31 +1,30 @@
-"use client"
-import type { FC, ReactNode } from 'react';
-import Head from 'next/head';
-import { useParams, usePathname, useRouter } from 'next/navigation';
+'use client';
 import {
   Box,
+  colors,
   Container,
   Divider,
+  Skeleton,
   Tab,
   Tabs,
   useTheme,
-  colors,
-  Skeleton
 } from '@mui/material';
+import { useParams, usePathname, useRouter } from 'next/navigation';
+import type { FC, ReactNode } from 'react';
 import type { ActionsItem } from '../../../components/actions-menu';
 import { AlertDialog } from '../../../components/alert-dialog';
+import { Label } from '../../../components/label';
 import { Link } from '../../../components/link';
 import { PageHeader } from '../../../components/page-header';
-import { Upload as UploadIcon } from '../../../icons/upload';
+import { useDialog } from '../../../hooks/useDialog';
 import { Key as KeyIcon } from '../../../icons/key';
 import { Trash as TrashIcon } from '../../../icons/trash';
-import { useDialog } from '../../../hooks/useDialog';
+import { Upload as UploadIcon } from '../../../icons/upload';
+import type { ProductStatus } from '../../../types/products';
+import { useDeleteProduct } from '../api';
+import { useGetProduct } from './api';
 import { ProductAddKeyDialog } from './keys/product-add-key-dialog';
-import { useDeleteProduct } from '@/api/products';
 import { ProductImportKeysDialog } from './keys/product-import-keys-dialog';
-import type { Product, ProductStatus } from '../../../types/products';
-import { Label } from '../../../components/label';
-import { useGetCollectionQuery, useGetProduct } from 'app/(dashboard)/products/api-calls-hooks';
 
 interface Tab {
   label: string;
@@ -38,13 +37,20 @@ interface ProductLayoutProps {
 
 export const ProductLayout: FC<ProductLayoutProps> = (props) => {
   const { children } = props;
+  const router = useRouter();
   const { data: product, isLoading } = useGetProduct();
-  const { id } = useParams<{ id: string }>()
+  const { id } = useParams<{ id: string }>();
   const theme = useTheme();
   const pathname = usePathname();
-  const [deleteDialogOpen, handleOpenDeleteDialog, handleCloseDeleteDialog] = useDialog(false);
-  const [addKeyDialogOpen, handleOpenAddKeyDialog, handleCloseAddKeyDialog] = useDialog(false);
-  const [importKeysDialogOpen, handleOpenImportKeysDialog, handleCloseImportKeysDialog] = useDialog(false);
+  const [deleteDialogOpen, handleOpenDeleteDialog, handleCloseDeleteDialog] =
+    useDialog(false);
+  const [addKeyDialogOpen, handleOpenAddKeyDialog, handleCloseAddKeyDialog] =
+    useDialog(false);
+  const [
+    importKeysDialogOpen,
+    handleOpenImportKeysDialog,
+    handleCloseImportKeysDialog,
+  ] = useDialog(false);
   const deleteProduct = useDeleteProduct();
   const { title } = product || {};
 
@@ -52,7 +58,6 @@ export const ProductLayout: FC<ProductLayoutProps> = (props) => {
     {
       label: 'General',
       href: `/products/${id}`,
-
     },
     {
       label: 'Keys',
@@ -62,7 +67,7 @@ export const ProductLayout: FC<ProductLayoutProps> = (props) => {
       label: 'Reviews',
       href: `/products/${id}/reviews`,
     },
-  ]
+  ];
 
   const actionItems: ActionsItem[] = [
     {
@@ -79,9 +84,9 @@ export const ProductLayout: FC<ProductLayoutProps> = (props) => {
       label: 'Delete',
       icon: TrashIcon,
       onClick: handleOpenDeleteDialog,
-      color: 'error'
-    }
-  ]
+      color: 'error',
+    },
+  ];
 
   const handleDeleteProduct = (): void => {
     if (!id) return;
@@ -90,15 +95,15 @@ export const ProductLayout: FC<ProductLayoutProps> = (props) => {
       onSuccess: () => {
         handleCloseDeleteDialog();
         router.push('/products');
-      }
-    })
-  }
+      },
+    });
+  };
 
   const mappedColors: Record<ProductStatus, string> = {
     draft: colors.grey[500],
     published: theme.palette.success.main,
-    archived: theme.palette.error.main
-  }
+    archived: theme.palette.error.main,
+  };
 
   return (
     <>
@@ -118,14 +123,14 @@ export const ProductLayout: FC<ProductLayoutProps> = (props) => {
         open={importKeysDialogOpen}
         onClose={handleCloseImportKeysDialog}
       />
-      {(addKeyDialogOpen && id) && (
+      {addKeyDialogOpen && id && (
         <ProductAddKeyDialog
           open
           onClose={handleCloseAddKeyDialog}
           productId={id}
         />
       )}
-      <Box sx={{ py: 3 }} >
+      <Box sx={{ py: 3 }}>
         <Container maxWidth="lg">
           <PageHeader
             title={title}
@@ -139,7 +144,13 @@ export const ProductLayout: FC<ProductLayoutProps> = (props) => {
                 {product.status}
               </Label>
             )}
-            {isLoading && (<Skeleton variant="rounded" width={80} height={21} />)}
+            {isLoading && (
+              <Skeleton
+                variant="rounded"
+                width={80}
+                height={21}
+              />
+            )}
           </PageHeader>
           <Tabs value={tabs.findIndex((tab) => tab.href === pathname)}>
             {tabs.map((tab) => (

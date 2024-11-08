@@ -1,24 +1,28 @@
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import { FC } from "react";
-import { Box, FormHelperText, Grid, Link, Typography } from "@mui/material";
-import { toast } from "react-toastify";
-import { useQueryClient } from "@tanstack/react-query";
-import { AlertDialog, AlertDialogProps } from "../../../components/alert-dialog";
-import { TextInput } from "../../../components/text-input";
-import { useUpdateArticleCategory } from "@/api/article-categories";
-import { ArticleCategory } from "../../../types/article-category";
-import { useUpdateArticleTag } from "@/api/article-tags";
-import { ArticleTag } from "../../../types/article-tag";
+import { Box, FormHelperText, Grid, Link, Typography } from '@mui/material';
+import { useQueryClient } from '@tanstack/react-query';
+import { useFormik } from 'formik';
+import { FC } from 'react';
+import { toast } from 'react-toastify';
+import * as Yup from 'yup';
+import {
+  AlertDialog,
+  AlertDialogProps,
+} from '../../../components/alert-dialog';
+import { TextInput } from '../../../components/text-input';
+import { ArticleTag } from '../../../types/article-tag';
+import { useUpdateArticleTag } from './api';
 
 interface TagUpdateDialog
-  extends Omit<AlertDialogProps, "title" | "onSubmit" | "isLoading"> {
+  extends Omit<AlertDialogProps, 'title' | 'onSubmit' | 'isLoading'> {
   articleTag: ArticleTag;
 }
 
 const ToastSuccess = (id: string) => (
   <Box>
-    <Typography variant="body1" color="textPrimary">
+    <Typography
+      variant="body1"
+      color="textPrimary"
+    >
       Article duplicated
     </Typography>
     <Link
@@ -36,7 +40,7 @@ export const TagUpdateDialog: FC<TagUpdateDialog> = (props) => {
   const { onClose, articleTag, ...rest } = props;
   const queryClient = useQueryClient();
   const updateArticleTag = useUpdateArticleTag(articleTag._id, () =>
-    queryClient.invalidateQueries({ queryKey: ["article-tags"] })
+    queryClient.invalidateQueries({ queryKey: ['article-tags'] })
   );
 
   const formik = useFormik({
@@ -66,8 +70,14 @@ export const TagUpdateDialog: FC<TagUpdateDialog> = (props) => {
       isLoading={updateArticleTag.isPending}
       {...rest}
     >
-      <Grid container spacing={3}>
-        <Grid item xs={12}>
+      <Grid
+        container
+        spacing={3}
+      >
+        <Grid
+          item
+          xs={12}
+        >
           <TextInput
             error={!!formik.touched.name && !!formik.errors.name}
             fullWidth
@@ -80,7 +90,10 @@ export const TagUpdateDialog: FC<TagUpdateDialog> = (props) => {
             value={formik.values.name}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid
+          item
+          xs={12}
+        >
           <TextInput
             error={!!formik.touched.slug && !!formik.errors.slug}
             fullWidth
@@ -94,7 +107,10 @@ export const TagUpdateDialog: FC<TagUpdateDialog> = (props) => {
           />
         </Grid>
         {updateArticleTag.isError && (
-          <Grid item xs={12}>
+          <Grid
+            item
+            xs={12}
+          >
             <FormHelperText error>
               {updateArticleTag.error?.message}
             </FormHelperText>

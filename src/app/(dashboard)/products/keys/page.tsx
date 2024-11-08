@@ -3,8 +3,8 @@
 import type { Key } from '@/types/keys';
 import { Box, Container } from '@mui/material';
 import Head from 'next/head';
-import { useSearchKeysQuery } from '../api-calls-hooks';
 import { KeysTable } from '../keys-table';
+import { useSearchKeysQuery } from './api';
 import { KeysHeader } from './keys-header';
 
 interface GetKeysData {

@@ -1,4 +1,3 @@
-import type { FC } from "react";
 import {
   Checkbox,
   colors,
@@ -13,24 +12,24 @@ import {
   Select,
   TableCell,
   useTheme,
-} from "@mui/material";
-import { ActionsItem } from "./actions-menu";
-import { ActionsIconButton } from "./icon-actions";
-import { Link } from "./link";
-import { Pencil as PencilIcon } from "../icons/pencil";
-import { Trash as TrashIcon } from "../icons/trash";
-import { Upload as UploadIcon } from "../icons/upload";
-import { Label } from "./label";
-import { formatDate } from "../utils/format-date";
-import { DataTableRow } from "./data-table-row";
-import { toast } from "react-toastify";
-import { useDialog } from "../hooks/useDialog";
-import type { Review } from "../types/review";
-import { useDeleteReview, useUpdateReviewStatus } from "@/api/reviews";
-import { Button } from "./button";
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import { AlertDialog } from "./alert-dialog";
+} from '@mui/material';
+import { useDeleteReview, useUpdateReviewStatus } from 'app/api';
+import { useFormik } from 'formik';
+import type { FC } from 'react';
+import { toast } from 'react-toastify';
+import * as Yup from 'yup';
+import { useDialog } from '../hooks/useDialog';
+import { Pencil as PencilIcon } from '../icons/pencil';
+import { Trash as TrashIcon } from '../icons/trash';
+import type { Review } from '../types/review';
+import { formatDate } from '../utils/format-date';
+import { ActionsItem } from './actions-menu';
+import { AlertDialog } from './alert-dialog';
+import { Button } from './button';
+import { DataTableRow } from './data-table-row';
+import { ActionsIconButton } from './icon-actions';
+import { Label } from './label';
+import { Link } from './link';
 
 interface Status {
   label: string;
@@ -39,16 +38,16 @@ interface Status {
 
 const statusOptions: Status[] = [
   {
-    label: "Published",
-    value: "published",
+    label: 'Published',
+    value: 'published',
   },
   {
-    label: "Unpublished",
-    value: "unpublished",
+    label: 'Unpublished',
+    value: 'unpublished',
   },
   {
-    label: "Flagged",
-    value: "flagged",
+    label: 'Flagged',
+    value: 'flagged',
   },
 ];
 
@@ -71,7 +70,7 @@ export const StatusUpdate: FC<StatusUpdateProps> = (props) => {
     validationSchema: Yup.object({
       status: Yup.string()
         .oneOf(statusOptions.map((status) => status.value))
-        .required("Required"),
+        .required('Required'),
     }),
     onSubmit: (values) => {
       updateReviewStatus.mutate(values, {
@@ -86,14 +85,19 @@ export const StatusUpdate: FC<StatusUpdateProps> = (props) => {
     },
   });
 
-  const mappedColors: Record<Status["value"], string> = {
+  const mappedColors: Record<Status['value'], string> = {
     unpublished: colors.grey[500],
     published: theme.palette.success.main,
     flagged: theme.palette.error.main,
   };
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth="sm"
+      fullWidth
+    >
       <DialogTitle>Update status</DialogTitle>
       <DialogContent>
         <FormControl
@@ -109,7 +113,10 @@ export const StatusUpdate: FC<StatusUpdateProps> = (props) => {
             value={formik.values.status}
           >
             {statusOptions.map((status) => (
-              <MenuItem value={status.value} key={status.value}>
+              <MenuItem
+                value={status.value}
+                key={status.value}
+              >
                 <MenuItem color={mappedColors[status.value]}>
                   {status.label}
                 </MenuItem>
@@ -122,7 +129,11 @@ export const StatusUpdate: FC<StatusUpdateProps> = (props) => {
         </FormControl>
       </DialogContent>
       <DialogActions>
-        <Button color="secondary" onClick={onClose} variant="text">
+        <Button
+          color="secondary"
+          onClick={onClose}
+          variant="text"
+        >
           Cancel
         </Button>
         <Button
@@ -174,15 +185,15 @@ export const RaviewsTableRow: FC<RaviewsTableRowProps> = (props) => {
 
   const actionItems: ActionsItem[] = [
     {
-      label: "Edit",
+      label: 'Edit',
       icon: PencilIcon,
       onClick: handleOpenUpdateDialog,
     },
     {
-      label: "Delete",
+      label: 'Delete',
       icon: TrashIcon,
       onClick: handleOpenDeleteDialog,
-      color: "error",
+      color: 'error',
     },
   ];
 
@@ -208,9 +219,16 @@ export const RaviewsTableRow: FC<RaviewsTableRowProps> = (props) => {
         review={review}
         refetch={refetch}
       />
-      <DataTableRow key={review._id} selected={selected}>
+      <DataTableRow
+        key={review._id}
+        selected={selected}
+      >
         <TableCell padding="checkbox">
-          <Checkbox color="primary" onChange={onSelect} checked={selected} />
+          <Checkbox
+            color="primary"
+            onChange={onSelect}
+            checked={selected}
+          />
         </TableCell>
         <TableCell>
           <Link
@@ -223,7 +241,10 @@ export const RaviewsTableRow: FC<RaviewsTableRowProps> = (props) => {
           </Link>
         </TableCell>
         <TableCell>
-          <Rating value={review.rating} readOnly />
+          <Rating
+            value={review.rating}
+            readOnly
+          />
         </TableCell>
         {showProduct && (
           <TableCell>

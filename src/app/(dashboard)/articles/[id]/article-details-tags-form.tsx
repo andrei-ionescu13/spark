@@ -1,8 +1,5 @@
-import { useState } from "react";
-import type { FC, SyntheticEvent } from "react";
-import { useFormik } from "formik";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import * as Yup from "yup";
+import { Button } from '@/components/button';
+import { TextInput } from '@/components/text-input';
 import {
   Autocomplete,
   Dialog,
@@ -11,12 +8,15 @@ import {
   DialogTitle,
   FormHelperText,
   Grid,
-} from "@mui/material";
-import { useUpdateArticleTags } from "@/api/articles";
-import { Article } from "../../../types/articles";
-import { listTags } from "@/api/article-tags";
-import { Button } from "@/components/button";
-import { TextInput } from "@/components/text-input";
+} from '@mui/material';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useFormik } from 'formik';
+import type { FC, SyntheticEvent } from 'react';
+import { useState } from 'react';
+import * as Yup from 'yup';
+import { Article } from '../../../types/articles';
+import { listTags } from '../tags/api';
+import { useUpdateArticleTags } from './api';
 
 interface ArticleDetailsMetaFormProps {
   article: Article;
@@ -29,8 +29,8 @@ export const ArticleDetailsTagsForm: FC<ArticleDetailsMetaFormProps> = (
 ) => {
   const { open, onClose, article } = props;
   const { data: tags, isLoading } = useQuery({
-    queryKey: ["article-tags"],
-    queryFn: listTags()
+    queryKey: ['article-tags'],
+    queryFn: listTags,
   });
 
   const updateArticleTags = useUpdateArticleTags(article._id);
@@ -50,7 +50,7 @@ export const ArticleDetailsTagsForm: FC<ArticleDetailsMetaFormProps> = (
       };
       updateArticleTags.mutate(formValues, {
         onSuccess: (data) => {
-          queryClient.setQueryData(["articles", article._id], {
+          queryClient.setQueryData(['articles', article._id], {
             ...article,
             ...data,
           });
@@ -66,11 +66,22 @@ export const ArticleDetailsTagsForm: FC<ArticleDetailsMetaFormProps> = (
   const articleTagIds = formik.values.tags.map((tag) => tag._id);
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth="sm"
+      fullWidth
+    >
       <DialogTitle>Update Tags</DialogTitle>
       <DialogContent>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
+        <Grid
+          container
+          spacing={2}
+        >
+          <Grid
+            item
+            xs={12}
+          >
             {isLoading || !tags ? null : (
               <Autocomplete
                 autoHighlight
@@ -80,7 +91,7 @@ export const ArticleDetailsTagsForm: FC<ArticleDetailsMetaFormProps> = (
                 id="tags"
                 multiple
                 onChange={(event: SyntheticEvent, newValue) => {
-                  formik.setFieldValue("tags", newValue);
+                  formik.setFieldValue('tags', newValue);
                 }}
                 options={tags.filter(
                   (option) => !articleTagIds.includes(option._id)
@@ -102,13 +113,20 @@ export const ArticleDetailsTagsForm: FC<ArticleDetailsMetaFormProps> = (
           </Grid>
         </Grid>
         {!!submitError && (
-          <FormHelperText error sx={{ mt: 1 }}>
+          <FormHelperText
+            error
+            sx={{ mt: 1 }}
+          >
             {submitError}
           </FormHelperText>
         )}
       </DialogContent>
       <DialogActions>
-        <Button color="secondary" onClick={onClose} variant="text">
+        <Button
+          color="secondary"
+          onClick={onClose}
+          variant="text"
+        >
           Cancel
         </Button>
         <Button

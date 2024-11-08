@@ -34,7 +34,7 @@ const headCells: HeadCell[] = [
   {
     id: 'email',
     label: 'Email',
-    width: '20%',
+    width: '25%',
   },
   {
     id: 'createdAt',

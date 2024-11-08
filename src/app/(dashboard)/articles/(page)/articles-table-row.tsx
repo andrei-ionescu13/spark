@@ -1,4 +1,3 @@
-import { useDeleteArticle } from '@/api/articles';
 import { Checkbox, colors, TableCell, useTheme } from '@mui/material';
 import { useQueryClient } from '@tanstack/react-query';
 import type { FC } from 'react';
@@ -15,6 +14,7 @@ import { Eye as EyeIcon } from '../../../icons/eye';
 import { Trash as TrashIcon } from '../../../icons/trash';
 import type { Article } from '../../../types/articles';
 import { formatDate } from '../../../utils/format-date';
+import { useDeleteArticle } from '../api';
 import { ArticleDuplicateDialog } from '../article-duplicate-dialog';
 
 interface ArticlesTableRowProps {
@@ -95,12 +95,22 @@ export const ArticlesTableRow: FC<ArticlesTableRowProps> = (props) => {
         title={article.title}
         cover={article.cover.url}
       />
-      <DataTableRow key={article._id} selected={selected}>
+      <DataTableRow
+        key={article._id}
+        selected={selected}
+      >
         <TableCell padding="checkbox">
-          <Checkbox color="primary" onChange={onSelect} checked={selected} />
+          <Checkbox
+            color="primary"
+            onChange={onSelect}
+            checked={selected}
+          />
         </TableCell>
         <TableCell>
-          <Link href={`/articles/${article._id}`} underline="hover">
+          <Link
+            href={`/articles/${article._id}`}
+            underline="hover"
+          >
             {article.title}
           </Link>
         </TableCell>

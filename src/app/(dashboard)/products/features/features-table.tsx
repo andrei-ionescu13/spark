@@ -1,17 +1,16 @@
-"use client"
+'use client';
 
-import { useState, type FC } from 'react'
-import { useSearchFeaturesQuery } from '../api-calls-hooks';
-import { useDeleteFeatures } from '@/api/features';
 import { AlertDialog } from '@/components/alert-dialog';
+import { Button } from '@/components/button';
 import { DataTable } from '@/components/data-table';
-import { HeadCell, DataTableHead } from '@/components/data-table-head';
-import { FeaturesTableRow } from 'app/(dashboard)/products/features/feature-table-row';
+import { DataTableHead, HeadCell } from '@/components/data-table-head';
 import { SearchInput } from '@/components/search-input';
 import { useSearch } from '@/hooks/useSearch';
-import { Card, Box, TableBody } from '@mui/material';
-import { Button } from '@/components/button';
 import { Feature } from '@/types/feature';
+import { Box, Card, TableBody } from '@mui/material';
+import { FeaturesTableRow } from 'app/(dashboard)/products/features/feature-table-row';
+import { useState, type FC } from 'react';
+import { useDeleteFeatures } from './api';
 
 interface FeaturesTableProps {
   features?: Feature[];
@@ -23,26 +22,19 @@ interface FeaturesTableProps {
 
 const headCells: HeadCell[] = [
   {
-    id: "name",
-    label: "Name",
+    id: 'name',
+    label: 'Name',
   },
   {
-    id: "slug",
-    label: "Slug",
+    id: 'slug',
+    label: 'Slug',
   },
 ];
 
 export const FeaturesTable: FC<FeaturesTableProps> = (props) => {
-  const {
-    features,
-    count,
-    isError,
-    isLoading,
-    refetch,
-  } = props;
+  const { features, count, isError, isLoading, refetch } = props;
   const [selected, setSelected] = useState<string[]>([]);
-  const [keyword, handleKeywordChange, handleSearch] =
-    useSearch();
+  const [keyword, handleKeywordChange, handleSearch] = useSearch();
   const [dialogOpen, setDialogOpen] = useState(false);
   const deleteCategories = useDeleteFeatures(refetch);
   const handleOpenDialog = (): void => {
@@ -59,7 +51,7 @@ export const FeaturesTable: FC<FeaturesTableProps> = (props) => {
         setSelected([]);
         handleCloseDialog();
       },
-      onError: (error) => { },
+      onError: (error) => {},
     });
   };
 
@@ -83,16 +75,15 @@ export const FeaturesTable: FC<FeaturesTableProps> = (props) => {
     });
   };
 
-
   return (
     <>
       <Card>
         <Box
           sx={{
-            display: "grid",
+            display: 'grid',
             gap: 2,
             gridTemplateColumns: {
-              sm: `${!!selected.length ? "auto" : ""} 1fr`,
+              sm: `${!!selected.length ? 'auto' : ''} 1fr`,
             },
             p: 2,
           }}
@@ -154,5 +145,5 @@ export const FeaturesTable: FC<FeaturesTableProps> = (props) => {
         title={`Delete ${selected.length} features`}
       />
     </>
-  )
+  );
 };

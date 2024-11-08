@@ -1,4 +1,4 @@
-import { useDeleteReview } from '@/api/reviews';
+import { useDeleteReview } from '@/api/*';
 import { AlertDialog } from '@/components/alert-dialog';
 import { Label } from '@/components/label';
 import { PageHeader } from '@/components/page-header';
@@ -7,7 +7,7 @@ import { Trash } from '@/icons/trash';
 import { Review } from '@/types/review';
 import { colors, Skeleton, useTheme } from '@mui/material';
 import router from 'next/router';
-import type { FC } from 'react'
+import type { FC } from 'react';
 
 interface ReviewHeaderProps {
   review?: Review;
@@ -25,14 +25,16 @@ export const ReviewHeader: FC<ReviewHeaderProps> = (props) => {
   const [deleteDialogOpen, handleOpenDeleteDialog, handleCloseDeleteDialog] =
     useDialog();
   const deleteReview = useDeleteReview();
+
   const handleDeleteReview = (review: Review): void => {
     deleteReview.mutate(review._id, {
       onSuccess: () => {
-        router.push("/reviews");
+        router.push('/reviews');
       },
     });
   };
-  const mappedColors: Record<Status["value"], string> = {
+
+  const mappedColors: Record<Status['value'], string> = {
     unpublished: colors.grey[500],
     published: theme.palette.success.main,
     flagged: theme.palette.error.main,
@@ -43,16 +45,24 @@ export const ReviewHeader: FC<ReviewHeaderProps> = (props) => {
       <PageHeader
         backHref="/review"
         backLabel="Reviews"
-        title={"Review"}
+        title={'Review'}
         action={{
           icon: Trash,
-          color: "error",
-          label: "Delete",
+          color: 'error',
+          label: 'Delete',
           onClick: handleOpenDeleteDialog,
         }}
       >
-        {review && <Label color={mappedColors[review.status]}>{review.status}</Label>}
-        {isLoading && (<Skeleton variant="rounded" width={80} height={21} />)}
+        {review && (
+          <Label color={mappedColors[review.status]}>{review.status}</Label>
+        )}
+        {isLoading && (
+          <Skeleton
+            variant="rounded"
+            width={80}
+            height={21}
+          />
+        )}
       </PageHeader>
       {!!review && (
         <AlertDialog
@@ -60,10 +70,12 @@ export const ReviewHeader: FC<ReviewHeaderProps> = (props) => {
           onClose={handleCloseDeleteDialog}
           title="Delete review"
           content="Are you sure you want to delete this review?"
-          onSubmit={() => { handleDeleteReview(review) }}
+          onSubmit={() => {
+            handleDeleteReview(review);
+          }}
           isLoading={deleteReview.isPending}
         />
       )}
     </>
-  )
+  );
 };

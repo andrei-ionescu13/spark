@@ -1,6 +1,5 @@
 'use client';
 
-import { useDeleteGenres } from '@/api/genres';
 import { AlertDialog } from '@/components/alert-dialog';
 import { DataTable } from '@/components/data-table';
 import { DataTableHead, HeadCell } from '@/components/data-table-head';
@@ -11,7 +10,7 @@ import { Genre } from '@/types/genres';
 import { Box, Button, Card, TableBody } from '@mui/material';
 import { useQueryClient } from '@tanstack/react-query';
 import { useState, type FC } from 'react';
-import { useSearchGenresQuery } from '../api-calls-hooks';
+import { useDeleteGenres } from './api';
 import { GenresTableRow } from './genres-table-row';
 
 interface GenresTableProps {
@@ -34,7 +33,6 @@ export const GenresTable: FC<GenresTableProps> = (props) => {
   const queryClient = useQueryClient();
   const [keyword, handleKeywordChange, handleSearch] = useSearch();
   const [selected, setSelected] = useState<string[]>([]);
-  const { error, data: genresData } = useSearchGenresQuery();
   const [dialogOpen, handleOpenDialog, handleCloseDialog] = useDialog();
   useDialog();
   const deleteGenres = useDeleteGenres(() =>

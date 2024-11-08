@@ -1,22 +1,28 @@
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import { FC } from "react";
-import { Box, FormHelperText, Grid, Link, Typography } from "@mui/material";
-import { toast } from "react-toastify";
-import { useQueryClient } from "@tanstack/react-query";
-import { AlertDialog, AlertDialogProps } from "../../../components/alert-dialog";
-import { TextInput } from "../../../components/text-input";
-import { useUpdateOperatingSystem } from "@/api/operating-systems";
-import { OperatingSystem } from "../../../types/operating-sistem";
+import { Box, FormHelperText, Grid, Typography } from '@mui/material';
+import { useQueryClient } from '@tanstack/react-query';
+import { useFormik } from 'formik';
+import { FC } from 'react';
+import { toast } from 'react-toastify';
+import * as Yup from 'yup';
+import {
+  AlertDialog,
+  AlertDialogProps,
+} from '../../../components/alert-dialog';
+import { TextInput } from '../../../components/text-input';
+import { OperatingSystem } from '../../../types/operating-sistem';
+import { useUpdateOperatingSystem } from './api';
 
 interface OperatingSystemDuplicateDialogProps
-  extends Omit<AlertDialogProps, "title" | "onSubmit" | "isLoading"> {
+  extends Omit<AlertDialogProps, 'title' | 'onSubmit' | 'isLoading'> {
   OperatingSystem: OperatingSystem;
 }
 
 const ToastSuccess = (id: string) => (
   <Box>
-    <Typography variant="body1" color="textPrimary">
+    <Typography
+      variant="body1"
+      color="textPrimary"
+    >
       OperatingSystem updated
     </Typography>
   </Box>
@@ -29,7 +35,7 @@ export const OperatingSystemUpdateDialog: FC<
   const queryClient = useQueryClient();
   const updateOperatingSystem = useUpdateOperatingSystem(
     OperatingSystem._id,
-    () => queryClient.invalidateQueries({ queryKey: ["operatingSystems"] })
+    () => queryClient.invalidateQueries({ queryKey: ['operatingSystems'] })
   );
 
   const formik = useFormik({
@@ -59,8 +65,14 @@ export const OperatingSystemUpdateDialog: FC<
       isLoading={updateOperatingSystem.isPending}
       {...rest}
     >
-      <Grid container spacing={3}>
-        <Grid item xs={12}>
+      <Grid
+        container
+        spacing={3}
+      >
+        <Grid
+          item
+          xs={12}
+        >
           <TextInput
             error={!!formik.touched.name && !!formik.errors.name}
             fullWidth
@@ -73,7 +85,10 @@ export const OperatingSystemUpdateDialog: FC<
             value={formik.values.name}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid
+          item
+          xs={12}
+        >
           <TextInput
             error={!!formik.touched.slug && !!formik.errors.slug}
             fullWidth
@@ -87,7 +102,10 @@ export const OperatingSystemUpdateDialog: FC<
           />
         </Grid>
         {updateOperatingSystem.isError && (
-          <Grid item xs={12}>
+          <Grid
+            item
+            xs={12}
+          >
             <FormHelperText error>
               {updateOperatingSystem.error?.message}
             </FormHelperText>

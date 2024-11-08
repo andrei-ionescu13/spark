@@ -2,7 +2,7 @@
 
 import Head from 'next/head';
 import { OrdersTable } from '../../../../components/orders-table';
-import { useSearchUserOrders } from '../../api-calls-hooks';
+import { useSearchUserOrders } from './api';
 
 export default function UserOrders() {
   const { data, refetch, isError, isLoading } = useSearchUserOrders();

@@ -6,14 +6,14 @@ import { ProductMedia } from 'app/(dashboard)/products/[id]/(page)/product-media
 import { ProductMeta } from 'app/(dashboard)/products/[id]/(page)/product-meta';
 import Head from 'next/head';
 import { useState } from 'react';
-import { useGetProduct } from '../../api-calls-hooks';
+import { useGetProduct } from '../api';
 import { ProductDiscount } from '../product-discount';
 import { ProductLayout } from '../product-layout';
 import { ProductStatus } from '../product-status';
 import { ProductGeneral } from './product-general';
-import { ProductGeneralForm } from './product-general-form';
-import { ProductMediaForm } from './product-media-form';
-import { ProductMetaForm } from './product-meta-form';
+import { ProductUpdateGeneralForm } from './product-update-general-form';
+import { ProductUpdateMediaForm } from './product-update-media-form';
+import { ProductUpdateMetaForm } from './product-update-meta-form';
 
 type DisplayedForm = 'details' | 'media' | 'meta' | null;
 
@@ -41,19 +41,19 @@ export default function Product() {
       <Head>Game</Head>
       <ProductLayout>
         {product && displayedForm === 'details' && (
-          <ProductGeneralForm
+          <ProductUpdateGeneralForm
             product={product}
             onClose={handleHideForm}
           />
         )}
         {product && displayedForm === 'media' && (
-          <ProductMediaForm
+          <ProductUpdateMediaForm
             product={product}
             onClose={handleHideForm}
           />
         )}
         {product && displayedForm === 'meta' && (
-          <ProductMetaForm
+          <ProductUpdateMetaForm
             product={product}
             onClose={handleHideForm}
           />

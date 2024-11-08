@@ -1,14 +1,14 @@
-import { useRef } from 'react'
-import type { ChangeEvent, FC, } from 'react'
-import { AlertDialog } from '../../../components/alert-dialog'
 import { Box, FormHelperText, Typography } from '@mui/material';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
-import { useImportKeys } from '@/api/keys';
 import { useQueryClient } from '@tanstack/react-query';
+import { useFormik } from 'formik';
+import type { ChangeEvent, FC } from 'react';
+import { useRef } from 'react';
+import * as Yup from 'yup';
+import { AlertDialog } from '../../../components/alert-dialog';
+import { Button } from '../../../components/button';
 import { Link } from '../../../components/link';
 import { buildFormData } from '../../../utils/build-form-data';
-import { Button } from '../../../components/button';
+import { useImportKeys } from '../api';
 
 interface KeysImportDialogProps {
   open: boolean;
@@ -18,27 +18,27 @@ interface KeysImportDialogProps {
 export const KeysImportDialog: FC<KeysImportDialogProps> = (props) => {
   const { open, onClose } = props;
   const queryClient = useQueryClient();
-  const inputRef = useRef<HTMLInputElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null);
   const importKeys = useImportKeys();
 
   const initialValues: { keys?: File } = {
-    keys: undefined
-  }
+    keys: undefined,
+  };
 
   const formik = useFormik({
     initialValues,
     validationSchema: Yup.object({
-      keys: Yup.mixed().required('File required')
+      keys: Yup.mixed().required('File required'),
     }),
-    onSubmit: values => {
+    onSubmit: (values) => {
       const formData = buildFormData(values);
 
       importKeys.mutate(formData, {
         onSuccess: () => {
           onClose();
-          queryClient.invalidateQueries({ queryKey: ['keys'] })
-        }
-      })
+          queryClient.invalidateQueries({ queryKey: ['keys'] });
+        },
+      });
     },
   });
 
@@ -48,41 +48,40 @@ export const KeysImportDialog: FC<KeysImportDialogProps> = (props) => {
     }
 
     if (event.target.files[0]?.type !== 'application/json') {
-      formik.setFieldError('keys', 'the file should be a json file')
+      formik.setFieldError('keys', 'the file should be a json file');
       return;
     }
 
-    formik.setFieldValue('keys', event.target.files[0])
-  }
+    formik.setFieldValue('keys', event.target.files[0]);
+  };
 
   return (
     <AlertDialog
       open={open}
       onClose={onClose}
-      title='Import keys'
+      title="Import keys"
       onSubmit={formik.handleSubmit}
       isLoading={importKeys.isPending}
       maxWidth="sm"
       fullWidth
       sx={{
         input: {
-          display: 'none'
-        }
+          display: 'none',
+        },
       }}
     >
       <Box
         sx={{
           display: 'grid',
           placeItems: 'center',
-          gap: 1
+          gap: 1,
         }}
       >
         <Typography
           color="textPrimary"
           variant="body1"
         >
-          Please import a file
-          (
+          Please import a file (
           <Link
             color="textSecondary"
             variant="body1"
@@ -102,7 +101,9 @@ export const KeysImportDialog: FC<KeysImportDialogProps> = (props) => {
         <Button
           color="primary"
           variant="contained"
-          onClick={() => { inputRef.current?.click() }}
+          onClick={() => {
+            inputRef.current?.click();
+          }}
         >
           Import
         </Button>
@@ -124,8 +125,10 @@ export const KeysImportDialog: FC<KeysImportDialogProps> = (props) => {
             </Typography>
           </Typography>
         )}
-        {!!formik.errors.keys && <FormHelperText error>{formik.errors.keys}</FormHelperText>}
+        {!!formik.errors.keys && (
+          <FormHelperText error>{formik.errors.keys}</FormHelperText>
+        )}
       </Box>
-    </AlertDialog >
-  )
-}
+    </AlertDialog>
+  );
+};

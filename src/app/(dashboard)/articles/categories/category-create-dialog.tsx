@@ -1,20 +1,25 @@
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import { FC } from "react";
-import { Box, FormHelperText, Grid, Link, Typography } from "@mui/material";
-import { toast } from "react-toastify";
-import { useQueryClient } from "@tanstack/react-query";
-import { AlertDialog, AlertDialogProps } from "../../../components/alert-dialog";
-import { TextInput } from "../../../components/text-input";
-import { useCreateArticleTag } from "@/api/article-tags";
-import { useCreateArticleCategory } from "@/api/article-categories";
+import { Box, FormHelperText, Grid, Link, Typography } from '@mui/material';
+import { useQueryClient } from '@tanstack/react-query';
+import { useFormik } from 'formik';
+import { FC } from 'react';
+import { toast } from 'react-toastify';
+import * as Yup from 'yup';
+import {
+  AlertDialog,
+  AlertDialogProps,
+} from '../../../components/alert-dialog';
+import { TextInput } from '../../../components/text-input';
+import { useCreateArticleCategory } from './api';
 
 interface ArticleCategoryCreateDialogProps
-  extends Omit<AlertDialogProps, "title" | "onSubmit" | "isLoading"> { }
+  extends Omit<AlertDialogProps, 'title' | 'onSubmit' | 'isLoading'> {}
 
 const ToastSuccess = (id: string) => (
   <Box>
-    <Typography variant="body1" color="textPrimary">
+    <Typography
+      variant="body1"
+      color="textPrimary"
+    >
       Article duplicated
     </Typography>
     <Link
@@ -28,19 +33,19 @@ const ToastSuccess = (id: string) => (
   </Box>
 );
 
-export const ArticleCategoryCreateDialog: FC<ArticleCategoryCreateDialogProps> = (
-  props
-) => {
+export const ArticleCategoryCreateDialog: FC<
+  ArticleCategoryCreateDialogProps
+> = (props) => {
   const { onClose, ...rest } = props;
   const queryClient = useQueryClient();
   const createArticleCategory = useCreateArticleCategory(() =>
-    queryClient.invalidateQueries({ queryKey: ["article-categories"] })
+    queryClient.invalidateQueries({ queryKey: ['article-categories'] })
   );
 
   const formik = useFormik({
     initialValues: {
-      name: "",
-      slug: "",
+      name: '',
+      slug: '',
     },
     validationSchema: Yup.object({
       name: Yup.string().required(),
@@ -64,8 +69,14 @@ export const ArticleCategoryCreateDialog: FC<ArticleCategoryCreateDialogProps> =
       isLoading={createArticleCategory.isPending}
       {...rest}
     >
-      <Grid container spacing={3}>
-        <Grid item xs={12}>
+      <Grid
+        container
+        spacing={3}
+      >
+        <Grid
+          item
+          xs={12}
+        >
           <TextInput
             error={!!formik.touched.name && !!formik.errors.name}
             fullWidth
@@ -78,7 +89,10 @@ export const ArticleCategoryCreateDialog: FC<ArticleCategoryCreateDialogProps> =
             value={formik.values.name}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid
+          item
+          xs={12}
+        >
           <TextInput
             info="If a slug is not provided, one will be generated"
             error={!!formik.touched.slug && !!formik.errors.slug}
@@ -93,7 +107,10 @@ export const ArticleCategoryCreateDialog: FC<ArticleCategoryCreateDialogProps> =
           />
         </Grid>
         {createArticleCategory.isError && (
-          <Grid item xs={12}>
+          <Grid
+            item
+            xs={12}
+          >
             <FormHelperText error>
               {createArticleCategory.error?.message}
             </FormHelperText>

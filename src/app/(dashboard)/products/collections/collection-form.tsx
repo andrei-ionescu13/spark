@@ -1,6 +1,5 @@
 'use client';
 
-import { useCreateCollection, useUpdateCollection } from '@/api/collections';
 import {
   Autocomplete,
   Box,
@@ -33,6 +32,7 @@ import type { Collection } from '../../../types/collection';
 import type { Image } from '../../../types/common';
 import type { Product } from '../../../types/products';
 import { buildFormData } from '../../../utils/build-form-data';
+import { useCreateCollection, useUpdateCollection } from './api';
 
 const isImage = (file: any): file is Image => !!file?.public_id;
 

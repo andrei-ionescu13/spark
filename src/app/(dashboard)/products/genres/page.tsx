@@ -1,18 +1,10 @@
-"use client"
+'use client';
 
-import { useState } from "react";
-import type { FC } from "react";
-import Head from "next/head";
-import { useRouter } from "next/navigation";
-import type { GetServerSideProps } from "next";
-import { Box, Card, Container, TableBody } from "@mui/material";
-import { dehydrate, HydrationBoundary, QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useDeleteGenres } from "@/api/genres";
-import type { ParsedUrlQuery } from "querystring";
-import { GenresHeader } from "./genres-header";
-import { searchGenres } from "../api-calls";
-import { GenresTable } from "./genres-table";
-import { useSearchGenresQuery } from "../api-calls-hooks";
+import { Box, Container } from '@mui/material';
+import Head from 'next/head';
+import { useSearchGenresQuery } from './api';
+import { GenresHeader } from './genres-header';
+import { GenresTable } from './genres-table';
 
 export default function Genres() {
   const { data, refetch, isError, isLoading } = useSearchGenresQuery();
@@ -37,4 +29,4 @@ export default function Genres() {
       </Box>
     </>
   );
-};
+}

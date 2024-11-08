@@ -1,22 +1,19 @@
-import type { FC } from 'react';
 import {
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   Grid,
-  MenuItem,
-  TextField,
-  useTheme
+  useTheme,
 } from '@mui/material';
 import { useFormik } from 'formik';
+import type { FC } from 'react';
 import * as Yup from 'yup';
-import { StatusSelect } from '../../../components/status';
-import type { StatusOption } from '../../../components/status';
-import { useUpdateKeyStatus } from '@/api/keys';
-import { useQueryClient } from '@tanstack/react-query';
-import { Key } from '../../../types/keys';
 import { Button } from '../../../components/button';
+import type { StatusOption } from '../../../components/status';
+import { StatusSelect } from '../../../components/status';
+import { Key } from '../../../types/keys';
+import { useUpdateKeyStatus } from '../api';
 
 interface KeysUpdateDialogProps {
   open: boolean;
@@ -26,7 +23,7 @@ interface KeysUpdateDialogProps {
 }
 
 export const KeysUpdateDialog: FC<KeysUpdateDialogProps> = (props) => {
-  const { open, onClose, productKey, refetch } = props
+  const { open, onClose, productKey, refetch } = props;
   const theme = useTheme();
   const updateKeyStatus = useUpdateKeyStatus(productKey._id);
 
@@ -48,7 +45,9 @@ export const KeysUpdateDialog: FC<KeysUpdateDialogProps> = (props) => {
       status: undefined,
     },
     validationSchema: Yup.object({
-      status: Yup.string().oneOf(statusOptions.map((option) => option.value)).required()
+      status: Yup.string()
+        .oneOf(statusOptions.map((option) => option.value))
+        .required(),
     }),
     onSubmit: ({ status }) => {
       if (!status) return;
@@ -57,8 +56,8 @@ export const KeysUpdateDialog: FC<KeysUpdateDialogProps> = (props) => {
         onSuccess: async () => {
           await refetch();
           onClose();
-        }
-      })
+        },
+      });
     },
   });
 
@@ -69,9 +68,7 @@ export const KeysUpdateDialog: FC<KeysUpdateDialogProps> = (props) => {
       maxWidth="sm"
       fullWidth
     >
-      <DialogTitle>
-        Update status
-      </DialogTitle>
+      <DialogTitle>Update status</DialogTitle>
       <DialogContent sx={{ py: '24px !important' }}>
         <Grid
           container
@@ -104,7 +101,7 @@ export const KeysUpdateDialog: FC<KeysUpdateDialogProps> = (props) => {
         </Button>
         <Button
           color="primary"
-          onClick={() => (formik.handleSubmit())}
+          onClick={() => formik.handleSubmit()}
           variant="contained"
           disabled={updateKeyStatus.isPending}
         >

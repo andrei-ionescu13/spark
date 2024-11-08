@@ -1,4 +1,3 @@
-import { useDeletePublisher } from '@/api/publishers';
 import { ActionsItem } from '@/components/actions-menu';
 import { AlertDialog } from '@/components/alert-dialog';
 import { DataTableRow } from '@/components/data-table-row';
@@ -10,6 +9,7 @@ import type { FC } from 'react';
 import { useDialog } from '../../../hooks/useDialog';
 import { Pencil as PencilIcon } from '../../../icons/pencil';
 import { Trash as TrashIcon } from '../../../icons/trash';
+import { useDeletePublisher } from './api';
 import { PublisherDialog } from './publisher-dialog';
 
 interface PublishersTableRowProps {

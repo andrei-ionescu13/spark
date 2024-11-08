@@ -1,6 +1,5 @@
 'use client';
 
-import { useDeleteProducts } from '@/api/products';
 import { AlertDialog } from '@/components/alert-dialog';
 import { DataTable } from '@/components/data-table';
 import { DataTableHead, HeadCell } from '@/components/data-table-head';
@@ -19,6 +18,7 @@ import {
 } from '@mui/material';
 import { useQueryClient } from '@tanstack/react-query';
 import { ChangeEvent, useState, type FC } from 'react';
+import { useDeleteProducts } from './api';
 import { ProductTableRow } from './products-table-row';
 
 interface ProductsTableProps {

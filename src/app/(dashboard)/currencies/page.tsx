@@ -1,25 +1,10 @@
-"use client"
+'use client';
 
-import Head from "next/head";
-import {
-  Box,
-  Container,
-} from "@mui/material";
-import { appFetch } from "../../utils/app-fetch";
-import type { Currency } from "../../types/currencies";
-import { useSearchCurrencies } from "./api-calls-hooks";
-import { CurrenciesHeader } from "./currencies-header";
-import { CurrenciesTable } from "./currencies-table";
-
-
-const getCurrencies =
-  (config: Record<string, any> = {}) =>
-    () =>
-      appFetch<{ currencies: Currency[]; count: number }>({
-        url: "/currencies/search",
-        withAuth: true,
-        ...config,
-      });
+import { Box, Container } from '@mui/material';
+import Head from 'next/head';
+import { useSearchCurrencies } from './api';
+import { CurrenciesHeader } from './currencies-header';
+import { CurrenciesTable } from './currencies-table';
 
 export default function Currencies() {
   const { data, refetch, isError, isLoading } = useSearchCurrencies();
@@ -44,4 +29,4 @@ export default function Currencies() {
       </Box>
     </>
   );
-};
+}

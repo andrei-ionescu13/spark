@@ -3,7 +3,7 @@ import { Box, Container } from '@mui/material';
 import Head from 'next/head';
 import { PageHeader } from '../../../components/page-header';
 import { Plus as PlusIcon } from '../../../icons/plus';
-import { useSearchPromoCodes } from '../api-calls-hooks';
+import { useSearchPromoCodes } from './api';
 import { PromoCodesTable } from './promo-codes-table';
 
 export default function PromoCodes() {

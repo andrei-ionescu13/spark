@@ -1,4 +1,3 @@
-import { useDeletePromoCodes } from '@/api/promo-codes';
 import { AlertDialog } from '@/components/alert-dialog';
 import { DataTable } from '@/components/data-table';
 import { DataTableHead, HeadCell } from '@/components/data-table-head';
@@ -17,6 +16,7 @@ import {
 } from '@mui/material';
 import { useQueryClient } from '@tanstack/react-query';
 import { ChangeEvent, useState, type FC } from 'react';
+import { useDeletePromoCodes } from './api';
 import { PromoCodesTableRow } from './promo-codes-table-row';
 
 interface PromoCodesTableProps {
@@ -75,7 +75,6 @@ export const PromoCodesTable: FC<PromoCodesTableProps> = (props) => {
   const queryClient = useQueryClient();
   const [keyword, handleKeywordChange, handleSearch] = useSearch();
   const [selected, setSelected] = useState<string[]>([]);
-  const [statusSelected, setStatusSelected] = useState('');
   const [dialogOpen, handleOpenDialog, handleCloseDialog] = useDialog();
 
   const deletePromoCodes = useDeletePromoCodes(() =>

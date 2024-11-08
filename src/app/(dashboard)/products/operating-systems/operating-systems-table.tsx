@@ -1,6 +1,5 @@
 'use client';
 
-import { useDeleteOperatingSystems } from '@/api/operating-systems';
 import { AlertDialog } from '@/components/alert-dialog';
 import { DataTable } from '@/components/data-table';
 import { DataTableHead, HeadCell } from '@/components/data-table-head';
@@ -9,10 +8,11 @@ import { useSearch } from '@/hooks/useSearch';
 import { OperatingSystem } from '@/types/operating-sistem';
 import { Box, Button, Card, TableBody } from '@mui/material';
 import { useState, type FC } from 'react';
+import { useDeleteOperatingSystems } from './api';
 import { OperatingSystemsTableRow } from './operating-systems-table-row';
 
 interface OperatingSystemsTableProps {
-  operatingSystems: OperatingSystem[];
+  operatingSystems?: OperatingSystem[];
   count?: number;
   isError: boolean;
   isLoading: boolean;

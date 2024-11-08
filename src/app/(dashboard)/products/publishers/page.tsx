@@ -2,7 +2,7 @@
 
 import { Box, Container } from '@mui/material';
 import Head from 'next/head';
-import { useSearchPublishersQuery } from '../api-calls-hooks';
+import { useSearchPublishersQuery } from './api';
 import { PublishersHeader } from './publishers-header';
 import { PublishersTable } from './publishers-table';
 

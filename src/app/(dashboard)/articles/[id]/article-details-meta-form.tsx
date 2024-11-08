@@ -1,8 +1,5 @@
-import { useState } from "react";
-import type { FC, SyntheticEvent } from "react";
-import { useFormik } from "formik";
-import { useQueryClient } from "@tanstack/react-query";
-import * as Yup from "yup";
+import { Button } from '@/components/button';
+import { TextInput } from '@/components/text-input';
 import {
   Autocomplete,
   Dialog,
@@ -11,11 +8,14 @@ import {
   DialogTitle,
   FormHelperText,
   Grid,
-} from "@mui/material";
-import { useUpdateArticleMeta } from "@/api/articles";
-import { Article } from "../../../types/articles";
-import { TextInput } from "@/components/text-input";
-import { Button } from "@/components/button";
+} from '@mui/material';
+import { useQueryClient } from '@tanstack/react-query';
+import { useFormik } from 'formik';
+import type { FC, SyntheticEvent } from 'react';
+import { useState } from 'react';
+import * as Yup from 'yup';
+import { Article } from '../../../types/articles';
+import { useUpdateArticleMeta } from './api';
 
 interface Values {
   description: string;
@@ -30,7 +30,7 @@ interface ArticleDetailsMetaFormProps {
   article: Article;
 }
 
-const metaKeywordOptions = ["Games", "News", "Reviews"];
+const metaKeywordOptions = ['Games', 'News', 'Reviews'];
 
 export const ArticleDetailsMetaForm: FC<ArticleDetailsMetaFormProps> = (
   props
@@ -46,15 +46,15 @@ export const ArticleDetailsMetaForm: FC<ArticleDetailsMetaFormProps> = (
       title: values.title,
     },
     validationSchema: Yup.object({
-      description: Yup.string().required("Required"),
-      keywords: Yup.array().required("Required"),
-      title: Yup.string().required("Required"),
+      description: Yup.string().required('Required'),
+      keywords: Yup.array().required('Required'),
+      title: Yup.string().required('Required'),
     }),
     onSubmit: (values) => {
       setSubmitError(null);
       updateArticleMeta.mutate(values, {
         onSuccess: (data) => {
-          queryClient.setQueryData(["articles", article._id], {
+          queryClient.setQueryData(['articles', article._id], {
             ...article,
             ...data,
           });
@@ -68,11 +68,20 @@ export const ArticleDetailsMetaForm: FC<ArticleDetailsMetaFormProps> = (
   });
 
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog
+      open={open}
+      onClose={onClose}
+    >
       <DialogTitle>Update Meta</DialogTitle>
       <DialogContent>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
+        <Grid
+          container
+          spacing={2}
+        >
+          <Grid
+            item
+            xs={12}
+          >
             <TextInput
               error={!!formik.touched.title && !!formik.errors.title}
               fullWidth
@@ -86,7 +95,10 @@ export const ArticleDetailsMetaForm: FC<ArticleDetailsMetaFormProps> = (
               value={formik.values.title}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid
+            item
+            xs={12}
+          >
             <TextInput
               error={
                 !!formik.touched.description && !!formik.errors.description
@@ -106,7 +118,10 @@ export const ArticleDetailsMetaForm: FC<ArticleDetailsMetaFormProps> = (
               value={formik.values.description}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid
+            item
+            xs={12}
+          >
             <Autocomplete
               filterSelectedOptions
               freeSolo
@@ -114,7 +129,7 @@ export const ArticleDetailsMetaForm: FC<ArticleDetailsMetaFormProps> = (
               id="keywords"
               multiple
               onChange={(event: SyntheticEvent, newValue: string[]) => {
-                formik.setFieldValue("keywords", newValue);
+                formik.setFieldValue('keywords', newValue);
               }}
               options={metaKeywordOptions}
               renderInput={(params) => (
@@ -133,13 +148,20 @@ export const ArticleDetailsMetaForm: FC<ArticleDetailsMetaFormProps> = (
           </Grid>
         </Grid>
         {!!submitError && (
-          <FormHelperText error sx={{ mt: 1 }}>
+          <FormHelperText
+            error
+            sx={{ mt: 1 }}
+          >
             {submitError}
           </FormHelperText>
         )}
       </DialogContent>
       <DialogActions>
-        <Button color="secondary" onClick={onClose} variant="text">
+        <Button
+          color="secondary"
+          onClick={onClose}
+          variant="text"
+        >
           Cancel
         </Button>
         <Button

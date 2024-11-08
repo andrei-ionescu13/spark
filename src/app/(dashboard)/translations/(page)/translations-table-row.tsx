@@ -1,4 +1,3 @@
-import { useDeleteNamespaceTranslation } from '@/api/translations';
 import { ActionsItem } from '@/components/actions-menu';
 import { AlertDialog } from '@/components/alert-dialog';
 import { Highlight } from '@/components/highlight';
@@ -11,6 +10,7 @@ import { useDialog } from '../../../hooks/useDialog';
 import { Pencil as PencilIcon } from '../../../icons/pencil';
 import { Trash as TrashIcon } from '../../../icons/trash';
 import type { Language, Translation } from '../../../types/translations';
+import { useDeleteNamespaceTranslation } from '../api-calls';
 import { TranslationsDialog } from './translations-dialog';
 
 interface TranslationsTableRowProps extends TableRowProps {

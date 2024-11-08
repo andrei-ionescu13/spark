@@ -1,7 +1,7 @@
 'use client';
 
-import { useDeleteReviews } from '@/api/reviews';
 import { Box, Card, MenuItem, TableBody, TextField } from '@mui/material';
+import { useDeleteReviews } from 'app/api';
 import type { ChangeEvent, FC } from 'react';
 import { useState } from 'react';
 import { useQueryValue } from '../hooks/useQueryValue';

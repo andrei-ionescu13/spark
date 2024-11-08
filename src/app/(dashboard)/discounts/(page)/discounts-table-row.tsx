@@ -1,4 +1,3 @@
-import { useDeactivateDiscount, useDeleteDiscount } from '@/api/discounts';
 import { ActionsItem } from '@/components/actions-menu';
 import { AlertDialog } from '@/components/alert-dialog';
 import { DataTableRow } from '@/components/data-table-row';
@@ -20,6 +19,7 @@ import { EyeOff as EyeOffIcon } from '../../../icons/eye-off';
 import { Trash as TrashIcon } from '../../../icons/trash';
 import type { Discount } from '../../../types/discounts';
 import { getStatusFromInterval } from '../../../utils/get-status-from-interval';
+import { useDeactivateDiscount, useDeleteDiscount } from '../api-calls';
 
 interface DiscountsTableRow {
   discount: Discount;

@@ -1,4 +1,3 @@
-import { useDeleteNamespace } from '@/api/translations';
 import { ActionsItem } from '@/components/actions-menu';
 import { AlertDialog } from '@/components/alert-dialog';
 import { PageHeader } from '@/components/page-header';
@@ -10,6 +9,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import type { FC } from 'react';
 import { TranslationsDialog } from '../(page)/translations-dialog';
+import { useDeleteNamespace } from '../api-calls';
 
 interface NamespaceHeaderProps {
   namespace?: Namespace;
