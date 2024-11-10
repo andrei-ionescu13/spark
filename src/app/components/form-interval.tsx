@@ -1,14 +1,12 @@
-import type { ChangeEvent, FC } from "react";
 import {
   Card,
   Checkbox,
   FormControlLabel,
   Grid,
-  TextField,
   Typography,
-} from "@mui/material";
-import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
-import { DateTimeInput } from "./date-time-picker";
+} from '@mui/material';
+import type { ChangeEvent, FC } from 'react';
+import { DateTimeInput } from './date-time-picker';
 
 interface FormIntervalProps {
   formik: any;
@@ -21,22 +19,34 @@ export const FormInterval: FC<FormIntervalProps> = (props) => {
 
   return (
     <Card sx={{ p: 2 }}>
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <Typography color="textPrimary" variant="subtitle1">
+      <Grid
+        container
+        spacing={2}
+      >
+        <Grid
+          item
+          xs={12}
+        >
+          <Typography
+            color="textPrimary"
+            variant="subtitle1"
+          >
             Active dates
           </Typography>
         </Grid>
-        <Grid item xs={12}>
+        <Grid
+          item
+          xs={12}
+        >
           <DateTimeInput
-            sx={{ width: "100%" }}
+            sx={{ width: '100%' }}
             disablePast
             label="Start date"
             value={
               formik.values.startDate ? new Date(formik.values.startDate) : null
             }
             onChange={(newValue: Date | null) => {
-              formik.setFieldValue("startDate", newValue);
+              formik.setFieldValue('startDate', newValue);
             }}
             slotProps={{
               textField: {
@@ -45,7 +55,10 @@ export const FormInterval: FC<FormIntervalProps> = (props) => {
             }}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid
+          item
+          xs={12}
+        >
           <FormControlLabel
             control={
               <Checkbox
@@ -57,16 +70,19 @@ export const FormInterval: FC<FormIntervalProps> = (props) => {
           />
         </Grid>
         {shouldSetEndDate && (
-          <Grid item xs={12}>
+          <Grid
+            item
+            xs={12}
+          >
             <DateTimeInput
-              sx={{ width: "100%" }}
+              sx={{ width: '100%' }}
               disablePast
               label="End date"
               value={
                 formik.values.endDate ? new Date(formik.values.endDate) : null
               }
               onChange={(newValue: Date | null) => {
-                formik.setFieldValue("endDate", newValue);
+                formik.setFieldValue('endDate', newValue);
               }}
               slotProps={{
                 textField: {

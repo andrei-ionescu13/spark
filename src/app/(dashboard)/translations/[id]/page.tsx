@@ -3,7 +3,7 @@
 import { Box, Container } from '@mui/material';
 import Head from 'next/head';
 import { useSearchParams } from 'next/navigation';
-import { useListNamespaceLanguagesQuery } from '../api-calls';
+import { useListNamespaceLanguagesQuery } from '../api';
 import { TranslationsTable } from '../translations-table';
 import { useSearchNamespaceTranslations } from './api';
 import { NamespaceHeader } from './namespace-header';

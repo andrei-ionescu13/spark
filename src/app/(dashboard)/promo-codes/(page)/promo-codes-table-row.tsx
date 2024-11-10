@@ -19,7 +19,7 @@ import { EyeOff as EyeOffIcon } from '../../../icons/eye-off';
 import { Trash as TrashIcon } from '../../../icons/trash';
 import type { PromoCode } from '../../../types/promo-code';
 import { getStatusFromInterval } from '../../../utils/get-status-from-interval';
-import { useDeactivatePromoCode, useDeletePromoCode } from '../api-calls';
+import { useDeactivatePromoCode, useDeletePromoCode } from '../api';
 
 interface PromoCodesTableRowProps {
   promoCode: PromoCode;

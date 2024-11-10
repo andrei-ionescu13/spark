@@ -2,9 +2,9 @@
 
 import { Box, Container } from '@mui/material';
 import Head from 'next/head';
-import { PromoCodeForm } from '../promo-code-form';
 import { usePromoCode } from './api';
 import { PromoCodeHeader } from './promo-code-header';
+import { UpdatePromoCodeForm } from './update-promo-code-form';
 
 export default function PromoCode() {
   const { data: promoCode, isLoading, isRefetching } = usePromoCode();
@@ -21,9 +21,8 @@ export default function PromoCode() {
             isLoading={isLoading}
           />
           {!!promoCode && (
-            <PromoCodeForm
+            <UpdatePromoCodeForm
               promoCode={promoCode}
-              mode="update"
               promoCodeIsRefetching={isRefetching}
             />
           )}

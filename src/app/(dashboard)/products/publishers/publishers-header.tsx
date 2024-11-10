@@ -4,7 +4,7 @@ import { PageHeader } from '@/components/page-header';
 import { useDialog } from '@/hooks/useDialog';
 import { Plus } from '@/icons/plus';
 import type { FC } from 'react';
-import { PublisherDialog } from './publisher-dialog';
+import { CreatePublisherDialog } from './create-publisher-dialog';
 
 interface PublishersHeaderProps {}
 
@@ -23,7 +23,7 @@ export const PublishersHeader: FC<PublishersHeaderProps> = (props) => {
         }}
       />
       {addDialogOpen && (
-        <PublisherDialog
+        <CreatePublisherDialog
           open
           onClose={handleCloseAddDialog}
         />

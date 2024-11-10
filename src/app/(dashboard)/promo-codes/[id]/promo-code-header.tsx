@@ -12,7 +12,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
 import router from 'next/router';
 import type { FC } from 'react';
-import { useDeactivatePromoCode, useDeletePromoCode } from '../api-calls';
+import { useDeactivatePromoCode, useDeletePromoCode } from '../api';
 
 interface PromoCodeHeaderProps {
   promoCode?: PromoCode;

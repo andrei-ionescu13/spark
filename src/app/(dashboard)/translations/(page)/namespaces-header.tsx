@@ -11,7 +11,7 @@ import { download } from '@/utils/download';
 import { useMutation } from '@tanstack/react-query';
 import type { FC } from 'react';
 import { toast } from 'react-toastify';
-import { TranslationNamespaceDialog } from './translation-namespace-dialog';
+import { CreateNamespaceDialog } from './create-namespace-dialog';
 
 interface NamespacesHeaderProps {}
 
@@ -75,7 +75,7 @@ export const NamespacesHeader: FC<NamespacesHeaderProps> = (props) => {
         actions={actionItems}
       />
       {openAddGroupDialog && (
-        <TranslationNamespaceDialog
+        <CreateNamespaceDialog
           open
           onClose={handleCloseAddGroupDialog}
         />

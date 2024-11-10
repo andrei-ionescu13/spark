@@ -7,29 +7,21 @@ import {
   DialogTitle,
   Grid,
 } from '@mui/material';
-import { useQueryClient } from '@tanstack/react-query';
 import { useFormik } from 'formik';
 import type { FC } from 'react';
 import * as Yup from 'yup';
 import { Genre } from '../../../types/genres';
-import { useCreateGenre, useUpdateGenre } from './api';
 
 interface GenreDialogProps {
   open: boolean;
   onClose: any;
-  mode?: 'create' | 'edit';
   genre?: Genre;
+  isPending: boolean;
+  onSubmit: (values: { name: string; slug: string }) => void;
 }
 
 export const GenreDialog: FC<GenreDialogProps> = (props) => {
-  const { open, onClose, genre, mode = 'create' } = props;
-  const queryClient = useQueryClient();
-  const createGenre = useCreateGenre(() =>
-    queryClient.invalidateQueries({ queryKey: ['genres'] })
-  );
-  const updateGenre = useUpdateGenre(() =>
-    queryClient.invalidateQueries({ queryKey: ['genres'] })
-  );
+  const { open, onClose, genre, isPending, onSubmit } = props;
 
   const formik = useFormik({
     initialValues: {
@@ -41,28 +33,7 @@ export const GenreDialog: FC<GenreDialogProps> = (props) => {
       slug: Yup.string().max(255),
     }),
     onSubmit: (values) => {
-      if (mode === 'create') {
-        createGenre.mutate(values, {
-          onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['genres'] });
-            onClose();
-          },
-        });
-
-        return;
-      }
-
-      if (genre) {
-        updateGenre.mutate(
-          { id: genre._id, body: values },
-          {
-            onSuccess: () => {
-              queryClient.invalidateQueries({ queryKey: ['genres'] });
-              onClose();
-            },
-          }
-        );
-      }
+      onSubmit(values);
     },
   });
 
@@ -73,7 +44,7 @@ export const GenreDialog: FC<GenreDialogProps> = (props) => {
       maxWidth="sm"
       fullWidth
     >
-      <DialogTitle>{mode === 'create' ? 'Add' : 'Update'} genre</DialogTitle>
+      <DialogTitle>{!genre ? 'Add' : 'Update'} genre</DialogTitle>
       <DialogContent sx={{ py: '24px !important' }}>
         <Grid
           container
@@ -126,13 +97,13 @@ export const GenreDialog: FC<GenreDialogProps> = (props) => {
         </Button>
         <Button
           color="primary"
-          isLoading={createGenre.isPending || updateGenre.isPending}
+          isLoading={isPending}
           onClick={() => {
             formik.handleSubmit();
           }}
           variant="contained"
         >
-          {mode === 'create' ? 'Add' : 'Update'}
+          {!genre ? 'Add' : 'Update'}
         </Button>
       </DialogActions>
     </Dialog>

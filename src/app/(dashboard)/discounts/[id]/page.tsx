@@ -2,12 +2,12 @@
 
 import { Box, Container } from '@mui/material';
 import Head from 'next/head';
-import { DiscountForm } from '../discount-form';
 import { useGetDiscount } from './api';
 import { DiscountHeader } from './discount-header';
+import { UpdateDiscountForm } from './update-discount-form';
 
 export default function Discount() {
-  const { data: discount, isLoading, isRefetching } = useGetDiscount();
+  const { data: discount, isLoading } = useGetDiscount();
 
   return (
     <>
@@ -20,13 +20,7 @@ export default function Discount() {
             discount={discount}
             isLoading={isLoading}
           />
-          {discount && (
-            <DiscountForm
-              discount={discount}
-              mode="update"
-              discountIsRefetching={isRefetching}
-            />
-          )}
+          {discount && <UpdateDiscountForm discount={discount} />}
         </Container>
       </Box>
     </>

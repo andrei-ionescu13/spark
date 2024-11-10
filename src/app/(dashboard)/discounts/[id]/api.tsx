@@ -2,7 +2,7 @@
 
 import { Discount } from '@/types/discounts';
 import { appFetch } from '@/utils/app-fetch';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
 
 export const getDiscount =
@@ -22,3 +22,17 @@ export const useGetDiscount = () => {
     queryFn: getDiscount(id),
   });
 };
+
+export const useUpdateDiscount = (onSuccess: () => Promise<any>) =>
+  useMutation<Discount, Error, { id: string; body: Record<string, any> }>({
+    mutationFn: ({ id, body }) =>
+      appFetch({
+        url: `/discounts/${id}`,
+        config: {
+          method: 'PUT',
+          body: JSON.stringify(body),
+        },
+        withAuth: true,
+      }),
+    onSuccess,
+  });

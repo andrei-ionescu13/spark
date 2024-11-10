@@ -2,7 +2,7 @@
 
 import { PromoCode } from '@/types/promo-code';
 import { appFetch } from '@/utils/app-fetch';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
 
 export const getPromoCode =
@@ -22,3 +22,17 @@ export const usePromoCode = () => {
     queryFn: getPromoCode(id),
   });
 };
+
+export const useUpdatePromoCode = (onSuccess: () => Promise<any>) =>
+  useMutation<PromoCode, Error, { id: string; body: Record<string, any> }>({
+    mutationFn: ({ id, body }) =>
+      appFetch({
+        url: `/promo-codes/${id}`,
+        config: {
+          method: 'PUT',
+          body: JSON.stringify(body),
+        },
+        withAuth: true,
+      }),
+    onSuccess,
+  });

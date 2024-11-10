@@ -10,7 +10,7 @@ import { useDialog } from '../../../hooks/useDialog';
 import { Pencil as PencilIcon } from '../../../icons/pencil';
 import { Trash as TrashIcon } from '../../../icons/trash';
 import { useDeletePublisher } from './api';
-import { PublisherDialog } from './publisher-dialog';
+import { UpdatePublisherDialog } from './update-publisher-dialog';
 
 interface PublishersTableRowProps {
   publisher: any;
@@ -53,10 +53,9 @@ export const PublishersTableRow: FC<PublishersTableRowProps> = (props) => {
   return (
     <>
       {updateDialogOpen && (
-        <PublisherDialog
+        <UpdatePublisherDialog
           open
           onClose={handleCloseUpdateDialog}
-          mode="edit"
           publisher={publisher}
         />
       )}

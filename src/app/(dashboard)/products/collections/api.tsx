@@ -21,32 +21,3 @@ export const useDeactivateCollection = () =>
         withAuth: true,
       }),
   });
-
-export const useCreateCollection = () =>
-  useMutation<any, Error, BodyInit>({
-    mutationFn: (values) =>
-      appFetch({
-        url: '/collections',
-        noContentType: true,
-        config: {
-          body: values,
-          method: 'POST',
-        },
-        withAuth: true,
-      }),
-  });
-
-export const useUpdateCollection = (onSuccess: () => Promise<any>) =>
-  useMutation<Collection, Error, { id: string; body: BodyInit }>({
-    mutationFn: ({ id, body }) =>
-      appFetch({
-        url: `/collections/${id}`,
-        config: {
-          body: body,
-          method: 'PUT',
-        },
-        withAuth: true,
-        noContentType: true,
-      }),
-    onSuccess,
-  });

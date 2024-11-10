@@ -3,12 +3,14 @@
 import { PageHeader } from '@/components/page-header';
 import { useDialog } from '@/hooks/useDialog';
 import { Plus } from '@/icons/plus';
+import { useQueryClient } from '@tanstack/react-query';
 import type { FC } from 'react';
-import { PlatformDialog } from './platform-dialog';
+import { CreatePlatformDialog } from './create-platform-dialog';
 
 interface PlatformsHeaderProps {}
 
 export const PlatformsHeader: FC<PlatformsHeaderProps> = (props) => {
+  const queryClient = useQueryClient();
   const [addDialogOpen, handleOpenAddDialog, handleCloseAddDialog] =
     useDialog();
 
@@ -23,7 +25,7 @@ export const PlatformsHeader: FC<PlatformsHeaderProps> = (props) => {
         }}
       />
       {addDialogOpen && (
-        <PlatformDialog
+        <CreatePlatformDialog
           open
           onClose={handleCloseAddDialog}
         />

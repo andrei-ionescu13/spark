@@ -1,7 +1,4 @@
-"use client";
-import { useState } from "react";
-import type { FC } from "react";
-import { usePathname } from "next/navigation";
+'use client';
 import {
   Avatar,
   Box,
@@ -10,19 +7,22 @@ import {
   List,
   ListItem,
   Typography,
-} from "@mui/material";
-import { Link } from "../components/link";
-import { Pencil as PencilIcon } from "../icons/pencil";
-import { ShoppingCart as ShoppingCartIcon } from "../icons/shopping-cart";
-import { Translate as TranslateIcon } from "../icons/translate";
-import { Users as UsersIcon } from "../icons/users";
-import { Star as StarIcon } from "../icons/star";
-import { CurrencyDollar as CurrencyDollarIcon } from "../icons/currency-dollar";
-import { SidebarCollapse } from "./sidebar-collapse";
-import { SidebarItem } from "./sidebar-item";
-import SimpleBar from "simplebar-react";
-import "simplebar/dist/simplebar.min.css";
-import { useLayout } from "app/(dashboard)/layout-context";
+} from '@mui/material';
+import { useLayout } from 'app/(dashboard)/layout-context';
+import { usePathname } from 'next/navigation';
+import type { FC } from 'react';
+import { useState } from 'react';
+import SimpleBar from 'simplebar-react';
+import 'simplebar/dist/simplebar.min.css';
+import { Link } from '../components/link';
+import { CurrencyDollar as CurrencyDollarIcon } from '../icons/currency-dollar';
+import { Pencil as PencilIcon } from '../icons/pencil';
+import { ShoppingCart as ShoppingCartIcon } from '../icons/shopping-cart';
+import { Star as StarIcon } from '../icons/star';
+import { Translate as TranslateIcon } from '../icons/translate';
+import { Users as UsersIcon } from '../icons/users';
+import { SidebarCollapse } from './sidebar-collapse';
+import { SidebarItem } from './sidebar-item';
 
 export interface Item {
   title: string;
@@ -42,134 +42,138 @@ export const Sidebar: FC<SidebarProps> = (props) => {
 
   const items: Item[] = [
     {
-      title: "Blog",
+      title: 'Blog',
       icon: PencilIcon,
       subitems: [
         {
-          title: "List",
-          href: "/articles",
+          title: 'List',
+          href: '/articles',
         },
         {
-          title: "Create article",
-          href: "/articles/create",
+          title: 'Create article',
+          href: '/articles/create',
         },
         {
-          title: "Categories",
-          href: "/articles/categories",
+          title: 'Categories',
+          href: '/articles/categories',
         },
         {
-          title: "Tags",
-          href: "/articles/tags",
+          title: 'Tags',
+          href: '/articles/tags',
         },
       ],
     },
     {
-      title: "Translations",
+      title: 'Translations',
       icon: TranslateIcon,
       subitems: [
         {
-          title: "List",
-          href: "/translations",
+          title: 'List',
+          href: '/translations',
         },
         {
-          title: "Languages",
-          href: "/translations/languages",
+          title: 'Languages',
+          href: '/translations/languages',
         },
       ],
     },
     {
-      title: "Products",
+      title: 'Products',
       icon: ShoppingCartIcon,
       subitems: [
         {
-          title: "List",
-          href: "/products",
+          title: 'List',
+          href: '/products',
         },
         {
-          title: "Create",
-          href: "/products/create",
+          title: 'Create',
+          href: '/products/create',
         },
         {
-          title: "Collections",
-          href: "/products/collections",
+          title: 'Deals',
+          href: '/products/deals',
         },
         {
-          title: "Platforms",
-          href: "/products/platforms",
+          title: 'Collections',
+          href: '/products/collections',
         },
         {
-          title: "Keys",
-          href: "/products/keys",
+          title: 'Platforms',
+          href: '/products/platforms',
         },
         {
-          title: "Publishers",
-          href: "/products/publishers",
+          title: 'Keys',
+          href: '/products/keys',
         },
         {
-          title: "Genres",
-          href: "/products/genres",
+          title: 'Publishers',
+          href: '/products/publishers',
         },
         {
-          title: "Developers",
-          href: "/products/developers",
+          title: 'Genres',
+          href: '/products/genres',
         },
         {
-          title: "Features",
-          href: "/products/features",
+          title: 'Developers',
+          href: '/products/developers',
         },
         {
-          title: "Operating Systems",
-          href: "/products/operating-systems",
+          title: 'Features',
+          href: '/products/features',
+        },
+        {
+          title: 'Operating Systems',
+          href: '/products/operating-systems',
         },
       ],
     },
     {
-      title: "Discounts",
+      title: 'Discounts',
       icon: TranslateIcon,
       subitems: [
         {
-          title: "List",
-          href: "/discounts",
+          title: 'List',
+          href: '/discounts',
         },
         {
-          title: "Create",
-          href: "/discounts/create",
+          title: 'Create',
+          href: '/discounts/create',
         },
       ],
     },
     {
-      title: "Promo codes",
+      title: 'Promo codes',
       icon: TranslateIcon,
       subitems: [
         {
-          title: "List",
-          href: "/promo-codes",
+          title: 'List',
+          href: '/promo-codes',
         },
         {
-          title: "Create",
-          href: "/promo-codes/create",
+          title: 'Create',
+          href: '/promo-codes/create',
         },
       ],
     },
     {
-      title: "Reviews",
+      title: 'Reviews',
       icon: StarIcon,
-      href: "/reviews",
+      href: '/reviews',
     },
     {
-      title: "Users",
+      title: 'Users',
       icon: UsersIcon,
-      href: "/users",
+      href: '/users',
     },
     {
-      title: "Orders",
+      title: 'Orders',
       icon: ShoppingCartIcon,
-      href: "/orders",
+      href: '/orders',
     },
     {
-      title: "Currencies",
+      title: 'Currencies',
       icon: CurrencyDollarIcon,
-      href: "/currencies",
+      href: '/currencies',
     },
   ];
 
@@ -187,7 +191,7 @@ export const Sidebar: FC<SidebarProps> = (props) => {
   };
 
   const getContent = () => (
-    <SimpleBar style={{ flex: 1, height: "100%" }}>
+    <SimpleBar style={{ flex: 1, height: '100%' }}>
       <Box
         sx={{
           py: 2,
@@ -196,8 +200,8 @@ export const Sidebar: FC<SidebarProps> = (props) => {
       >
         <Box
           sx={{
-            alignItems: "center",
-            display: "flex",
+            alignItems: 'center',
+            display: 'flex',
             mb: 4,
             px: 2,
             py: 1,
@@ -207,23 +211,23 @@ export const Sidebar: FC<SidebarProps> = (props) => {
             elevation={0}
             sx={{
               backgroundColor: (theme) =>
-                theme.palette.mode === "light"
-                  ? "rgba(145, 158, 171, 0.12)"
-                  : "#252b37",
-              alignItems: "center",
-              display: "grid",
+                theme.palette.mode === 'light'
+                  ? 'rgba(145, 158, 171, 0.12)'
+                  : '#252b37',
+              alignItems: 'center',
+              display: 'grid',
               gap: 1.5,
-              gridAutoFlow: "column",
-              justifyContent: "start",
+              gridAutoFlow: 'column',
+              justifyContent: 'start',
               p: 2,
-              width: "100%",
+              width: '100%',
             }}
           >
             <Avatar
               alt="admin"
               src="https://cdn.akamai.steamstatic.com/steamcommunity/public/images/avatars/b2/b2a734431d40a6c110b7c09b1b3b65ad5819c79f.jpg"
             />
-            <Box sx={{ textTransform: "capitalize" }}>
+            <Box sx={{ textTransform: 'capitalize' }}>
               <Typography
                 sx={{ fontWeight: 600 }}
                 variant="subtitle1"
@@ -231,7 +235,10 @@ export const Sidebar: FC<SidebarProps> = (props) => {
               >
                 {admin?.username}
               </Typography>
-              <Typography variant="body2" color="textSecondary">
+              <Typography
+                variant="body2"
+                color="textSecondary"
+              >
                 {admin?.role}
               </Typography>
             </Box>
@@ -251,7 +258,11 @@ export const Sidebar: FC<SidebarProps> = (props) => {
                   }}
                 />
               ) : (
-                <ListItem key={item.title} disableGutters disablePadding>
+                <ListItem
+                  key={item.title}
+                  disableGutters
+                  disablePadding
+                >
                   <SidebarItem
                     onClick={() => handleClick(undefined)}
                     component={Link}
@@ -276,18 +287,18 @@ export const Sidebar: FC<SidebarProps> = (props) => {
         sx={{
           width: 270,
           display: {
-            xs: "none",
-            lg: "block",
+            xs: 'none',
+            lg: 'block',
           },
         }}
         PaperProps={{
           sx: {
-            backgroundColor: "background.paper",
+            backgroundColor: 'background.paper',
             width: 270,
             borderRight: (theme) => `1px solid ${theme.palette.divider}`,
-            display: "flex",
-            flexDirection: "column",
-            overflow: "hidden",
+            display: 'flex',
+            flexDirection: 'column',
+            overflow: 'hidden',
           },
         }}
         variant="permanent"
@@ -299,18 +310,18 @@ export const Sidebar: FC<SidebarProps> = (props) => {
         sx={{
           width: 270,
           display: {
-            xs: "block",
-            lg: "none",
+            xs: 'block',
+            lg: 'none',
           },
         }}
         PaperProps={{
           sx: {
-            backgroundColor: "background.paper",
+            backgroundColor: 'background.paper',
             width: 270,
             borderRight: (theme) => `1px solid ${theme.palette.divider}`,
-            display: "flex",
-            flexDirection: "column",
-            overflow: "hidden",
+            display: 'flex',
+            flexDirection: 'column',
+            overflow: 'hidden',
           },
         }}
         variant="temporary"

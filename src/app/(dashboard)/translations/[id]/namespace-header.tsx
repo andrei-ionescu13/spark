@@ -8,8 +8,8 @@ import { Language, Namespace } from '@/types/translations';
 import { useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import type { FC } from 'react';
-import { TranslationsDialog } from '../(page)/translations-dialog';
-import { useDeleteNamespace } from '../api-calls';
+import { CreateTranslationsDialog } from '../(page)/create-translations-dialog';
+import { useDeleteNamespace } from '../api';
 
 interface NamespaceHeaderProps {
   namespace?: Namespace;
@@ -53,7 +53,7 @@ export const NamespaceHeader: FC<NamespaceHeaderProps> = (props) => {
   return (
     <>
       {addDialogOpen && namespace && languages && (
-        <TranslationsDialog
+        <CreateTranslationsDialog
           onClose={handleCloseAddDialog}
           open
           namespaceId={namespace._id}

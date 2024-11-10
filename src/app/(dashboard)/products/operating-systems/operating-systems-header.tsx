@@ -4,7 +4,7 @@ import { PageHeader } from '@/components/page-header';
 import { useDialog } from '@/hooks/useDialog';
 import { Plus } from '@/icons/plus';
 import type { FC } from 'react';
-import { OperatingSystemCreateDialog } from './operating-system-create-dialog';
+import { CreateOperatingSystemDialog } from './create-operating-system-dialog';
 
 interface OperatingSystemsHeaderProps {}
 
@@ -23,7 +23,7 @@ export const OperatingSystemsHeader: FC<OperatingSystemsHeaderProps> = () => {
         }}
       />
       {createDialogOpen && (
-        <OperatingSystemCreateDialog
+        <CreateOperatingSystemDialog
           open
           onClose={handleCloseCreateDialog}
         />

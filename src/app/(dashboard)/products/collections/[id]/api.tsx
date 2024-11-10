@@ -1,6 +1,6 @@
 import { Collection } from '@/types/collection';
 import { appFetch } from '@/utils/app-fetch';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
 
 export const getCollection = (id: string) => () =>
@@ -18,3 +18,18 @@ export const useGetCollectionQuery = () => {
     enabled: !!id,
   });
 };
+
+export const useUpdateCollection = (onSuccess: () => Promise<any>) =>
+  useMutation<Collection, Error, { id: string; body: BodyInit }>({
+    mutationFn: ({ id, body }) =>
+      appFetch({
+        url: `/collections/${id}`,
+        config: {
+          body: body,
+          method: 'PUT',
+        },
+        withAuth: true,
+        noContentType: true,
+      }),
+    onSuccess,
+  });

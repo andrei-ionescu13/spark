@@ -21,10 +21,10 @@ import { Pencil as PencilIcon } from '../../../icons/pencil';
 import { Plus as PlusIcon } from '../../../icons/plus';
 import { Trash as TrashIcon } from '../../../icons/trash';
 import type { Language, Namespace } from '../../../types/translations';
-import { useDeleteNamespace } from '../api-calls';
-import { TranslationNamespaceDialog } from './translation-namespace-dialog';
-import { TranslationsDialog } from './translations-dialog';
+import { useDeleteNamespace } from '../api';
+import { CreateTranslationsDialog } from './create-translations-dialog';
 import { TranslationsTableRow } from './translations-table-row';
+import { UpdateNamespaceDialog } from './update-namespace-dialog';
 
 interface NamespacesTableRowProps {
   namespace: Namespace;
@@ -94,15 +94,14 @@ export const NamespacesTableRow: FC<NamespacesTableRowProps> = (props) => {
   return (
     <>
       {editDialogOpen && (
-        <TranslationNamespaceDialog
+        <UpdateNamespaceDialog
           open
           onClose={handleCloseEditDialog}
-          mode="edit"
           namespace={namespace}
         />
       )}
       {addDialogOpen && (
-        <TranslationsDialog
+        <CreateTranslationsDialog
           languages={languages}
           onClose={handleCloseAddDialog}
           open

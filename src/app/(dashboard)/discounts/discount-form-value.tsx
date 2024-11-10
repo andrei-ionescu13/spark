@@ -1,33 +1,32 @@
-import type { FC } from "react";
+import { AddProductsDialog } from '@/components/add-products-dialog';
+import Link from '@/components/link';
+import { TextInput } from '@/components/text-input';
+import { useDialog } from '@/hooks/useDialog';
+import { Trash } from '@/icons/trash';
+import { Product } from '@/types/products';
 import {
+  Button,
   ButtonGroup,
   Card,
+  FormHelperText,
   Grid,
+  IconButton,
   InputAdornment,
   List,
   ListItem,
   Typography,
-  IconButton,
-  FormHelperText,
-  Button,
-} from "@mui/material";
-import { useFormikContext } from "formik";
-import type { DiscountFormValues } from "./discount-form";
-import { AddProductsDialog } from "@/components/add-products-dialog";
-import { TextInput } from "@/components/text-input";
-import { useDialog } from "@/hooks/useDialog";
-import { Product } from "@/types/products";
-import Link from "@/components/link";
-import { Trash } from "@/icons/trash";
+} from '@mui/material';
+import { useFormikContext } from 'formik';
+import type { FC } from 'react';
 
 const typeOptions = [
   {
-    label: "Fixed amount",
-    value: "amount",
+    label: 'Fixed amount',
+    value: 'amount',
   },
   {
-    label: "Percentage",
-    value: "percentage",
+    label: 'Percentage',
+    value: 'percentage',
   },
 ];
 
@@ -44,30 +43,42 @@ export const DiscountFormValue: FC = () => {
             handleCloseDialog();
           }}
           onAdd={(products: Product[]) => {
-            formik.setFieldValue("products", products);
+            formik.setFieldValue('products', products);
           }}
           selectedProducts={formik.values.products}
         />
       )}
       <Card sx={{ p: 2 }}>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <Typography color="textPrimary" variant="subtitle1">
+        <Grid
+          container
+          spacing={2}
+        >
+          <Grid
+            item
+            xs={12}
+          >
+            <Typography
+              color="textPrimary"
+              variant="subtitle1"
+            >
               Value
             </Typography>
           </Grid>
-          <Grid item xs={12}>
+          <Grid
+            item
+            xs={12}
+          >
             <ButtonGroup variant="outlined">
               {typeOptions.map((option) => (
                 <Button
                   key={option.value}
                   onClick={() => {
-                    formik.setFieldValue("type", option.value);
+                    formik.setFieldValue('type', option.value);
                   }}
                   variant={
                     formik.values.type === option.value
-                      ? "contained"
-                      : "outlined"
+                      ? 'contained'
+                      : 'outlined'
                   }
                 >
                   {option.label}
@@ -75,7 +86,10 @@ export const DiscountFormValue: FC = () => {
               ))}
             </ButtonGroup>
           </Grid>
-          <Grid item xs={12}>
+          <Grid
+            item
+            xs={12}
+          >
             <TextInput
               error={!!formik.touched.value && !!formik.errors.value}
               helperText={formik.touched.value && formik.errors.value}
@@ -88,22 +102,31 @@ export const DiscountFormValue: FC = () => {
               value={formik.values.value}
               InputProps={{
                 startAdornment:
-                  formik.values.type === "amount" ? (
+                  formik.values.type === 'amount' ? (
                     <InputAdornment position="start">$</InputAdornment>
                   ) : null,
                 endAdornment:
-                  formik.values.type === "percentage" ? (
+                  formik.values.type === 'percentage' ? (
                     <InputAdornment position="end">%</InputAdornment>
                   ) : null,
               }}
             />
           </Grid>
-          <Grid item xs={12}>
-            <Typography color="textPrimary" variant="subtitle2">
+          <Grid
+            item
+            xs={12}
+          >
+            <Typography
+              color="textPrimary"
+              variant="subtitle2"
+            >
               Applies to
             </Typography>
           </Grid>
-          <Grid item xs={12}>
+          <Grid
+            item
+            xs={12}
+          >
             <Button
               onClick={handleOpenDialog}
               color="primary"
@@ -113,13 +136,19 @@ export const DiscountFormValue: FC = () => {
             </Button>
           </Grid>
           {formik.touched.products && formik.errors.products && (
-            <Grid item xs={12}>
+            <Grid
+              item
+              xs={12}
+            >
               <FormHelperText error>
                 {formik.errors.products as string}
               </FormHelperText>
             </Grid>
           )}
-          <Grid item xs={12}>
+          <Grid
+            item
+            xs={12}
+          >
             <List disablePadding>
               {formik.values.products.map((product) => (
                 <ListItem
@@ -127,9 +156,9 @@ export const DiscountFormValue: FC = () => {
                   disableGutters
                   divider
                   sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
                   }}
                 >
                   <Link
@@ -144,7 +173,7 @@ export const DiscountFormValue: FC = () => {
                     color="error"
                     onClick={() => {
                       formik.setFieldValue(
-                        "products",
+                        'products',
                         formik.values.products.filter(
                           (_product) => _product._id !== product._id
                         )

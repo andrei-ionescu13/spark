@@ -2,9 +2,9 @@
 
 import { Box, Container } from '@mui/material';
 import Head from 'next/head';
-import { CollectionForm } from '../collection-form';
 import { useGetCollectionQuery } from './api';
 import { CollectionHeader } from './collection-header';
+import { UpdateCollectionForm } from './update-collection-form';
 
 export default function Collection() {
   const { data: collection } = useGetCollectionQuery();
@@ -17,12 +17,7 @@ export default function Collection() {
       <Box sx={{ py: 3 }}>
         <Container maxWidth="lg">
           <CollectionHeader />
-          {collection && (
-            <CollectionForm
-              mode="edit"
-              collection={collection}
-            />
-          )}
+          {collection && <UpdateCollectionForm collection={collection} />}
         </Container>
       </Box>
     </>

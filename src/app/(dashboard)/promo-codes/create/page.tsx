@@ -1,11 +1,9 @@
-"use client"
+'use client';
 
-import type { FC } from "react";
-import Head from "next/head";
-import type { GetServerSideProps } from "next";
-import { Box, Container } from "@mui/material";
-import { PageHeader } from "../../../components/page-header";
-import { PromoCodeForm } from "../promo-code-form";
+import { Box, Container } from '@mui/material';
+import Head from 'next/head';
+import { PageHeader } from '../../../components/page-header';
+import { CreatePromoCodeForm } from './create-promo-code-form ';
 
 export default function DiscountCreate() {
   return (
@@ -20,9 +18,9 @@ export default function DiscountCreate() {
             backLabel="Promo codes"
             title="Create promo code"
           />
-          <PromoCodeForm mode="create" />
+          <CreatePromoCodeForm />
         </Container>
       </Box>
     </>
   );
-};
+}

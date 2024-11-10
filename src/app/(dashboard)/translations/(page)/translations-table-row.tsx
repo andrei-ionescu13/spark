@@ -10,8 +10,8 @@ import { useDialog } from '../../../hooks/useDialog';
 import { Pencil as PencilIcon } from '../../../icons/pencil';
 import { Trash as TrashIcon } from '../../../icons/trash';
 import type { Language, Translation } from '../../../types/translations';
-import { useDeleteNamespaceTranslation } from '../api-calls';
-import { TranslationsDialog } from './translations-dialog';
+import { useDeleteNamespaceTranslation } from '../api';
+import { UpdateTranslationsDialog } from './update-translations-dialog';
 
 interface TranslationsTableRowProps extends TableRowProps {
   translation: Translation;
@@ -76,12 +76,11 @@ export const TranslationsTableRow: FC<TranslationsTableRowProps> = (props) => {
         isLoading={false}
       />
       {dialogOpen && (
-        <TranslationsDialog
+        <UpdateTranslationsDialog
           languages={languages}
           translation={translation}
           onClose={handleCloseDialog}
           open
-          mode="edit"
           namespaceId={namespaceId}
         />
       )}

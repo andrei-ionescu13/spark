@@ -10,7 +10,7 @@ import { useDialog } from '../../../hooks/useDialog';
 import { Pencil as PencilIcon } from '../../../icons/pencil';
 import { Trash as TrashIcon } from '../../../icons/trash';
 import { useDeletePlatform } from './api';
-import { PlatformDialog } from './platform-dialog';
+import { UpdatePlatformDialog } from './update-platform-dialog';
 
 interface PlatformsTableRowProps {
   platform: any;
@@ -54,10 +54,9 @@ export const PlatformsTableRow: FC<PlatformsTableRowProps> = (props) => {
   return (
     <>
       {updateDialogOpen && (
-        <PlatformDialog
+        <UpdatePlatformDialog
           open
           onClose={handleCloseUpdateDialog}
-          mode="edit"
           platform={platform}
         />
       )}

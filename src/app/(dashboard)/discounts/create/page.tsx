@@ -1,9 +1,9 @@
-"use client"
+'use client';
 
-import Head from "next/head";
-import { Box, Container } from "@mui/material";
-import { PageHeader } from "@/components/page-header";
-import { DiscountForm } from "../discount-form";
+import { PageHeader } from '@/components/page-header';
+import { Box, Container } from '@mui/material';
+import Head from 'next/head';
+import { CreateDiscountForm } from './create-discount-form';
 
 export default function DiscountCreate() {
   return (
@@ -18,10 +18,9 @@ export default function DiscountCreate() {
             backLabel="Discounts"
             title="Create discount"
           />
-          <DiscountForm mode="create" />
+          <CreateDiscountForm />
         </Container>
       </Box>
     </>
   );
-};
-
+}

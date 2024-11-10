@@ -8,7 +8,7 @@ import type { FC } from 'react';
 import { useDialog } from '../../../hooks/useDialog';
 import { Pencil as PencilIcon } from '../../../icons/pencil';
 import { Trash as TrashIcon } from '../../../icons/trash';
-import { useDeleteGenre } from './api';
+import { useDeleteGenre, useUpdateGenre } from './api';
 import { GenreDialog } from './genre-dialog';
 
 interface UsersTableRowProps {
@@ -25,6 +25,9 @@ export const GenresTableRow: FC<UsersTableRowProps> = (props) => {
   const [updateDialogOpen, handleOpenUpdateDialog, handleCloseUpdateDialog] =
     useDialog();
   const deleteGenre = useDeleteGenre(() =>
+    queryClient.invalidateQueries({ queryKey: ['genres'] })
+  );
+  const updateGenre = useUpdateGenre(() =>
     queryClient.invalidateQueries({ queryKey: ['genres'] })
   );
 
@@ -50,13 +53,26 @@ export const GenresTableRow: FC<UsersTableRowProps> = (props) => {
     });
   };
 
+  const handleUpdateGenre = (values: { name: string; slug: string }) => {
+    updateGenre.mutate(
+      { id: genre._id, body: values },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ['genres'] });
+          handleCloseUpdateDialog();
+        },
+      }
+    );
+  };
+
   return (
     <>
       <GenreDialog
         open={updateDialogOpen}
         onClose={handleCloseUpdateDialog}
-        mode="edit"
         genre={genre}
+        isPending={updateGenre.isPending}
+        onSubmit={handleUpdateGenre}
       />
       <AlertDialog
         open={deleteDialogOpen}

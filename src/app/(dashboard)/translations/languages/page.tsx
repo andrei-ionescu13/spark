@@ -2,7 +2,7 @@
 
 import { Box, Container } from '@mui/material';
 import Head from 'next/head';
-import { useListNamespaceLanguagesQuery } from '../api-calls';
+import { useListNamespaceLanguagesQuery } from '../api';
 import { LanguagesHeader } from './languages-header';
 import { LanguagesTable } from './languages-table';
 

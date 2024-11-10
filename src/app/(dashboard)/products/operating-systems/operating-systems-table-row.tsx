@@ -10,7 +10,7 @@ import { Pencil as PencilIcon } from '../../../icons/pencil';
 import { Trash as TrashIcon } from '../../../icons/trash';
 import { OperatingSystem } from '../../../types/operating-sistem';
 import { useDeleteOperatingSystem } from './api';
-import { OperatingSystemUpdateDialog } from './operating-system-update-dialog';
+import { OperatingSystemUpdateDialog } from './update-operating-system-dialog';
 
 interface OperatingSystemsTableRowProps {
   operatingSystem: OperatingSystem;
