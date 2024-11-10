@@ -15,7 +15,7 @@ import Head from 'next/head';
 import { AreaChart } from './area-chart';
 import { LineChart } from './line-chart';
 
-const Home = () => {
+export default function Home() {
   const theme = useTheme();
 
   return (
@@ -26,8 +26,15 @@ const Home = () => {
       <Box sx={{ py: 3 }}>
         <Container maxWidth={false}>
           <PageHeader title="Dashboard" />
-          <Grid container spacing={2}>
-            <Grid item xs={12} md={4}>
+          <Grid
+            container
+            spacing={2}
+          >
+            <Grid
+              item
+              xs={12}
+              md={4}
+            >
               <Card>
                 <CardContent
                   sx={{
@@ -43,10 +50,17 @@ const Home = () => {
                       gap: 1,
                     }}
                   >
-                    <Typography variant="subtitle2" color="textPrimary">
+                    <Typography
+                      variant="subtitle2"
+                      color="textPrimary"
+                    >
                       Product sold
                     </Typography>
-                    <Typography variant="h5" color="textPrimary" component="p">
+                    <Typography
+                      variant="h5"
+                      color="textPrimary"
+                      component="p"
+                    >
                       9000
                     </Typography>
                     <Box
@@ -57,7 +71,10 @@ const Home = () => {
                       }}
                     >
                       <ArrowTrendingUp color="primary" />
-                      <Typography variant="subtitle2" color="textPrimary">
+                      <Typography
+                        variant="subtitle2"
+                        color="textPrimary"
+                      >
                         +5.6%{' '}
                         <Typography
                           variant="body2"
@@ -73,7 +90,11 @@ const Home = () => {
                 </CardContent>
               </Card>
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid
+              item
+              xs={12}
+              md={4}
+            >
               <Card>
                 <CardContent
                   sx={{
@@ -89,10 +110,17 @@ const Home = () => {
                       gap: 1,
                     }}
                   >
-                    <Typography variant="subtitle2" color="textPrimary">
+                    <Typography
+                      variant="subtitle2"
+                      color="textPrimary"
+                    >
                       Sales profit
                     </Typography>
-                    <Typography variant="h5" color="textPrimary" component="p">
+                    <Typography
+                      variant="h5"
+                      color="textPrimary"
+                      component="p"
+                    >
                       42912
                     </Typography>
                     <Box
@@ -103,7 +131,10 @@ const Home = () => {
                       }}
                     >
                       <ArrowTrendingDown color="error" />
-                      <Typography variant="subtitle2" color="textPrimary">
+                      <Typography
+                        variant="subtitle2"
+                        color="textPrimary"
+                      >
                         -9.2%{' '}
                         <Typography
                           variant="body2"
@@ -119,7 +150,11 @@ const Home = () => {
                 </CardContent>
               </Card>
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid
+              item
+              xs={12}
+              md={4}
+            >
               <Card>
                 <CardContent
                   sx={{
@@ -135,10 +170,17 @@ const Home = () => {
                       gap: 1,
                     }}
                   >
-                    <Typography variant="subtitle2" color="textPrimary">
+                    <Typography
+                      variant="subtitle2"
+                      color="textPrimary"
+                    >
                       Total balance
                     </Typography>
-                    <Typography variant="h5" color="textPrimary" component="p">
+                    <Typography
+                      variant="h5"
+                      color="textPrimary"
+                      component="p"
+                    >
                       39312
                     </Typography>
                     <Box
@@ -149,7 +191,10 @@ const Home = () => {
                       }}
                     >
                       <ArrowTrendingUp color="primary" />
-                      <Typography variant="subtitle2" color="textPrimary">
+                      <Typography
+                        variant="subtitle2"
+                        color="textPrimary"
+                      >
                         +5.6%{' '}
                         <Typography
                           variant="body2"
@@ -165,7 +210,11 @@ const Home = () => {
                 </CardContent>
               </Card>
             </Grid>
-            <Grid item xs={12} md={8}>
+            <Grid
+              item
+              xs={12}
+              md={8}
+            >
               <Card>
                 <Box sx={{ p: 2, paddingBottom: 0 }}>
                   <Typography
@@ -197,11 +246,17 @@ const Home = () => {
                             height: 8,
                           }}
                         ></Box>
-                        <Typography variant="subtitle2" color="textSecondary">
+                        <Typography
+                          variant="subtitle2"
+                          color="textSecondary"
+                        >
                           Total income
                         </Typography>
                       </Box>
-                      <Typography variant="subtitle1" color="textPrimary">
+                      <Typography
+                        variant="subtitle1"
+                        color="textPrimary"
+                      >
                         321
                       </Typography>
                     </Box>
@@ -221,11 +276,17 @@ const Home = () => {
                             height: 8,
                           }}
                         ></Box>
-                        <Typography variant="subtitle2" color="textSecondary">
+                        <Typography
+                          variant="subtitle2"
+                          color="textSecondary"
+                        >
                           Total expenses
                         </Typography>
                       </Box>
-                      <Typography variant="subtitle1" color="textPrimary">
+                      <Typography
+                        variant="subtitle1"
+                        color="textPrimary"
+                      >
                         321
                       </Typography>
                     </Box>
@@ -239,6 +300,4 @@ const Home = () => {
       </Box>
     </>
   );
-};
-
-export default Home;
+}
