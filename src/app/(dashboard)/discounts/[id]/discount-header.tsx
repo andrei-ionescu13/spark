@@ -1,4 +1,3 @@
-import { useDeleteDiscount, useDeactivateDiscount } from '@/api/discounts';
 import { ActionsItem } from '@/components/actions-menu';
 import { AlertDialog } from '@/components/alert-dialog';
 import { Label } from '@/components/label';
@@ -12,7 +11,8 @@ import { colors, Skeleton, useTheme } from '@mui/material';
 import { useQueryClient } from '@tanstack/react-query';
 import { id } from 'date-fns/locale';
 import router from 'next/router';
-import type { FC } from 'react'
+import type { FC } from 'react';
+import { useDeactivateDiscount, useDeleteDiscount } from '../api';
 
 interface DiscountHeaderProps {
   discount?: Discount;
@@ -37,26 +37,27 @@ export const DiscountHeader: FC<DiscountHeaderProps> = (props) => {
     active: theme.palette.success.main,
     expired: theme.palette.error.main,
   };
-  const status = discount && getStatusFromInterval(discount.startDate, discount.endDate);
+  const status =
+    discount && getStatusFromInterval(discount.startDate, discount.endDate);
   const actionItems: ActionsItem[] = [
     {
-      label: "Deactivate",
+      label: 'Deactivate',
       icon: EyeOff,
       onClick: handleOpenDeactivateDialog,
-      disabled: status === "expired",
+      disabled: status === 'expired',
     },
     {
-      label: "Delete",
+      label: 'Delete',
       icon: Trash,
       onClick: handleOpenDeleteDialog,
-      color: "error",
+      color: 'error',
     },
   ];
 
   const handleDeleteDiscount = (discount: Discount): void => {
     deleteDiscount.mutate(discount._id, {
       onSuccess: () => {
-        router.push("/discounts");
+        router.push('/discounts');
       },
     });
   };
@@ -65,14 +66,14 @@ export const DiscountHeader: FC<DiscountHeaderProps> = (props) => {
     deactivateDiscount.mutate(discount._id, {
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: ["discount", id]
+          queryKey: ['discount', id],
         });
         handleCloseDeactivateDialog();
       },
     });
   };
 
-  console.log(discount)
+  console.log(discount);
   return (
     <>
       <PageHeader
@@ -83,8 +84,13 @@ export const DiscountHeader: FC<DiscountHeaderProps> = (props) => {
         isLoading={isLoading}
       >
         {status && <Label color={mappedColors[status]}>{status}</Label>}
-        {isLoading && (<Skeleton variant="rounded" width={80} height={21} />)}
-
+        {isLoading && (
+          <Skeleton
+            variant="rounded"
+            width={80}
+            height={21}
+          />
+        )}
       </PageHeader>
       {discount && (
         <>
@@ -93,7 +99,9 @@ export const DiscountHeader: FC<DiscountHeaderProps> = (props) => {
             onClose={handleCloseDeleteDialog}
             title={`Delete discount`}
             content="Are you sure you want to delete this discount?"
-            onSubmit={() => { handleDeleteDiscount(discount) }}
+            onSubmit={() => {
+              handleDeleteDiscount(discount);
+            }}
             isLoading={deleteDiscount.isPending}
           />
           <AlertDialog
@@ -101,11 +109,13 @@ export const DiscountHeader: FC<DiscountHeaderProps> = (props) => {
             onClose={handleCloseDeactivateDialog}
             title={`Deactivate discount`}
             content="Are you sure you want to deactivate this discount?"
-            onSubmit={() => { handleDeactivateDiscount(discount) }}
+            onSubmit={() => {
+              handleDeactivateDiscount(discount);
+            }}
             isLoading={deactivateDiscount.isPending}
           />
         </>
       )}
     </>
-  )
+  );
 };
