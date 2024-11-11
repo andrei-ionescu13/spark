@@ -1,8 +1,12 @@
-"use client"
+'use client';
 
 import { ApexOptions } from 'apexcharts';
+import dynamic from 'next/dynamic';
 import type { FC } from 'react';
-import ReactApexChart from 'react-apexcharts';
+
+const ReactApexChart = dynamic(() => import('react-apexcharts'), {
+  ssr: false, // Ensure ApexCharts is not imported during SSR
+});
 
 interface LineChartProps {
   color: string;
@@ -10,14 +14,18 @@ interface LineChartProps {
 
 const getRandomInt = (max: number) => {
   return Math.floor(Math.random() * max);
-}
+};
 
 export const LineChart: FC<LineChartProps> = (props) => {
   const { color } = props;
-  const series = [{
-    name: "Products",
-    data: Array(9).fill(1).map(() => getRandomInt(1000))
-  }];
+  const series = [
+    {
+      name: 'Products',
+      data: Array(9)
+        .fill(1)
+        .map(() => getRandomInt(1000)),
+    },
+  ];
 
   const options: ApexOptions = {
     colors: [color],
@@ -26,45 +34,61 @@ export const LineChart: FC<LineChartProps> = (props) => {
       y: {
         title: {
           formatter() {
-            return ''
+            return '';
           },
-        }
-      }
+        },
+      },
     },
     chart: {
       toolbar: {
-        show: false
+        show: false,
       },
       type: 'line',
       zoom: {
-        enabled: false
-      }
+        enabled: false,
+      },
     },
     dataLabels: {
-      enabled: false
+      enabled: false,
     },
     stroke: {
       width: 3,
-      curve: 'straight'
+      curve: 'straight',
     },
     grid: {
       show: false,
     },
     yaxis: {
-      show: false
+      show: false,
     },
     xaxis: {
       axisBorder: {
-        show: false
+        show: false,
       },
       axisTicks: {
-        show: false
+        show: false,
       },
       labels: { show: false },
-      categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
-    }
-  }
+      categories: [
+        'Jan',
+        'Feb',
+        'Mar',
+        'Apr',
+        'May',
+        'Jun',
+        'Jul',
+        'Aug',
+        'Sep',
+      ],
+    },
+  };
   return (
-    <ReactApexChart options={options} series={series} type="line" width={100} height={80} />
-  )
-}
+    <ReactApexChart
+      options={options}
+      series={series}
+      type="line"
+      width={100}
+      height={80}
+    />
+  );
+};
