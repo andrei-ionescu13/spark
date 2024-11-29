@@ -82,7 +82,7 @@ export const ProductGeneral: FC<ProductGeneralProps> = (props) => {
                 />
                 <InfoListItem
                   title="Publisher"
-                  content={product.publisher.name}
+                  content={product?.publisher?.name}
                   type="line"
                 />
                 <InfoListItem
@@ -108,7 +108,7 @@ export const ProductGeneral: FC<ProductGeneralProps> = (props) => {
                 />
                 <InfoListItem
                   title="Platform"
-                  content={product.platform.name}
+                  content={product?.platform?.name}
                   type="line"
                 />
                 <InfoListItem

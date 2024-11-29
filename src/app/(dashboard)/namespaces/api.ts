@@ -1,21 +1,5 @@
-import { Language } from '@/types/translations';
 import { appFetch } from '@/utils/app-fetch';
-import { useMutation, useQuery } from '@tanstack/react-query';
-
-export const listLanguages =
-  (config: Record<string, any> = {}) =>
-  () =>
-    appFetch<Language[]>({
-      url: '/translations/languages',
-      withAuth: true,
-      ...config,
-    });
-
-export const useListNamespaceLanguagesQuery = () =>
-  useQuery({
-    queryKey: ['namespace-languages'],
-    queryFn: listLanguages(),
-  });
+import { useMutation } from '@tanstack/react-query';
 
 export const useDeleteNamespace = (onSuccess?: () => Promise<any>) =>
   useMutation<{}, Error, string>({
@@ -28,7 +12,7 @@ export const useDeleteNamespace = (onSuccess?: () => Promise<any>) =>
     onSuccess,
   });
 
-export const useDeleteNamespaceTranslation = () =>
+export const useDeleteNamespaceTranslation = (onSuccess?: () => Promise<any>) =>
   useMutation<{}, Error, { id: string; translationKey: string }>({
     mutationFn: ({ id, translationKey }) =>
       appFetch({
@@ -36,4 +20,5 @@ export const useDeleteNamespaceTranslation = () =>
         config: { method: 'DELETE' },
         withAuth: true,
       }),
+    onSuccess,
   });

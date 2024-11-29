@@ -1,9 +1,8 @@
 'use client';
 
+import { useListNamespaceLanguagesQuery } from '@/api/*';
 import { Box, Container } from '@mui/material';
 import Head from 'next/head';
-import { useSearchParams } from 'next/navigation';
-import { useListNamespaceLanguagesQuery } from '../api';
 import { TranslationsTable } from '../translations-table';
 import { useSearchNamespaceTranslations } from './api';
 import { NamespaceHeader } from './namespace-header';
@@ -11,13 +10,6 @@ import { NamespaceHeader } from './namespace-header';
 export default function Namespace() {
   const listLanguagesQuery = useListNamespaceLanguagesQuery();
   const searchNamespaceTranslationsQuery = useSearchNamespaceTranslations();
-
-  const query: any = {};
-  const searchParams = useSearchParams();
-
-  for (const [key, value] of searchParams.entries()) {
-    query[key] = value;
-  }
 
   const isLoading =
     searchNamespaceTranslationsQuery.isLoading || listLanguagesQuery.isLoading;
@@ -35,6 +27,7 @@ export default function Namespace() {
           <NamespaceHeader
             namespace={searchNamespaceTranslationsQuery.data}
             languages={listLanguagesQuery.data}
+            isLoading={isLoading}
           />
           <TranslationsTable
             languages={listLanguagesQuery.data}

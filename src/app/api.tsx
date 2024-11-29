@@ -1,5 +1,6 @@
 import { appFetch } from '@/utils/app-fetch';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { Language } from './types/translations';
 
 export const useDeleteReview = () =>
   useMutation({
@@ -35,4 +36,19 @@ export const useDeleteReviews = () =>
         },
         withAuth: true,
       }),
+  });
+
+export const listLanguages =
+  (config: Record<string, any> = {}) =>
+  () =>
+    appFetch<Language[]>({
+      url: '/translations/languages',
+      withAuth: true,
+      ...config,
+    });
+
+export const useListNamespaceLanguagesQuery = () =>
+  useQuery({
+    queryKey: ['namespace-languages'],
+    queryFn: listLanguages(),
   });

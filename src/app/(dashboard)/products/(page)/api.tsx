@@ -1,7 +1,7 @@
+import { useSearchParamsQuery } from '@/hooks/useSearchParamsQuery';
 import { Product } from '@/types/products';
 import { appFetch } from '@/utils/app-fetch';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { useSearchParams } from 'next/navigation';
 
 interface SearchProductsData {
   products: Product[];
@@ -16,12 +16,7 @@ export const searchProducts = (query: Record<string, any>) => () =>
   });
 
 export const useSearchProducts = () => {
-  const query: any = {};
-  const searchParams = useSearchParams();
-
-  for (const [key, value] of searchParams.entries()) {
-    query[key] = value;
-  }
+  const query = useSearchParamsQuery();
 
   return useQuery({
     queryKey: ['products', query],

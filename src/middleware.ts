@@ -88,14 +88,14 @@ export async function middleware(request: NextRequest) {
     session &&
     testAgainstRegexArray(request.nextUrl.pathname, guestGuardPaths)
   ) {
-    return NextResponse.redirect(new URL('/', request.url));
+    return NextResponse.redirect(new URL('/', request.url), 301);
   }
 
   if (
     !session &&
     !testAgainstRegexArray(request.nextUrl.pathname, guestGuardPaths)
   ) {
-    return NextResponse.redirect(new URL('/login', request.url), 303);
+    return NextResponse.redirect(new URL('/login', request.url), 301);
   }
 
   return response;
@@ -109,7 +109,8 @@ export const config = {
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico, sitemap.xml, robots.txt (metadata files)
+     * - socket.io
      */
-    '/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)',
+    '/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|socket.io).*)',
   ],
 };

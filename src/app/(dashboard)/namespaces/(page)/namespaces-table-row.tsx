@@ -45,6 +45,7 @@ export const NamespacesTableRow: FC<NamespacesTableRowProps> = (props) => {
   const deleteNamespace = useDeleteNamespace(() =>
     queryClient.invalidateQueries({ queryKey: ['namespaces'] })
   );
+
   const [open, setOpen] = useState(false);
   const theme = useTheme();
 
@@ -84,11 +85,7 @@ export const NamespacesTableRow: FC<NamespacesTableRowProps> = (props) => {
   ];
 
   const handleDeleteNamespace = () => {
-    deleteNamespace.mutate(namespace._id, {
-      onSuccess: () => {
-        handleCloseDeleteDialog();
-      },
-    });
+    deleteNamespace.mutate(namespace._id);
   };
 
   return (
@@ -113,7 +110,7 @@ export const NamespacesTableRow: FC<NamespacesTableRowProps> = (props) => {
           open
           onClose={handleCloseDeleteDialog}
           title={`Delete ${namespace.name} namespace`}
-          content="Are you sure you want to permanently this namespace?"
+          content="Are you sure you want to permanently delete this namespace?"
           onSubmit={handleDeleteNamespace}
           isLoading={deleteNamespace.isPending}
         />
@@ -139,7 +136,7 @@ export const NamespacesTableRow: FC<NamespacesTableRowProps> = (props) => {
             />
           </IconButton>
           <Link
-            href={`/translations/${namespace._id}`}
+            href={`/namespaces/${namespace._id}`}
             color="inherit"
             underline="hover"
           >

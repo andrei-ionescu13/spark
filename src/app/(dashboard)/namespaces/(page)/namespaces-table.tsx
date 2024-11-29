@@ -5,9 +5,9 @@ import { DataTableHead, HeadCell } from '@/components/data-table-head';
 import { SearchInput } from '@/components/search-input';
 import { useQueryMultipleValues } from '@/hooks/useQueryValue';
 import { useSearch } from '@/hooks/useSearch';
+import { useSearchParamsQuery } from '@/hooks/useSearchParamsQuery';
 import { Language, Namespace } from '@/types/translations';
 import { Box, Card, TableBody } from '@mui/material';
-import { useSearchParams } from 'next/navigation';
 import { useState, type FC } from 'react';
 import { LanguagesMenu } from '../languages-menu';
 import { NamespacesTableRow } from './namespaces-table-row';
@@ -30,13 +30,7 @@ const headCells: HeadCell[] = [
 
 export const NamespacesTable: FC<NamespacesTableProps> = (props) => {
   const { languages, namespaces, count, isLoading, isError, refetch } = props;
-  const query: any = {};
-  const searchParams = useSearchParams();
-
-  for (const [key, value] of searchParams.entries()) {
-    query[key] = value;
-  }
-
+  const query = useSearchParamsQuery();
   const [keyword, handleKeywordChange, handleSearch] = useSearch();
   const [selectedLanguagesParam] = useQueryMultipleValues('language');
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>(

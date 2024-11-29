@@ -1,7 +1,7 @@
+import { useSearchParamsQuery } from '@/hooks/useSearchParamsQuery';
 import { Currency } from '@/types/currencies';
 import { appFetch } from '@/utils/app-fetch';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { useSearchParams } from 'next/navigation';
 
 export const searchCurrencies =
   (config: Record<string, any> = {}) =>
@@ -13,12 +13,7 @@ export const searchCurrencies =
     });
 
 export const useSearchCurrencies = () => {
-  const query: any = {};
-  const searchParams = useSearchParams();
-
-  for (const [key, value] of searchParams.entries()) {
-    query[key] = value;
-  }
+  const query = useSearchParamsQuery();
 
   return useQuery({
     queryKey: ['currencies'],

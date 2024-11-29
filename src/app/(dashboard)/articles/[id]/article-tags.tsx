@@ -5,14 +5,14 @@ import { Card, CardContent, CardHeader, Chip, Divider } from '@mui/material';
 import type { FC } from 'react';
 import { useDialog } from '../../../hooks/useDialog';
 import { Article } from '../../../types/articles';
-import { ArticleDetailsTagsForm } from './article-details-tags-form';
+import { ArticleTagsForm } from './article-tags-form';
 
 interface ArticleStatusTagProps {
   article: Article;
   isEditDisabled?: boolean;
 }
 
-export const ArticleDetailsTags: FC<ArticleStatusTagProps> = (props) => {
+export const ArticleTags: FC<ArticleStatusTagProps> = (props) => {
   const { article, isEditDisabled } = props;
   const [dialogOpen, handleOpenDialog, handleCloseDialog] = useDialog();
 
@@ -48,7 +48,7 @@ export const ArticleDetailsTags: FC<ArticleStatusTagProps> = (props) => {
         </CardContent>
       </Card>
       {dialogOpen && (
-        <ArticleDetailsTagsForm
+        <ArticleTagsForm
           article={article}
           onClose={handleCloseDialog}
           open

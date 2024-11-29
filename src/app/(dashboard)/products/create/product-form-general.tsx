@@ -86,7 +86,6 @@ export const ProductFormGeneral: FC<ProductFormGeneralProps> = (props) => {
   const features = listFeaturesQuery.data || [];
   const languages = listLanguagesQuery.data || [];
   const operatingSystems = listOperatingSystemsQuery.data || [];
-
   const formik = useFormik({
     initialValues: {
       title: product?.title || '',

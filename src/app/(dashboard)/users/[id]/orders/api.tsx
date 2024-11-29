@@ -1,7 +1,7 @@
+import { useSearchParamsQuery } from '@/hooks/useSearchParamsQuery';
 import { Order } from '@/types/orders';
 import { appFetch } from '@/utils/app-fetch';
 import { useQuery } from '@tanstack/react-query';
-import { useSearchParams } from 'next/navigation';
 import { ParsedUrlQuery } from 'querystring';
 
 interface SearchUserOrdersData {
@@ -22,12 +22,7 @@ export const searchUserOrders =
     });
 
 export const useSearchUserOrders = () => {
-  const query: any = {};
-  const searchParams = useSearchParams();
-
-  for (const [key, value] of searchParams.entries()) {
-    query[key] = value;
-  }
+  const query = useSearchParamsQuery();
 
   return useQuery({
     queryKey: ['user-orders', query],

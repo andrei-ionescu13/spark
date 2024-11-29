@@ -1,11 +1,11 @@
-import { alpha, Box, Collapse, List, ListItem } from "@mui/material";
+import { Box, Collapse, List, ListItem } from '@mui/material';
 import { usePathname } from 'next/navigation';
-import type { FC } from "react";
-import type { Item } from "./sidebar";
-import { SidebarItem } from "./sidebar-item";
-import { SidebarListItem } from "./sidebar-collapse-item";
-import { ChevronRight as ChevronRightIcon } from "../icons/chevron-right";
-import { Link } from "../components/link";
+import type { FC } from 'react';
+import { Link } from '../components/link';
+import { ChevronRight as ChevronRightIcon } from '../icons/chevron-right';
+import type { Item } from './sidebar';
+import { SidebarListItem } from './sidebar-collapse-item';
+import { SidebarItem } from './sidebar-item';
 
 interface SidebarCollapseProps {
   item: Item;
@@ -18,30 +18,45 @@ export const SidebarCollapse: FC<SidebarCollapseProps> = (props) => {
   const pathname = usePathname();
   const { icon: Icon } = item;
 
-  const active = !!item?.subitems?.some(
-    (item) => pathname === item.href
-  );
+  const active = !!item?.subitems?.some((item) => pathname === item.href);
 
   return (
     <>
-      <ListItem disableGutters disablePadding>
-        <SidebarItem active={active} onClick={() => onClick(item.title)}>
-          <Icon sx={{ mr: 1.5 }} />
+      <ListItem
+        disableGutters
+        disablePadding
+      >
+        <SidebarItem
+          active={active}
+          onClick={() => onClick(item.title)}
+        >
+          <Icon />
           {item.title}
           <Box sx={{ flexGrow: 1 }} />
           <ChevronRightIcon
             sx={{
-              transform: open ? "rotate(90deg)" : "rotate(0)",
-              transition: "300ms",
+              transform: open ? 'rotate(90deg)' : 'rotate(0)',
+              transition: '300ms',
             }}
           />
         </SidebarItem>
       </ListItem>
       <Collapse in={open}>
-        <List disablePadding sx={{ width: "100%" }}>
+        <List
+          disablePadding
+          sx={{ width: '100%' }}
+        >
           {item?.subitems?.map((item) => (
-            <ListItem disableGutters disablePadding key={item.title}>
-              <SidebarListItem component={Link} href={item.href} sx={{ pl: 6 }}>
+            <ListItem
+              disableGutters
+              disablePadding
+              key={item.title}
+            >
+              <SidebarListItem
+                component={Link}
+                href={item.href}
+                sx={{ pl: 6 }}
+              >
                 {item.title}
               </SidebarListItem>
             </ListItem>

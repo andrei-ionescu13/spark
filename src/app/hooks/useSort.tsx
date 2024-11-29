@@ -2,6 +2,7 @@
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { useSearchParamsQuery } from './useSearchParamsQuery';
 
 const isString = (value: any): value is string => typeof value === 'string';
 
@@ -12,12 +13,8 @@ export const useSort = (): [
 ] => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const query = useSearchParamsQuery();
   const { push } = useRouter();
-
-  let query: any = {};
-  for (const [key, value] of searchParams.entries()) {
-    query[key] = value;
-  }
 
   const [sortBy, setSortBy] = useState(
     isString(query?.sort) ? query?.sort?.split('-')[0] : undefined
@@ -39,6 +36,7 @@ export const useSort = (): [
         : newSearchParams.set('sort', `${property}-asc`);
     }
 
+    newSearchParams.delete('page');
     push(`${pathname}?${newSearchParams.toString()}`);
   };
 

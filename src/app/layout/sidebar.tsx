@@ -1,4 +1,5 @@
 'use client';
+import { GlobeAlt } from '@/icons/globe-alt';
 import {
   Avatar,
   Box,
@@ -11,7 +12,7 @@ import {
 import { useLayout } from 'app/(dashboard)/layout-context';
 import { usePathname } from 'next/navigation';
 import type { FC } from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import SimpleBar from 'simplebar-react';
 import 'simplebar/dist/simplebar.min.css';
 import { Link } from '../components/link';
@@ -42,6 +43,10 @@ export const Sidebar: FC<SidebarProps> = (props) => {
 
   const items: Item[] = [
     {
+      title: 'Dashboard',
+      href: '/',
+    },
+    {
       title: 'Blog',
       icon: PencilIcon,
       subitems: [
@@ -64,16 +69,16 @@ export const Sidebar: FC<SidebarProps> = (props) => {
       ],
     },
     {
-      title: 'Translations',
-      icon: TranslateIcon,
+      title: 'Internationalization',
+      icon: GlobeAlt,
       subitems: [
         {
-          title: 'List',
-          href: '/translations',
+          title: 'Translations',
+          href: '/namespaces',
         },
         {
           title: 'Languages',
-          href: '/translations/languages',
+          href: '/languages',
         },
       ],
     },
@@ -187,8 +192,13 @@ export const Sidebar: FC<SidebarProps> = (props) => {
       setitemOpen(undefined);
       return;
     }
+
     setitemOpen(title);
   };
+
+  useEffect(() => {
+    handleSidebarClose();
+  }, [pathname]);
 
   const getContent = () => (
     <SimpleBar style={{ flex: 1, height: '100%' }}>
@@ -264,12 +274,11 @@ export const Sidebar: FC<SidebarProps> = (props) => {
                   disablePadding
                 >
                   <SidebarItem
-                    onClick={() => handleClick(undefined)}
                     component={Link}
                     href={item.href}
                     active={pathname === item.href}
                   >
-                    <Icon sx={{ mr: 1.5 }} />
+                    {Icon ? <Icon /> : <Box sx={{ minWidth: 20 }} />}
                     {item.title}
                   </SidebarItem>
                 </ListItem>
@@ -290,6 +299,8 @@ export const Sidebar: FC<SidebarProps> = (props) => {
             xs: 'none',
             lg: 'block',
           },
+          position: 'fixed',
+          zIndex: 1200,
         }}
         PaperProps={{
           sx: {
@@ -302,7 +313,6 @@ export const Sidebar: FC<SidebarProps> = (props) => {
           },
         }}
         variant="permanent"
-        onClose={handleSidebarClose}
       >
         {getContent()}
       </Drawer>

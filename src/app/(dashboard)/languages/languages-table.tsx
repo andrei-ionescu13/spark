@@ -1,14 +1,8 @@
-import { DataTableHead, HeadCell } from '@/components/data-table-head';
-import { Card, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, IconButton, Checkbox } from '@mui/material';
-import { useState, type FC } from 'react'
-import { Language } from '@/types/translations';
 import { DataTable } from '@/components/data-table';
-import { LanguagesDeleteDialog } from '@/components/translations/languages/languages-delete-dialog';
-import { useDialog } from '@/hooks/useDialog';
-import { Trash } from '@/icons/trash';
-import { DataTableRow } from '@/components/data-table-row';
-import { ActionsItem } from '@/components/actions-menu';
-import { ActionsIconButton } from '@/components/icon-actions';
+import { DataTableHead, HeadCell } from '@/components/data-table-head';
+import { Language } from '@/types/translations';
+import { Card, TableBody } from '@mui/material';
+import { useState, type FC } from 'react';
 import { LanguagesTableRow } from './languages-table-row';
 
 interface LanguagesTableProps {
@@ -21,30 +15,21 @@ interface LanguagesTableProps {
 
 const headCells: HeadCell[] = [
   {
-    id: "name",
-    label: "Name",
+    id: 'name',
+    label: 'Name',
   },
   {
-    id: "nativeName",
-    label: "Native name",
+    id: 'nativeName',
+    label: 'Native name',
   },
   {
-    id: "code",
-    label: "Code",
+    id: 'code',
+    label: 'Code',
   },
 ];
 
-
-
-
 export const LanguagesTable: FC<LanguagesTableProps> = (props) => {
-  const {
-    languages,
-    count,
-    isError,
-    isLoading,
-    refetch,
-  } = props;
+  const { languages, count, isError, isLoading, refetch } = props;
 
   const [selected, setSelected] = useState<string[]>([]);
   const handleSelect = (id: string): void => {
@@ -113,5 +98,5 @@ export const LanguagesTable: FC<LanguagesTableProps> = (props) => {
         </DataTable>
       </Card>
     </>
-  )
+  );
 };

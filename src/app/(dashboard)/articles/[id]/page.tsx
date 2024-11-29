@@ -2,21 +2,37 @@
 
 import { Box, Container, Grid } from '@mui/material';
 import Head from 'next/head';
+import { useState } from 'react';
 import { useListArticleCategories } from '../api';
 import { useGetArticle } from './api';
-import { ArticleDetailsGeneral } from './article-details-general';
-import { ArticleDetailsMeta } from './article-details-meta';
-import { ArticleDetailsTags } from './article-details-tags';
+import { ArticleGeneral } from './article-general';
+import { ArticleGeneralForm } from './article-general-form';
+import { ArticleMeta } from './article-meta';
+import { ArticleUpdateMetaForm } from './article-meta-form';
 import { ArticlePageHeader } from './article-page-header';
 import { ArticleStatusCategory } from './article-status-category';
+import { ArticleTags } from './article-tags';
+
+type DisplayedForm = 'details' | 'meta' | null;
 
 export default function Article() {
   const { data: article } = useGetArticle();
   const { data: categories } = useListArticleCategories();
-
-  if (!article || !categories) return null;
+  const [displayedForm, setDisplayedForm] = useState<DisplayedForm>();
 
   const isEditDisabled = article?.status === 'archived';
+
+  const handleDisplayForm = (displayedForm: DisplayedForm) => {
+    window.scrollTo(0, 0);
+    setDisplayedForm(displayedForm);
+  };
+
+  const handleHideForm = () => {
+    window.scrollTo(0, 0);
+    setDisplayedForm(null);
+  };
+
+  if (!article || !categories) return null;
 
   return (
     <>
@@ -26,58 +42,78 @@ export default function Article() {
       <Box sx={{ py: 3 }}>
         <Container maxWidth="lg">
           <ArticlePageHeader article={article} />
-          <Grid
-            container
-            spacing={2}
-          >
-            <Grid
-              item
-              md={8}
-              xs={12}
-            >
-              <ArticleDetailsGeneral
-                article={article}
-                isEditDisabled={isEditDisabled}
-              />
-            </Grid>
+          {article && displayedForm === 'details' && (
+            <ArticleGeneralForm
+              article={article}
+              onClose={handleHideForm}
+            />
+          )}
+          {article && displayedForm === 'meta' && (
+            <ArticleUpdateMetaForm
+              article={article}
+              onClose={handleHideForm}
+            />
+          )}
+          {!!article && !displayedForm && (
             <Grid
               container
-              item
-              md={4}
               spacing={2}
-              sx={{ height: 'fit-content' }}
-              xs={12}
             >
               <Grid
                 item
+                md={8}
                 xs={12}
               >
-                <ArticleStatusCategory
+                <ArticleGeneral
                   article={article}
-                  categories={categories}
                   isEditDisabled={isEditDisabled}
+                  onEdit={() => {
+                    handleDisplayForm('details');
+                  }}
                 />
               </Grid>
               <Grid
+                container
                 item
+                md={4}
+                spacing={2}
+                sx={{ height: 'fit-content' }}
                 xs={12}
               >
-                <ArticleDetailsTags
-                  article={article}
-                  isEditDisabled={isEditDisabled}
-                />
-              </Grid>
-              <Grid
-                item
-                xs={12}
-              >
-                <ArticleDetailsMeta
-                  article={article}
-                  isEditDisabled={isEditDisabled}
-                />
+                <Grid
+                  item
+                  xs={12}
+                >
+                  <ArticleStatusCategory
+                    article={article}
+                    categories={categories}
+                    isEditDisabled={isEditDisabled}
+                  />
+                </Grid>
+                <Grid
+                  item
+                  xs={12}
+                >
+                  <ArticleTags
+                    article={article}
+                    isEditDisabled={isEditDisabled}
+                  />
+                </Grid>
+                <Grid
+                  item
+                  xs={12}
+                >
+                  <ArticleMeta
+                    article={article}
+                    isEditDisabled={isEditDisabled}
+                    onEdit={() => {
+                      handleDisplayForm('meta');
+                    }}
+                  />
+                </Grid>
               </Grid>
             </Grid>
-          </Grid>
+          )}
         </Container>
       </Box>
     </>

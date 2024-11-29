@@ -5,7 +5,6 @@ import { useQueryMultipleValues } from '@/hooks/useQueryValue';
 import { useSearch } from '@/hooks/useSearch';
 import { Language, Namespace } from '@/types/translations';
 import { Box, Card, TableBody } from '@mui/material';
-import { useSearchParams } from 'next/navigation';
 import { useState, type FC } from 'react';
 import { TranslationsTableRow } from './(page)/translations-table-row';
 import { LanguagesMenu } from './languages-menu';
@@ -26,29 +25,6 @@ export const TranslationsTable: FC<TranslationsTableProps> = (props) => {
     selectedLanguagesParam
   );
   const [keyword, handleKeywordChange, handleSearch] = useSearch();
-
-  const query: any = {};
-  const searchParams = useSearchParams();
-
-  for (const [key, value] of searchParams.entries()) {
-    query[key] = value;
-  }
-
-  const shownLanguageCodes = (() => {
-    if (query?.language) {
-      if (typeof query.language === 'string') {
-        return [query.language];
-      }
-
-      return query.language;
-    }
-
-    if (languages) {
-      return languages.map((language) => language.code);
-    }
-
-    return [];
-  })();
 
   const displayedLanguages = !selectedLanguagesParam.length
     ? languages

@@ -1,23 +1,22 @@
-"use client"
+'use client';
 
-import { CssBaseline, ThemeProvider } from '@mui/material'
-import { LocalizationProvider } from '@mui/x-date-pickers'
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
+import { CssBaseline, ThemeProvider } from '@mui/material';
+import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import {
   isServer,
   QueryClient,
   QueryClientProvider,
 } from '@tanstack/react-query';
-import { FC, ReactNode } from 'react'
-import { ToastContainer } from 'react-toastify'
-import { ThemeDrawer } from './components/theme-drawer'
-import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
-import { SettingsProvider, useSettings } from './contexts/settings-context';
-import { createCustomTheme } from './theme';
-import { StyledComponentsRegistry } from './styled-components-registry';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import "react-toastify/dist/ReactToastify.css";
-
+import { FC, ReactNode } from 'react';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { ThemeDrawer } from './components/theme-drawer';
+import { SettingsProvider, useSettings } from './contexts/settings-context';
+import { StyledComponentsRegistry } from './styled-components-registry';
+import { createCustomTheme } from './theme';
 
 function makeQueryClient() {
   return new QueryClient({
@@ -26,25 +25,25 @@ function makeQueryClient() {
         // With SSR, we usually want to set some default staleTime
         // above 0 to avoid refetching immediately on the client
         staleTime: 60 * 1000,
-        gcTime: 0
+        gcTime: 0,
       },
     },
-  })
+  });
 }
 
-let browserQueryClient: QueryClient | undefined = undefined
+let browserQueryClient: QueryClient | undefined = undefined;
 
 function getQueryClient() {
   if (isServer) {
     // Server: always make a new query client
-    return makeQueryClient()
+    return makeQueryClient();
   } else {
     // Browser: make a new query client if we don't already have one
     // This is very important, so we don't re-make a new client if React
     // suspends during the initial render. This may not be needed if we
     // have a suspense boundary BELOW the creation of the query client
-    if (!browserQueryClient) browserQueryClient = makeQueryClient()
-    return browserQueryClient
+    if (!browserQueryClient) browserQueryClient = makeQueryClient();
+    return browserQueryClient;
   }
 }
 
@@ -68,12 +67,12 @@ const ProvidersWithSettings: FC<ProvidersProps> = (props) => {
       />
       {children}
     </ThemeProvider>
-  )
-}
+  );
+};
 
 const Providers: FC<ProvidersProps> = (props) => {
   const { children, theme, preset } = props;
-  const queryClient = getQueryClient()
+  const queryClient = getQueryClient();
 
   return (
     <StyledComponentsRegistry>
@@ -95,7 +94,7 @@ const Providers: FC<ProvidersProps> = (props) => {
         </QueryClientProvider>
       </AppRouterCacheProvider>
     </StyledComponentsRegistry>
-  )
-}
+  );
+};
 
-export default Providers
+export default Providers;

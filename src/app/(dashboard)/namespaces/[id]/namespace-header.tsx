@@ -14,10 +14,11 @@ import { useDeleteNamespace } from '../api';
 interface NamespaceHeaderProps {
   namespace?: Namespace;
   languages?: Language[];
+  isLoading: boolean;
 }
 
 export const NamespaceHeader: FC<NamespaceHeaderProps> = (props) => {
-  const { namespace, languages } = props;
+  const { namespace, languages, isLoading } = props;
   const [addDialogOpen, handleOpenAddDialog, handleCloseAddDialog] =
     useDialog();
   const [deleteDialogOpen, handleOpenDeleteDialog, handleCloseDeleteDialog] =
@@ -71,10 +72,11 @@ export const NamespaceHeader: FC<NamespaceHeaderProps> = (props) => {
         />
       )}
       <PageHeader
-        title={`${namespace?.name} namespace`}
+        title={namespace && `${namespace?.name} namespace`}
         actions={actionItems}
-        backHref="/translations"
+        backHref="/namespaces"
         backLabel="Namespaces"
+        isLoading={isLoading}
       />
     </>
   );

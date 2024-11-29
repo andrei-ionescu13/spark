@@ -1,7 +1,7 @@
+import { useSearchParamsQuery } from '@/hooks/useSearchParamsQuery';
 import { ArticleCategory } from '@/types/article-category';
 import { appFetch } from '@/utils/app-fetch';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { useSearchParams } from 'next/navigation';
 import { ParsedUrlQuery } from 'querystring';
 
 interface SearchArticleCategoriesData {
@@ -20,12 +20,7 @@ export const searchArticleCategories =
     });
 
 export const useSearchArticleCategories = () => {
-  const query: any = {};
-  const searchParams = useSearchParams();
-
-  for (const [key, value] of searchParams.entries()) {
-    query[key] = value;
-  }
+  const query = useSearchParamsQuery();
 
   return useQuery({
     queryKey: ['article-categories', query],

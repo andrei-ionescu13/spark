@@ -42,6 +42,9 @@ const DataTableRoot = styled(TableContainer)(() => ({
   a: {
     color: 'inherit',
   },
+  tbody: {
+    textWrap: 'nowrap',
+  },
 }));
 
 const TextSkeleton = () => (

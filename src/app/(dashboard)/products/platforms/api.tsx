@@ -1,7 +1,7 @@
+import { useSearchParamsQuery } from '@/hooks/useSearchParamsQuery';
 import { Platform } from '@/types/platforms';
 import { appFetch } from '@/utils/app-fetch';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { useSearchParams } from 'next/navigation';
 
 interface SearchPlatformsData {
   platforms: Platform[];
@@ -16,12 +16,7 @@ export const searchPlatforms = (query: Record<string, any>) => () =>
   });
 
 export const useSearchPlatformsQuery = () => {
-  const query: any = {};
-  const searchParams = useSearchParams();
-
-  for (const [key, value] of searchParams.entries()) {
-    query[key] = value;
-  }
+  const query = useSearchParamsQuery();
 
   return useQuery({
     queryKey: ['platforms', query],

@@ -1,3 +1,7 @@
+import { Button } from '@/components/button';
+import { TextInput } from '@/components/text-input';
+import { Language } from '@/types/translations';
+import { appFetch } from '@/utils/app-fetch';
 import {
   Autocomplete,
   CircularProgress,
@@ -13,10 +17,6 @@ import { useFormik } from 'formik';
 import type { FC, SyntheticEvent } from 'react';
 import { Fragment, useState } from 'react';
 import * as Yup from 'yup';
-import { Button } from '../../../components/button';
-import { TextInput } from '../../../components/text-input';
-import type { Language } from '../../../types/translations';
-import { appFetch } from '../../../utils/app-fetch';
 import { useCreateTranslationsLanguage } from './api';
 
 interface LanguageTagDialogProps {

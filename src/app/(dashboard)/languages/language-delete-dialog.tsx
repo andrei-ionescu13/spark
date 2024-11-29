@@ -1,8 +1,8 @@
+import { AlertDialog } from '@/components/alert-dialog';
 import { Box, FormControlLabel, Switch } from '@mui/material';
 import { useQueryClient } from '@tanstack/react-query';
 import type { FC } from 'react';
 import { useState } from 'react';
-import { AlertDialog } from '../../../components/alert-dialog';
 import { useDeleteLanguage } from './api';
 
 interface LanguageDeleteDialogProps {

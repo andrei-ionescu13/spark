@@ -1,8 +1,8 @@
+import { useSearchParamsQuery } from '@/hooks/useSearchParamsQuery';
+import { Key } from '@/types/keys';
 import { appFetch } from '@/utils/app-fetch';
 import { download } from '@/utils/download';
 import { useQuery } from '@tanstack/react-query';
-import { useSearchParams } from 'next/navigation';
-import { Key } from 'readline';
 
 interface SearchKeysData {
   keys: Key[];
@@ -17,12 +17,7 @@ export const searchKeys = (query: Record<string, any>) => () =>
   });
 
 export const useSearchKeysQuery = () => {
-  const query: any = {};
-  const searchParams = useSearchParams();
-
-  for (const [key, value] of searchParams.entries()) {
-    query[key] = value;
-  }
+  const query = useSearchParamsQuery();
 
   return useQuery({
     queryKey: ['keys', query],

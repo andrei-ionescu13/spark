@@ -40,7 +40,7 @@ export const ImageUpdate: FC<ImageUpdateProps> = (props) => {
         type="file"
         ref={inputRef}
         style={{ display: 'none' }}
-        accept="image/png, image/jpeg, image/jpg"
+        accept="image/png, image/jpeg, image/jpg, image/svg+xml"
       />
       <Image
         src={preview || url}

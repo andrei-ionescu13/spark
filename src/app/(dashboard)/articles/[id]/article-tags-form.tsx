@@ -18,15 +18,13 @@ import { Article } from '../../../types/articles';
 import { listTags } from '../tags/api';
 import { useUpdateArticleTags } from './api';
 
-interface ArticleDetailsMetaFormProps {
+interface ArticleMetaFormProps {
   article: Article;
   onClose: any;
   open: boolean;
 }
 
-export const ArticleDetailsTagsForm: FC<ArticleDetailsMetaFormProps> = (
-  props
-) => {
+export const ArticleTagsForm: FC<ArticleMetaFormProps> = (props) => {
   const { open, onClose, article } = props;
   const { data: tags, isLoading } = useQuery({
     queryKey: ['article-tags'],

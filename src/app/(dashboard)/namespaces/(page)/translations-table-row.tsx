@@ -33,7 +33,12 @@ export const TranslationsTableRow: FC<TranslationsTableRowProps> = (props) => {
   const [deleteDialogOpen, handleOpenDeleteDialog, handleCloseDeleteDialog] =
     useDialog();
   const [dialogOpen, handleOpenDialog, handleCloseDialog] = useDialog();
-  const deleteNamespaceTranslation = useDeleteNamespaceTranslation();
+  const deleteNamespaceTranslation = useDeleteNamespaceTranslation(() =>
+    Promise.all([
+      queryClient.invalidateQueries({ queryKey: ['namespace-translations'] }),
+      queryClient.invalidateQueries({ queryKey: ['namespaces'] }),
+    ])
+  );
 
   const handleDelete = async () => {
     deleteNamespaceTranslation.mutate(
@@ -43,8 +48,6 @@ export const TranslationsTableRow: FC<TranslationsTableRowProps> = (props) => {
       },
       {
         onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: ['namespaces'] });
-          queryClient.invalidateQueries({ queryKey: ['namespace'] });
           handleCloseDeleteDialog();
         },
       }
@@ -73,7 +76,7 @@ export const TranslationsTableRow: FC<TranslationsTableRowProps> = (props) => {
         title={`Delete translations for ${translation.key}`}
         content="Are you sure you want to permanently delete these translations?"
         onSubmit={handleDelete}
-        isLoading={false}
+        isLoading={deleteNamespaceTranslation.isPending}
       />
       {dialogOpen && (
         <UpdateTranslationsDialog

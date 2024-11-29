@@ -11,8 +11,8 @@ import { Eye } from '@/icons/eye';
 import { Trash } from '@/icons/trash';
 import { Article, ArticleStatus } from '@/types/articles';
 import { Box, colors, Link, Typography, useTheme } from '@mui/material';
+import { useRouter } from 'next/navigation';
 import type { FC } from 'react';
-import { toast } from 'react-toastify';
 import { useDuplicateArticle } from '../(page)/api';
 import { useDeleteArticle } from '../api';
 import { ArticleDuplicateDialog } from '../article-duplicate-dialog';
@@ -42,6 +42,7 @@ const ToastSuccess = (id: string) => (
 
 export const ArticlePageHeader: FC<ArticlePageHeaderProps> = (props) => {
   const { article } = props;
+  const router = useRouter();
   const theme = useTheme();
   const [openDeleteDialog, handleOpenDeleteDialog, handleCloseDeleteDialog] =
     useDialog();
@@ -90,15 +91,6 @@ export const ArticlePageHeader: FC<ArticlePageHeaderProps> = (props) => {
     });
   };
 
-  const handleDuplicateArticle = () => {
-    duplicateArticle.mutate(article._id, {
-      onSuccess: ({ id }) => {
-        handleCloseDuplicateDialog();
-        toast.success(ToastSuccess(id));
-      },
-    });
-  };
-
   return (
     <>
       <PageHeader
@@ -107,20 +99,20 @@ export const ArticlePageHeader: FC<ArticlePageHeaderProps> = (props) => {
         backLabel="Articles"
         title={article.title}
       >
-        <Label color={mappedColors['draft']}>{article.status}</Label>
+        <Label color={mappedColors[article.status]}>{article.status}</Label>
       </PageHeader>
+      <AlertDialog
+        open={openDeleteDialog}
+        onClose={handleCloseDeleteDialog}
+        title={`Delete article ${article._id}`}
+        content="Are you sure you want to permanently delete this article?"
+        onSubmit={handleDeleteArticle}
+        isLoading={deleteArticle.isPending}
+      />
       <ArticleDuplicateDialog
         open={openDuplicateDialog}
         onClose={handleCloseDuplicateDialog}
         articleId={article._id}
-      />
-      <AlertDialog
-        open={openDuplicateDialog}
-        onClose={handleCloseDuplicateDialog}
-        title={`Duplicate article`}
-        content="Are you sure you want to duplicate this article?"
-        onSubmit={handleDuplicateArticle}
-        isLoading={duplicateArticle.isPending}
       />
       <MarkdownPreview
         open={openPreviewDialog}

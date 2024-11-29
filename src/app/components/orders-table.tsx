@@ -1,6 +1,6 @@
 'use client';
+import { useSearchParamsQuery } from '@/hooks/useSearchParamsQuery';
 import { Box, Card, Chip, Stack, TableBody } from '@mui/material';
-import { useSearchParams } from 'next/navigation';
 import type { FC } from 'react';
 import { useEffect, useState } from 'react';
 import { useSearch } from '../hooks/useSearch';
@@ -151,11 +151,8 @@ export const OrdersTable: FC<OrdersTableProps> = (props) => {
   const [keyword, handleKeywordChange, handleSearch] = useSearch();
   const [selected, setSelected] = useState<string[]>([]);
   const [fieldsSelected, setFieldsSelected] = useState<any>({});
-  const query: any = {};
-  const searchParams = useSearchParams();
-  for (const [key, value] of Object.entries(searchParams)) {
-    query[key] = value;
-  }
+  const query = useSearchParamsQuery();
+
   useEffect(() => {
     const { fulfillmentStatus = [], paymentStatus = [], status = [] } = query;
     setFieldsSelected({ fulfillmentStatus, paymentStatus, status });

@@ -6,7 +6,6 @@ import { SearchInput } from '@/components/search-input';
 import { useSearch } from '@/hooks/useSearch';
 import { ArticleCategory } from '@/types/article-category';
 import { Box, Button, Card, TableBody } from '@mui/material';
-import { useSearchParams } from 'next/navigation';
 import { useState, type FC } from 'react';
 import { useDeleteCategories } from './api';
 import { CategoriesTableRow } from './categories-table-row';
@@ -32,11 +31,6 @@ const headCells: HeadCell[] = [
 
 export const CategoriesTable: FC<CategoriesTableProps> = (props) => {
   const { categories, count, isError, isLoading, refetch } = props;
-  const query: any = {};
-  const searchParams = useSearchParams();
-  for (const [key, value] of searchParams.entries()) {
-    query[key] = value;
-  }
   const [selected, setSelected] = useState<string[]>([]);
   const [keyword, handleKeywordChange, handleSearch] = useSearch();
   const [dialogOpen, setDialogOpen] = useState(false);

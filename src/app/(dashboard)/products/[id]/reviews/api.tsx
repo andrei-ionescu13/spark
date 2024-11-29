@@ -1,7 +1,8 @@
+import { useSearchParamsQuery } from '@/hooks/useSearchParamsQuery';
 import { Review } from '@/types/review';
 import { appFetch } from '@/utils/app-fetch';
 import { useQuery } from '@tanstack/react-query';
-import { useParams, useSearchParams } from 'next/navigation';
+import { useParams } from 'next/navigation';
 
 interface SearchUserReviewsData {
   reviews: Review[];
@@ -17,13 +18,8 @@ export const searchProductReviews =
     });
 
 export const useSearchProductReviews = () => {
-  const query: any = {};
   const { id } = useParams<{ id: string }>();
-  const searchParams = useSearchParams();
-
-  for (const [key, value] of searchParams.entries()) {
-    query[key] = value;
-  }
+  const query = useSearchParamsQuery();
 
   return useQuery({
     queryKey: ['product-reviews', id, query],

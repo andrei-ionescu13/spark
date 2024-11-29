@@ -1,7 +1,7 @@
+import { useSearchParamsQuery } from '@/hooks/useSearchParamsQuery';
 import { OperatingSystem } from '@/types/operating-sistem';
 import { appFetch } from '@/utils/app-fetch';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { useSearchParams } from 'next/navigation';
 
 interface GetOperatingSystemData {
   operatingSystems: OperatingSystem[];
@@ -17,12 +17,7 @@ export const searchOperatingSystems =
     });
 
 export const useSearchOperatingSystemsQuery = () => {
-  const query: any = {};
-  const searchParams = useSearchParams();
-
-  for (const [key, value] of searchParams.entries()) {
-    query[key] = value;
-  }
+  const query = useSearchParamsQuery();
 
   return useQuery({
     queryKey: ['operatingSystems', query],

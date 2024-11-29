@@ -1,9 +1,9 @@
 'use client';
 
+import { useSearchParamsQuery } from '@/hooks/useSearchParamsQuery';
 import { User } from '@/types/user';
 import { appFetch } from '@/utils/app-fetch';
 import { useQuery } from '@tanstack/react-query';
-import { useSearchParams } from 'next/navigation';
 
 interface SearchUsersData {
   users: User[];
@@ -21,12 +21,7 @@ export const searchUsers =
     });
 
 export const useSearchUsers = () => {
-  const query: any = {};
-  const searchParams = useSearchParams();
-
-  for (const [key, value] of searchParams.entries()) {
-    query[key] = value;
-  }
+  const query = useSearchParamsQuery();
 
   return useQuery({
     queryKey: ['users', query],

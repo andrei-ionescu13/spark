@@ -26,7 +26,10 @@ export const CreateTranslationsDialog: FC<CreateTranslationsDialogProps> = (
   const { open, onClose, namespaceId, languages } = props;
   const queryClient = useQueryClient();
   const addNamespaceTranslation = useAddNamespaceTranslation(() =>
-    queryClient.invalidateQueries({ queryKey: ['namespaces'] })
+    Promise.all([
+      queryClient.invalidateQueries({ queryKey: ['namespace-translations'] }),
+      queryClient.invalidateQueries({ queryKey: ['namespaces'] }),
+    ])
   );
 
   const initialValues: Translation = languages.reduce(

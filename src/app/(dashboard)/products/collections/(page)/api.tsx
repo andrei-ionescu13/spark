@@ -1,6 +1,6 @@
+import { useSearchParamsQuery } from '@/hooks/useSearchParamsQuery';
 import { appFetch } from '@/utils/app-fetch';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { useSearchParams } from 'next/navigation';
 
 interface SearchCollectionsData {
   collections: any[];
@@ -14,12 +14,7 @@ export const searchCollections = (query: Record<string, any>) => () =>
   });
 
 export const useSearchCollectionsQuery = () => {
-  const query: any = {};
-  const searchParams = useSearchParams();
-
-  for (const [key, value] of searchParams.entries()) {
-    query[key] = value;
-  }
+  const query = useSearchParamsQuery();
 
   return useQuery({
     queryKey: ['collections', query],

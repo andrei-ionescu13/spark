@@ -1,11 +1,11 @@
-import { ActionsItem } from "@/components/actions-menu";
-import { DataTableRow } from "@/components/data-table-row";
-import { ActionsIconButton } from "@/components/icon-actions";
-import { useDialog } from "@/hooks/useDialog";
-import { Trash } from "@/icons/trash";
-import { Language } from "@/types/translations";
-import { TableCell, Checkbox } from "@mui/material";
-import { FC } from "react";
+import { ActionsItem } from '@/components/actions-menu';
+import { DataTableRow } from '@/components/data-table-row';
+import { ActionsIconButton } from '@/components/icon-actions';
+import { useDialog } from '@/hooks/useDialog';
+import { Trash } from '@/icons/trash';
+import { Language } from '@/types/translations';
+import { Checkbox, TableCell } from '@mui/material';
+import { FC } from 'react';
 
 interface LanguagesTableRowProps {
   language: Language;
@@ -23,9 +23,9 @@ export const LanguagesTableRow: FC<LanguagesTableRowProps> = (props) => {
       label: 'Delete',
       icon: Trash,
       onClick: handleOpenDeleteDialog,
-      color: 'error'
-    }
-  ]
+      color: 'error',
+    },
+  ];
 
   return (
     <>

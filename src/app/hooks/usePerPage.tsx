@@ -32,6 +32,7 @@ export const useLimit = (): [
       newSearchParams.set('limit', event.target.value);
     }
 
+    newSearchParams.delete('page');
     push(`${pathname}?${newSearchParams.toString()}`);
   };
 

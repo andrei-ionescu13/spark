@@ -29,9 +29,9 @@ export const useUploadTranslations = () =>
 
 export const NamespacesHeader: FC<NamespacesHeaderProps> = (props) => {
   const [
-    openAddGroupDialog,
-    handleOpenAddGroupDialog,
-    handleCloseAddGroupDialog,
+    openAddNamespaceDialog,
+    handleOpenAddNamespaceDialog,
+    handleCloseAddNamespaceDialog,
   ] = useDialog();
   const uploadTranslations = useUploadTranslations();
 
@@ -48,7 +48,7 @@ export const NamespacesHeader: FC<NamespacesHeaderProps> = (props) => {
     {
       label: 'Add',
       icon: Plus,
-      onClick: handleOpenAddGroupDialog,
+      onClick: handleOpenAddNamespaceDialog,
     },
     {
       label: 'Export',
@@ -74,10 +74,10 @@ export const NamespacesHeader: FC<NamespacesHeaderProps> = (props) => {
         title="Namespaces"
         actions={actionItems}
       />
-      {openAddGroupDialog && (
+      {openAddNamespaceDialog && (
         <CreateNamespaceDialog
           open
-          onClose={handleCloseAddGroupDialog}
+          onClose={handleCloseAddNamespaceDialog}
         />
       )}
     </div>

@@ -1,17 +1,17 @@
-import { useEffect, useState } from "react";
-import { useRouter, usePathname, useSearchParams } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { useSearchParamsQuery } from './useSearchParamsQuery';
 
 const isString = (value: any): value is string => typeof value === 'string';
 
-export const usePage = (): [number, (event: unknown, newPage: number) => void] => {
+export const usePage = (): [
+  number,
+  (event: unknown, newPage: number) => void,
+] => {
   const pathname = usePathname();
-  const searchParams = useSearchParams()
+  const searchParams = useSearchParams();
   const { push } = useRouter();
-
-  let query: any = {};
-  for (const [key, value] of searchParams.entries()) {
-    query[key] = value;
-  }
+  const query = useSearchParamsQuery();
 
   const [page, setPage] = useState<number>(() => {
     const parsedPage = isString(query.page) ? Number.parseInt(query.page) : 0;
@@ -24,16 +24,16 @@ export const usePage = (): [number, (event: unknown, newPage: number) => void] =
   });
 
   const handlePageChange = (event: unknown, newPage: number): void => {
-    const newQuery = { ...query };
+    const newSearchParams = new URLSearchParams(searchParams.toString());
 
     if (newPage === 0) {
-      delete newQuery.page;
+      newSearchParams.delete('page');
     } else {
-      newQuery.page = (newPage + 1).toString();
+      newSearchParams.set('page', (newPage + 1).toString());
     }
 
-    push(`${[pathname]}?${query.toString()}`);
-  }
+    push(`${pathname}?${newSearchParams.toString()}`);
+  };
 
   useEffect(() => {
     const page = isString(query.page) ? Number.parseInt(query.page) : 0;
@@ -46,5 +46,5 @@ export const usePage = (): [number, (event: unknown, newPage: number) => void] =
     setPage(0);
   }, [query]);
 
-  return [page, handlePageChange]
-}
+  return [page, handlePageChange];
+};

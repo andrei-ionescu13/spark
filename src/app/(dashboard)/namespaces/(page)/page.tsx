@@ -1,8 +1,8 @@
 'use client';
 
+import { useListNamespaceLanguagesQuery } from '@/api/*';
 import { Box, Container } from '@mui/material';
 import Head from 'next/head';
-import { useListNamespaceLanguagesQuery } from '../api';
 import { useSearchNamespacesQuery } from './api';
 import { NamespacesHeader } from './namespaces-header';
 import { NamespacesTable } from './namespaces-table';

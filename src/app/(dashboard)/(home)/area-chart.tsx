@@ -34,7 +34,6 @@ export const AreaChart: FC<AreaChartProps> = (props) => {
       data: [...Array(12).keys()].map(() => getRandomInt(1000)),
     },
   ];
-  // apexcharts-tooltip apexcharts-theme-light
   const options: ApexOptions = {
     colors: [theme.palette.primary.main, theme.palette.warning.main],
     grid: {
@@ -92,7 +91,6 @@ export const AreaChart: FC<AreaChartProps> = (props) => {
           height={300}
         />
       </div>
-      <div id="html-dist"></div>
     </div>
   );
 };

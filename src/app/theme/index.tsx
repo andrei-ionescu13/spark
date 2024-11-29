@@ -61,10 +61,6 @@ const baseThemeOptions: ThemeOptions = {
           height: '100%',
           width: '100%',
         },
-        '#__next': {
-          height: '100%',
-          width: '100%',
-        },
         '#nprogress': {
           '.bar': {
             zIndex: '9999999 !important',
